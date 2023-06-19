@@ -270,7 +270,7 @@ public class GlowingFireGlow {
 
     }
 
-    public static interface IWorldComponent {
+    public interface IWorldComponent {
 
         default void init(InitType initType) {
         }
