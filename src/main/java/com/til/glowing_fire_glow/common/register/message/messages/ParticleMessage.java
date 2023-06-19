@@ -1,16 +1,7 @@
 package com.til.glowing_fire_glow.common.register.message.messages;
 
-import com.til.dusk.client.ClientTransfer;
-import com.til.dusk.common.register.message.MessageRegister;
-import com.til.dusk.common.register.particle_register.data.ParticleData;
-import com.til.dusk.main.world_component.ReflexManage;
-import com.til.dusk.util.DuskColor;
-import com.til.dusk.util.Pos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+
 
 /**
  * @author til
