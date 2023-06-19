@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "minVersion": "0.7",
+  "package": "com.til.glowing_fire_glow.common.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockTagsAccessor",
+    "EntityTypeTagsAccessor",
+    "FluidTagsAccessor",
+    "ItemTagsAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "dusk.common.refmap.json"
+}

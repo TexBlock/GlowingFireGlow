@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.7",
+  "package": "com.til.glowing_fire_glow.client.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "dusk.client.refmap.json"
+}
