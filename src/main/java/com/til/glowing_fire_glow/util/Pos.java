@@ -16,6 +16,8 @@ import java.util.Random;
 
 public class Pos {
 
+    public static final Pos ONE = new Pos(1, 1, 1);
+
     public final double x;
     public final double y;
     public final double z;
@@ -179,6 +181,10 @@ public class Pos {
 
     public Pos multiply(double fx, double fy, double fz) {
         return new Pos(x * fx, y * fy, z * fz);
+    }
+
+    public Pos multiply(Pos pos) {
+        return multiply(pos.x, pos.y, pos.z);
     }
 
     public double mag() {

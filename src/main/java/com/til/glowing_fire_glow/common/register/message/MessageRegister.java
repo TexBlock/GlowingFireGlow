@@ -3,6 +3,7 @@ package com.til.glowing_fire_glow.common.register.message;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import com.til.glowing_fire_glow.util.gson.ConfigGson;
@@ -25,6 +26,7 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
 
     protected static int idSequence;
 
+    @VoluntarilyAssignment
     protected AllMessageRegister allMessageRegister;
 
     protected int id;
@@ -34,7 +36,6 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
     @Override
     public void init() {
         super.init();
-        allMessageRegister = GlowingFireGlow.getInstance().getReflexManage().getRegisterManage(AllMessageRegister.class);
         id = idSequence++;
         msgClass = initMsgType();
     }
@@ -48,6 +49,7 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
         Type actualTypeArguments = parameterized.getActualTypeArguments()[0];
         return Util.forcedConversion(ReflexUtil.asClass(actualTypeArguments));
     }
+
 
 
     @Override

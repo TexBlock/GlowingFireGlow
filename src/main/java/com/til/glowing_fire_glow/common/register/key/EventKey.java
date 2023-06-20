@@ -2,7 +2,6 @@ package com.til.glowing_fire_glow.common.register.key;
 
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

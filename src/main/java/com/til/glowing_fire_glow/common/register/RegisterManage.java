@@ -66,6 +66,7 @@ public abstract class RegisterManage<R extends RegisterBasics> implements Glowin
         return registerMap.get(resourceLocation);
     }
 
+
     @Nullable
     public Class<? extends RegisterManage<?>> getBasicsRegisterManageClass() {
         return null;

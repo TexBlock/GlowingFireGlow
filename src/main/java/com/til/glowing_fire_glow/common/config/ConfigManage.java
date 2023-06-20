@@ -65,7 +65,7 @@ public class ConfigManage implements GlowingFireGlow.IWorldComponent {
     }
 
     public void writeRegister(RegisterBasics registerBasics, JsonObject jsonObject) throws IllegalAccessException {
-        for (Field field : ReflexUtil.getAllFields(registerBasics.getClass())) {
+        for (Field field : ReflexUtil.getAllFields(registerBasics.getClass(), false)) {
             if (!field.isAnnotationPresent(ConfigField.class)) {
                 continue;
             }
@@ -79,7 +79,7 @@ public class ConfigManage implements GlowingFireGlow.IWorldComponent {
 
     public JsonObject readRegister(RegisterBasics registerBasics) throws IllegalAccessException {
         JsonObject jsonObject = new JsonObject();
-        for (Field field : ReflexUtil.getAllFields(registerBasics.getClass())) {
+        for (Field field : ReflexUtil.getAllFields(registerBasics.getClass(), false)) {
             if (!field.isAnnotationPresent(ConfigField.class)) {
                 continue;
             }
@@ -98,7 +98,9 @@ public class ConfigManage implements GlowingFireGlow.IWorldComponent {
     public void init(InitType initType) {
         switch (initType) {
             case NEW:
+                break;
             case FML_DEDICATED_SERVER_SETUP:
+                break;
             case FML_CLIENT_SETUP:
                 break;
             case FML_COMMON_SETUP:

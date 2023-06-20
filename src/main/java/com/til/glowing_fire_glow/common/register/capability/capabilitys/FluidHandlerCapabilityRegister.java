@@ -1,16 +1,15 @@
 package com.til.glowing_fire_glow.common.register.capability.capabilitys;
 
-import com.til.glowing_fire_glow.common.register.ReflexManage;
+import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.capability.CapabilityRegister;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * @author til
  */
-@ReflexManage.VoluntarilyRegister
+@VoluntarilyRegister
 public class FluidHandlerCapabilityRegister extends CapabilityRegister<IFluidHandler> {
 
     @Override

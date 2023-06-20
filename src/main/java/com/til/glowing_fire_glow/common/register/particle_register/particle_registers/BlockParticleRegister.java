@@ -1,19 +1,15 @@
 package com.til.glowing_fire_glow.common.register.particle_register.particle_registers;
 
-import com.til.dusk.common.register.particle_register.ParticleRegister;
-import com.til.dusk.common.register.particle_register.data.ParticleParsingMode;
-import com.til.dusk.main.world_component.ReflexManage;
-import com.til.dusk.util.DuskColor;
-import com.til.dusk.util.Extension;
-import com.til.dusk.util.Pos;
-import com.til.glowing_fire_glow.common.register.ReflexManage;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleParsingMode;
 import com.til.glowing_fire_glow.util.Extension;
+import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.util.Pos;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -22,10 +18,10 @@ import java.util.List;
 /**
  * @author til
  */
-@ReflexManage.VoluntarilyRegister
+@VoluntarilyRegister
 public class BlockParticleRegister extends ParticleRegister {
 
-    @ReflexManage.VoluntarilyAssignment
+    @VoluntarilyAssignment
     protected LineParticleRegister lineParticleRegister;
 
     @Override
@@ -35,7 +31,7 @@ public class BlockParticleRegister extends ParticleRegister {
     }
 
     @Override
-    public Extension.VariableData_2<Float, List<Particle>> run(ClientLevel world, Pos pos, DuskColor color, double density, @Nullable ResourceLocation resourceLocation) {
+    public Extension.VariableData_2<Float, List<Particle>> run(ClientWorld world, Pos pos, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
         List<Particle> list = new ArrayList<>();
         Pos p1 = pos.move(-0.5, -0.5, -0.5);
         Pos p2 = p1.addX(1);

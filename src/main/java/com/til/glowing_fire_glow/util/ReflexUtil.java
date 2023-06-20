@@ -9,10 +9,52 @@ import java.util.List;
  * @author til
  */
 public class ReflexUtil {
-    public static List<Field> getAllFields(Class<?> clazz) {
+
+    /***
+     * 判断一个类是有效的
+     */
+    public static boolean isEffective(Class<?> clazz) {
+        if (Modifier.isAbstract(clazz.getModifiers())) {
+            return false;
+        }
+        if (clazz.getAnnotation(Deprecated.class) != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isEffective(Field field) {
+        if (Modifier.isAbstract(field.getModifiers())) {
+            return false;
+        }
+        if (field.getAnnotation(Deprecated.class) != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isEffective(Method method) {
+        if (Modifier.isAbstract(method.getModifiers())) {
+            return false;
+        }
+        if (method.getAnnotation(Deprecated.class) != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public static List<Field> getAllFields(Class<?> clazz, boolean hasStatic) {
         List<Field> fieldList = new ArrayList<>();
         while (clazz != null) {
-            fieldList.addAll(new ArrayList<>(Arrays.asList(clazz.getDeclaredFields())));
+            for (Field declaredField : clazz.getDeclaredFields()) {
+                if (!isEffective(declaredField)) {
+                    continue;
+                }
+                if (!hasStatic && Modifier.isStatic(declaredField.getModifiers())) {
+                    continue;
+                }
+                fieldList.add(declaredField);
+            }
             clazz = clazz.getSuperclass();
         }
         return fieldList;

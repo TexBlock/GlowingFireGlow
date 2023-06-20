@@ -1,15 +1,17 @@
 package com.til.glowing_fire_glow.common.register.particle_register;
 
-import com.til.dusk.common.register.RegisterManage;
-import com.til.dusk.common.register.message.messages.ParticleMessage;
-import com.til.dusk.common.register.message.messages.ParticleRouteRegisterMessage;
-import com.til.dusk.common.register.particle_register.data.ParticleData;
-import com.til.dusk.common.register.particle_register.data.ParticleRouteData;
-import com.til.dusk.main.Dusk;
+import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.RegisterManage;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
+import com.til.glowing_fire_glow.common.register.message.messages.ParticleMessage;
+import com.til.glowing_fire_glow.common.register.message.messages.ParticleRouteRegisterMessage;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
+import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -21,42 +23,47 @@ import java.util.Map;
  * @author til
  */
 public class AllParticleRegister extends RegisterManage<ParticleRegister> {
-    public static final ResourceLocation DEFAULT = new ResourceLocation(Dusk.MOD_ID, "textures/particle/modparticle.png");
+    public static final ResourceLocation DEFAULT = new ResourceLocation(GlowingFireGlow.MOD_ID, "textures/particle/modparticle.png");
 
-    protected final Map<ServerLevel, List<ParticleData>> MAP = new HashMap<>();
-    protected final Map<ServerLevel, List<ParticleRouteData>> ROUTE_DATA = new HashMap<>();
-    protected final Map<ServerPlayer, List<ParticleData>> PLAYER_MAP = new HashMap<>();
-    protected final Map<ServerPlayer, List<ParticleRouteData>> PLAYER_ROUTE_DATA = new HashMap<>();
+    protected final Map<ServerWorld, List<ParticleData>> MAP = new HashMap<>();
+    protected final Map<ServerWorld, List<ParticleRouteData>> ROUTE_DATA = new HashMap<>();
+    protected final Map<ServerPlayerEntity, List<ParticleData>> PLAYER_MAP = new HashMap<>();
+    protected final Map<ServerPlayerEntity, List<ParticleRouteData>> PLAYER_ROUTE_DATA = new HashMap<>();
 
+    @VoluntarilyAssignment
+    protected ParticleMessage particleMessage;
+
+    @VoluntarilyAssignment
+    protected ParticleRouteRegisterMessage particleRouteRegisterMessage;
 
     @SubscribeEvent
     protected void onEvent(TickEvent.ServerTickEvent event) {
-        for (Map.Entry<ServerLevel, List<ParticleData>> entry : MAP.entrySet()) {
-            ServerLevel key = entry.getKey();
+        for (Map.Entry<ServerWorld, List<ParticleData>> entry : MAP.entrySet()) {
+            ServerWorld key = entry.getKey();
             for (ParticleData d : entry.getValue()) {
-                for (ServerPlayer player : key.getPlayers(p -> true)) {
-                    Dusk.instance.getReflexManage().getRegisterBasicsOfClass(ParticleMessage.class).sendToPlayerClient(d, player);
+                for (ServerPlayerEntity player : key.getPlayers(p -> true)) {
+                    particleMessage.sendToPlayerClient(d, player);
                 }
             }
         }
-        for (Map.Entry<ServerLevel, List<ParticleRouteData>> entry : ROUTE_DATA.entrySet()) {
-            ServerLevel key = entry.getKey();
+        for (Map.Entry<ServerWorld, List<ParticleRouteData>> entry : ROUTE_DATA.entrySet()) {
+            ServerWorld key = entry.getKey();
             for (ParticleRouteData d : entry.getValue()) {
-                for (ServerPlayer player : key.getPlayers(p -> true)) {
-                    Dusk.instance.getReflexManage().getRegisterBasicsOfClass(ParticleRouteRegisterMessage.class).sendToPlayerClient(d, player);
+                for (ServerPlayerEntity player : key.getPlayers(p -> true)) {
+                    particleRouteRegisterMessage.sendToPlayerClient(d, player);
                 }
             }
         }
-        for (Map.Entry<ServerPlayer, List<ParticleData>> entry : PLAYER_MAP.entrySet()) {
-            ServerPlayer key = entry.getKey();
+        for (Map.Entry<ServerPlayerEntity, List<ParticleData>> entry : PLAYER_MAP.entrySet()) {
+            ServerPlayerEntity key = entry.getKey();
             for (ParticleData d : entry.getValue()) {
-                Dusk.instance.getReflexManage().getRegisterBasicsOfClass(ParticleMessage.class).sendToPlayerClient(d, key);
+                particleMessage.sendToPlayerClient(d, key);
             }
         }
-        for (Map.Entry<ServerPlayer, List<ParticleRouteData>> entry : PLAYER_ROUTE_DATA.entrySet()) {
-            ServerPlayer k = entry.getKey();
+        for (Map.Entry<ServerPlayerEntity, List<ParticleRouteData>> entry : PLAYER_ROUTE_DATA.entrySet()) {
+            ServerPlayerEntity k = entry.getKey();
             for (ParticleRouteData d : entry.getValue()) {
-                Dusk.instance.getReflexManage().getRegisterBasicsOfClass(ParticleRouteRegisterMessage.class).sendToPlayerClient(d, k);
+                particleRouteRegisterMessage.sendToPlayerClient(d, k);
             }
         }
         MAP.clear();

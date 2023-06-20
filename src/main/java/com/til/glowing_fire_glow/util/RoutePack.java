@@ -70,10 +70,19 @@ public class RoutePack<T> {
     }
 
     public boolean isEmpty() {
-        return routeCellList.isEmpty() && up == null  && next == null ;
+        return routeCellList.isEmpty() && up == null && next == null;
     }
 
-    public record RouteCell<T>(Pos start, Pos end, T data) {
+    public static class RouteCell<T> {
+        public Pos start;
+        public Pos end;
+        public T data;
+
+        public RouteCell(Pos start, Pos end, T data) {
+            this.start = start;
+            this.end = end;
+            this.data = data;
+        }
     }
 
     public interface ISupportRoutePack<T> {

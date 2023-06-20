@@ -17,9 +17,12 @@ public class RegisterBasics {
     protected ResourceLocation name;
     protected RegisterManage<?> registerManage;
 
+    public RegisterBasics() {
+        registerManage = GlowingFireGlow.getInstance().getReflexManage().getRegisterManageOfType(Util.forcedConversion(getClass()));
+    }
+
     protected final void initSetName() {
         name = initName();
-        registerManage = GlowingFireGlow.getInstance().getReflexManage().getRegisterManage(Util.forcedConversion(getClass()));
     }
 
     protected ResourceLocation initName() {

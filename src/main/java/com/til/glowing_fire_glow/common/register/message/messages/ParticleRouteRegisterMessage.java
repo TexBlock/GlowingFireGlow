@@ -1,15 +1,15 @@
 package com.til.glowing_fire_glow.common.register.message.messages;
 
-import com.til.dusk.client.ClientTransfer;
-import com.til.dusk.common.register.message.MessageRegister;
-import com.til.dusk.common.register.particle_register.data.ParticleRouteData;
-import com.til.dusk.main.world_component.ReflexManage;
-import com.til.dusk.util.DuskColor;
-import com.til.dusk.util.Pos;
-import com.til.dusk.util.RoutePack;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkEvent;
+import com.til.glowing_fire_glow.client.ClientTransfer;
+import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
+import com.til.glowing_fire_glow.common.register.message.MessageRegister;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
+import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
+import com.til.glowing_fire_glow.util.Pos;
+import com.til.glowing_fire_glow.util.RoutePack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +18,31 @@ import java.util.function.Supplier;
 /**
  * @author til
  */
-@ReflexManage.VoluntarilyRegister
+@VoluntarilyRegister
 public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteData> {
     @Override
-    public void encoder(ParticleRouteData data, FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeUtf(data.type().toString());
-        friendlyByteBuf.writeInt(data.color().getRGB());
-        friendlyByteBuf.writeInt(data.route().size());
-        for (List<RoutePack.RouteCell<Double>> routeCells : data.route()) {
+    public void encoder(ParticleRouteData data, PacketBuffer friendlyByteBuf) {
+        friendlyByteBuf.writeString(data.type.toString());
+        friendlyByteBuf.writeInt(data.color.getRGB());
+        friendlyByteBuf.writeInt(data.route.size());
+        for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
             friendlyByteBuf.writeInt(routeCells.size());
             for (RoutePack.RouteCell<Double> routeCell : routeCells) {
-                routeCell.start().write(friendlyByteBuf);
-                routeCell.end().write(friendlyByteBuf);
-                friendlyByteBuf.writeDouble(routeCell.data());
+                routeCell.start.write(friendlyByteBuf);
+                routeCell.end.write(friendlyByteBuf);
+                friendlyByteBuf.writeDouble(routeCell.data);
             }
         }
-        friendlyByteBuf.writeBoolean(data.resourceLocation() != null);
-        if (data.resourceLocation() != null) {
-            friendlyByteBuf.writeUtf(data.resourceLocation().toString());
+        friendlyByteBuf.writeBoolean(data.resourceLocation != null);
+        if (data.resourceLocation != null) {
+            friendlyByteBuf.writeString(data.resourceLocation.toString());
         }
     }
 
     @Override
-    public ParticleRouteData decoder(FriendlyByteBuf friendlyByteBuf) {
-        ResourceLocation type = new ResourceLocation(friendlyByteBuf.readUtf());
-        DuskColor color = new DuskColor(friendlyByteBuf.readInt());
+    public ParticleRouteData decoder(PacketBuffer friendlyByteBuf) {
+        ResourceLocation type = new ResourceLocation(friendlyByteBuf.readString());
+        GlowingFireGlowColor color = new GlowingFireGlowColor(friendlyByteBuf.readInt());
         int l = friendlyByteBuf.readInt();
         List<List<RoutePack.RouteCell<Double>>> pack = new ArrayList<>(l);
         for (int i = 0; i < l; i++) {
@@ -55,7 +55,7 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
         }
         ResourceLocation resourceLocation = null;
         if (friendlyByteBuf.readBoolean()) {
-            resourceLocation = new ResourceLocation(friendlyByteBuf.readUtf());
+            resourceLocation = new ResourceLocation(friendlyByteBuf.readString());
         }
         return new ParticleRouteData(pack, type, color, resourceLocation);
     }

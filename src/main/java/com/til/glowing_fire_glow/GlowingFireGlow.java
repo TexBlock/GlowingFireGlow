@@ -2,6 +2,7 @@ package com.til.glowing_fire_glow;
 
 import com.til.glowing_fire_glow.common.config.ConfigManage;
 import com.til.glowing_fire_glow.common.register.ReflexManage;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraft.block.Block;
@@ -56,7 +57,9 @@ public class GlowingFireGlow {
     protected Map<Class<?>, IWorldComponent> worldComponentMap;
     protected List<IWorldComponent> worldComponentList;
 
+    @VoluntarilyAssignment
     protected ReflexManage reflexManage;
+    @VoluntarilyAssignment
     protected ConfigManage configManage;
 
     public GlowingFireGlow() {
@@ -80,6 +83,8 @@ public class GlowingFireGlow {
         useMod = new HashSet<>();
         allClass = new HashSet<>();
         modClassMap = new HashMap<>();
+        worldComponentMap = new HashMap<>();
+        worldComponentList = new ArrayList<>();
 
         ModList.get().forEachModContainer((modId, modContainer) -> {
             if (!(modContainer instanceof FMLModContainer)) {
@@ -117,7 +122,6 @@ public class GlowingFireGlow {
                 Class<?> clazz;
                 try {
                     clazz = Class.forName(type.getClassName());
-
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -128,7 +132,7 @@ public class GlowingFireGlow {
 
 
         for (Class<?> aClass : allClass) {
-            if (Modifier.isAbstract(aClass.getModifiers())) {
+            if (!ReflexUtil.isEffective(aClass)) {
                 continue;
             }
             if (!IWorldComponent.class.isAssignableFrom(aClass)) {
@@ -145,15 +149,9 @@ public class GlowingFireGlow {
             }
         }
         worldComponentList = worldComponentMap.values().stream().sorted(Comparator.comparing(w -> -w.getExecutionOrderList())).collect(Collectors.toList());
-        for (Field allField : ReflexUtil.getAllFields(getClass())) {
-            if (!IWorldComponent.class.isAssignableFrom(allField.getType())) {
-                continue;
-            }
-            try {
-                allField.set(this, getWorldComponent(Util.forcedConversion(allField.getType())));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+        fillWorldComponent(this);
+        for (IWorldComponent iWorldComponent : worldComponentList) {
+            fillWorldComponent(iWorldComponent);
         }
         for (IWorldComponent iWorldComponent : worldComponentList) {
             iWorldComponent.init(IWorldComponent.InitType.NEW);
@@ -199,7 +197,7 @@ public class GlowingFireGlow {
     @SubscribeEvent
     protected void processIMC(final InterModProcessEvent event) {
         // some example code to receive and process InterModComms from other mods
-        LOGGER.info("Got IMC {}", event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
+        //LOGGER.info("Got IMC {}", event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
 
     }
 
@@ -212,14 +210,14 @@ public class GlowingFireGlow {
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+/*    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
             // register a new block here
             LOGGER.info("HELLO from Register Block");
         }
-    }
+    }*/
 
 
     /***
@@ -251,6 +249,24 @@ public class GlowingFireGlow {
 
     public <W extends IWorldComponent> W getWorldComponent(Class<W> wClass) {
         return Util.forcedConversion(worldComponentMap.get(wClass));
+    }
+
+    public void fillWorldComponent(Object obj) {
+        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), false)) {
+            if (allField.getAnnotation(VoluntarilyAssignment.class) == null) {
+                continue;
+            }
+            if (!IWorldComponent.class.isAssignableFrom(allField.getType())) {
+                continue;
+            }
+            try {
+                allField.setAccessible(true);
+                allField.set(obj, getWorldComponent(Util.forcedConversion(allField.getType())));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
     public ReflexManage getReflexManage() {

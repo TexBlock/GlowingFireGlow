@@ -9,11 +9,15 @@ public class MathUtil {
         return a > max ? max : a < min ? max : a;
     }
 
-    public static int lerp(int t, int max, int min) {
-        return min + (max - min ) * clamp(t, 1, 0);
+    public static int lerp(float t, int max, int min) {
+        return (int) (min + (max - min) * clamp(t, 1, 0));
     }
 
     public static float lerp(float t, float max, float min) {
         return min + (max - min) * clamp(t, 1, 0);
+    }
+
+    public static double lerp(double t, double max, double min) {
+        return min + (max - min) * clamp((float) t, 1, 0);
     }
 }
