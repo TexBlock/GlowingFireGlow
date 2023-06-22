@@ -21,6 +21,11 @@ import java.util.function.Supplier;
 @VoluntarilyRegister
 public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteData> {
     @Override
+    public void messageConsumer(ParticleRouteData routeData, Supplier<NetworkEvent.Context> supplier) {
+        ClientTransfer.messageConsumer(routeData, supplier);
+    }
+
+    @Override
     public void encoder(ParticleRouteData data, PacketBuffer friendlyByteBuf) {
         friendlyByteBuf.writeString(data.type.toString());
         friendlyByteBuf.writeInt(data.color.getRGB());
@@ -60,8 +65,5 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
         return new ParticleRouteData(pack, type, color, resourceLocation);
     }
 
-    @Override
-    public void messageConsumer(ParticleRouteData routeData, Supplier<NetworkEvent.Context> supplier) {
-        ClientTransfer.messageConsumer(routeData, supplier);
-    }
+
 }

@@ -39,69 +39,66 @@ public class ClientTransfer {
             GlowingFireGlow.LOGGER.error("在客户端不存在粒子效果{}", data.type);
             return;
         }
-        supplier.get().enqueueWork(() -> {
-            List<Extension.VariableData_2<Float, List<Particle>>> list = new ArrayList<>();
-            switch (clientParticleRegister.getParticleParsingMode()) {
-                case PAIR :
-                    Pos s = null;
-                    Pos e = null;
-                    for (Pos po : data.pos) {
-                        if (s == null) {
-                            s = po;
-                            continue;
-                        }
-                        if (e == null) {
-                            e = po;
-                        }
+        List<Extension.VariableData_2<Float, List<Particle>>> list = new ArrayList<>();
+        switch (clientParticleRegister.getParticleParsingMode()) {
+            case PAIR:
+                Pos s = null;
+                Pos e = null;
+                for (Pos po : data.pos) {
+                    if (s == null) {
+                        s = po;
+                        continue;
+                    }
+                    if (e == null) {
+                        e = po;
+                    }
+                    Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                    if (data_2 != null) {
+                        list.add(data_2);
+                    }
+                    s = null;
+                    e = null;
+                }
+                break;
+
+            case SPELL:
+                if (data.pos.length >= 2) {
+                    s = data.pos[0];
+                    int i = 1;
+                    do {
+                        e = data.pos[i];
                         Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
                         if (data_2 != null) {
                             list.add(data_2);
                         }
-                        s = null;
-                        e = null;
-                    }
-                    break;
-                
-                case SPELL:
-                    if (data.pos.length >= 2) {
-                        s = data.pos[0];
-                        int i = 1;
-                        do {
-                            e = data.pos[i];
-                            Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
-                            if (data_2 != null) {
-                                list.add(data_2);
-                            }
-                            s = e;
-                            i++;
-                        } while (i < data.pos.length);
-                    }
-                    break;
-                
-                case SINGLE :
-                    for (Pos po : data.pos) {
-                        Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, po, data.color, data.density, data.resourceLocation);
-                        if (data_2 != null) {
-                            list.add(data_2);
-                        }
-                    }
-                    break;
-                
-                default:
-                    break;
-            }
+                        s = e;
+                        i++;
+                    } while (i < data.pos.length);
+                }
+                break;
 
-            float time = 0;
-            for (Extension.VariableData_2<Float, List<Particle>> data_2 : list) {
-                addRun(time, () -> {
-                    for (Particle particle : data_2.v) {
-                        Minecraft.getInstance().particles.addEffect(particle);
+            case SINGLE:
+                for (Pos po : data.pos) {
+                    Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, po, data.color, data.density, data.resourceLocation);
+                    if (data_2 != null) {
+                        list.add(data_2);
                     }
-                });
-                time += data_2.k;
-            }
-        });
-        supplier.get().setPacketHandled(true);
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        float time = 0;
+        for (Extension.VariableData_2<Float, List<Particle>> data_2 : list) {
+            addRun(time, () -> {
+                for (Particle particle : data_2.v) {
+                    Minecraft.getInstance().particles.addEffect(particle);
+                }
+            });
+            time += data_2.k;
+        }
     }
 
     public static void messageConsumer(ParticleRouteData data, Supplier<NetworkEvent.Context> supplier) {
@@ -111,27 +108,24 @@ public class ClientTransfer {
             GlowingFireGlow.LOGGER.error("在客户端不存在粒子效果{}", data.type);
             return;
         }
-        supplier.get().enqueueWork(() -> {
-            float time = 0;
-            for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
-                float _time = 0;
-                for (RoutePack.RouteCell<Double> routeCell : routeCells) {
-                    Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
-                    if (data_2 != null) {
-                        _time = Math.max(_time, data_2.k);
-                        if (data_2.v != null) {
-                            addRun(time, () -> {
-                                for (Particle particle : data_2.v) {
-                                    Minecraft.getInstance().particles.addEffect(particle);
-                                }
-                            });
-                        }
+        float time = 0;
+        for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
+            float _time = 0;
+            for (RoutePack.RouteCell<Double> routeCell : routeCells) {
+                Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
+                if (data_2 != null) {
+                    _time = Math.max(_time, data_2.k);
+                    if (data_2.v != null) {
+                        addRun(time, () -> {
+                            for (Particle particle : data_2.v) {
+                                Minecraft.getInstance().particles.addEffect(particle);
+                            }
+                        });
                     }
                 }
-                time += _time;
             }
-        });
-        supplier.get().setPacketHandled(true);
+            time += _time;
+        }
     }
 
     public static final List<Extension.VariableData_2<Float, Runnable>> RUN_LIST = new ArrayList<>();

@@ -51,10 +51,12 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
     }
 
 
-
     @Override
     public void initBack() {
-        allMessageRegister.INSTANCE.registerMessage(id, msgClass, this::encoder, this::decoder, this::messageConsumer);
+        allMessageRegister.INSTANCE.registerMessage(id, msgClass, this::encoder, this::decoder, (msg, context) -> {
+            context.get().enqueueWork(() -> messageConsumer(msg, context));
+            context.get().setPacketHandled(true);
+        });
     }
 
     public void encoder(MSG msg, PacketBuffer friendlyByteBuf) {

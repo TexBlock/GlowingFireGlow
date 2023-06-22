@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -63,7 +63,7 @@ public class DefaultParticle extends Particle {
     /***
      * 当前粒子大小
      */
-    protected float currentScale;
+    protected float currentSize;
 
     /***
      * 粒子的旋转
@@ -96,7 +96,9 @@ public class DefaultParticle extends Particle {
      */
     public DefaultParticle setSize(float size) {
         this.size = size;
-        this.currentScale = size;
+        if (!sizeChange) {
+            currentSize = size;
+        }
         return this;
     }
 
@@ -157,6 +159,12 @@ public class DefaultParticle extends Particle {
         return this;
     }
 
+    public DefaultParticle setSizeChange() {
+        this.sizeChange = true;
+        this.currentSize = 0;
+        return this;
+    }
+
     /***
      * 设置材质
      */
@@ -195,16 +203,16 @@ public class DefaultParticle extends Particle {
 
         if (sizeChange) {
             if (age < particleHalfAge) {
-                currentScale = MathUtil.lerp(age / particleHalfAge, 0, size);
+                currentSize = MathUtil.lerp(age / particleHalfAge, size, 0);
             } else {
-                currentScale = size - MathUtil.lerp((age - particleHalfAge) / particleHalfAge, 0, size);
+                currentSize = size - MathUtil.lerp((age - particleHalfAge) / particleHalfAge, size, 0);
             }
         }
     }
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vector3d vec3 = renderInfo.getProjectedView();
+/*        Vector3d vec3 = renderInfo.getProjectedView();
         Vector3f lPos = new Vector3f(
                 (float) (MathUtil.lerp(partialTicks, prevPosX, posX) - vec3.x),
                 (float) (MathUtil.lerp(partialTicks, prevPosY, posY) - vec3.y),
@@ -238,7 +246,42 @@ public class DefaultParticle extends Particle {
         buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(0, 0).color(r, g, b, a).lightmap(combined).endVertex();
         buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(0, 1).color(r, g, b, a).lightmap(combined).endVertex();
         buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(1, 1).color(r, g, b, a).lightmap(combined).endVertex();
-        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(1, 0).color(r, g, b, a).lightmap(combined).endVertex();
+        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(1, 0).color(r, g, b, a).lightmap(combined).endVertex();*/
+
+
+        Vector3d vector3d = renderInfo.getProjectedView();
+        Vector3f addPos = new Vector3f(
+                (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - vector3d.getX()),
+                (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - vector3d.getY()),
+                (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - vector3d.getZ()));
+
+        Quaternion quaternion;
+        if (this.particleAngle == 0.0F) {
+            quaternion = renderInfo.getRotation();
+        } else {
+            quaternion = new Quaternion(renderInfo.getRotation());
+            float f3 = MathHelper.lerp(partialTicks, this.oldRoll, this.roll);
+            quaternion.multiply(Vector3f.ZP.rotation(f3));
+        }
+
+        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
+        vector3f1.transform(quaternion);
+        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
+
+        for (int i = 0; i < 4; ++i) {
+            Vector3f vector3f = avector3f[i];
+            vector3f.transform(quaternion);
+            vector3f.mul(currentSize);
+            vector3f.add(addPos);
+        }
+
+        int combined = 15 << 20 | 15 << 4;
+
+        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(0, 0).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
+        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(0, 1).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
+        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(1, 1).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
+        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(1, 0).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
+
     }
 
     @Override

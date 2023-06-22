@@ -43,6 +43,7 @@ public class LineParticleRegister extends ParticleRegister {
                     .setColor(color)
                     .setSize(size)
                     .setLifeTime((int) life)
+                    .setSizeChange()
                     .setTextureName(AllParticleRegister.DEFAULT));
             _start = _start.move(movePos);
         }

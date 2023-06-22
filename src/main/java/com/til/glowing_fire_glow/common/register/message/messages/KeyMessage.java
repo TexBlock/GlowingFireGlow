@@ -29,5 +29,10 @@ public class KeyMessage extends MessageRegister<KeyRegister.KeyData> {
             return;
         }
         keyRegister.run(supplier);
+        if (keyData.isPressed) {
+            keyRegister.pressedServer(supplier.get());
+        } else {
+            keyRegister.releaseServer(supplier.get());
+        }
     }
 }
