@@ -1,9 +1,14 @@
 package com.til.glowing_fire_glow.common.register.message.messages;
 
+import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.client.ClientTransfer;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.message.MessageRegister;
+import com.til.glowing_fire_glow.common.register.particle_register.AllParticleRegister;
+import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
+import com.til.glowing_fire_glow.common.register.particle_register.particle_registers.EmptyParticleRegister;
 import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.util.Pos;
 import com.til.glowing_fire_glow.util.RoutePack;
@@ -20,14 +25,20 @@ import java.util.function.Supplier;
  */
 @VoluntarilyRegister
 public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteData> {
+    @VoluntarilyAssignment
+    protected AllParticleRegister allParticleRegister;
+
+    @VoluntarilyAssignment
+    protected EmptyParticleRegister emptyParticleRegister;
+
     @Override
     public void messageConsumer(ParticleRouteData routeData, Supplier<NetworkEvent.Context> supplier) {
-        ClientTransfer.messageConsumer(routeData, supplier);
+        ClientTransfer.messageConsumer(routeData);
     }
 
     @Override
     public void encoder(ParticleRouteData data, PacketBuffer friendlyByteBuf) {
-        friendlyByteBuf.writeString(data.type.toString());
+        friendlyByteBuf.writeString(data.particleRegister.toString());
         friendlyByteBuf.writeInt(data.color.getRGB());
         friendlyByteBuf.writeInt(data.route.size());
         for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
@@ -47,6 +58,7 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
     @Override
     public ParticleRouteData decoder(PacketBuffer friendlyByteBuf) {
         ResourceLocation type = new ResourceLocation(friendlyByteBuf.readString());
+        ParticleRegister particleRegister = allParticleRegister.get(type);
         GlowingFireGlowColor color = new GlowingFireGlowColor(friendlyByteBuf.readInt());
         int l = friendlyByteBuf.readInt();
         List<List<RoutePack.RouteCell<Double>>> pack = new ArrayList<>(l);
@@ -62,7 +74,11 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
         if (friendlyByteBuf.readBoolean()) {
             resourceLocation = new ResourceLocation(friendlyByteBuf.readString());
         }
-        return new ParticleRouteData(pack, type, color, resourceLocation);
+        if (particleRegister == null) {
+            GlowingFireGlow.LOGGER.warn("错误的粒子效果{}", type);
+            particleRegister = emptyParticleRegister;
+        }
+        return new ParticleRouteData(pack, particleRegister, color, resourceLocation);
     }
 
 

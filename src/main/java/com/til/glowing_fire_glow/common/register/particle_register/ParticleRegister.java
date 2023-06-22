@@ -2,8 +2,10 @@ package com.til.glowing_fire_glow.common.register.particle_register;
 
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
+import com.til.glowing_fire_glow.client.ClientTransfer;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleParsingMode;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
@@ -11,6 +13,7 @@ import com.til.glowing_fire_glow.util.Extension;
 import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.util.Pos;
 import com.til.glowing_fire_glow.util.RoutePack;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,10 +53,13 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.MAP.put(serverLevel, list);
             }
-            list.add(new ParticleData(name, color, density, resourceLocation, pos));
+            list.add(new ParticleData(this, color, density, resourceLocation, pos));
             return;
         }
-        throw new RuntimeException("在服务端了粒子创建中出现了非服务端的世界");
+        if (world instanceof ClientWorld) {
+            ClientTransfer.messageConsumer(new ParticleData(this, color, density, resourceLocation, pos));
+        }
+        throw new RuntimeException();
     }
 
     public void add(World world, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor color, @Nullable ResourceLocation resourceLocation) {
@@ -66,10 +72,13 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.ROUTE_DATA.put(serverLevel, list);
             }
-            list.add(new ParticleRouteData(route, name, color, resourceLocation));
+            list.add(new ParticleRouteData(route, this, color, resourceLocation));
             return;
         }
-        throw new RuntimeException("在服务端了粒子创建中出现了非服务端的世界");
+        if (world instanceof ClientWorld) {
+            ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, resourceLocation));
+        }
+        throw new RuntimeException();
     }
 
     public void add(PlayerEntity player, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation, Pos... pos) {
@@ -82,10 +91,13 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.PLAYER_MAP.put(serverPlayer, list);
             }
-            list.add(new ParticleData(name, color, density, resourceLocation, pos));
+            list.add(new ParticleData(this, color, density, resourceLocation, pos));
             return;
         }
-        throw new RuntimeException("在服务端了粒子创建中出现了非服务端的玩家");
+        if (player instanceof ClientPlayerEntity) {
+            ClientTransfer.messageConsumer(new ParticleData(this, color, density, resourceLocation, pos));
+        }
+        throw new RuntimeException();
     }
 
     public void add(PlayerEntity player, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor color, @Nullable ResourceLocation resourceLocation) {
@@ -98,10 +110,12 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.PLAYER_ROUTE_DATA.put(serverPlayer, list);
             }
-            list.add(new ParticleRouteData(route, name, color, resourceLocation));
+            list.add(new ParticleRouteData(route, this, color, resourceLocation));
             return;
+        }   if (player instanceof ClientPlayerEntity) {
+            ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, resourceLocation));
         }
-        throw new RuntimeException("在服务端了粒子创建中出现了非服务端的玩家");
+        throw new RuntimeException();
     }
 
     /***
@@ -113,15 +127,7 @@ public abstract class ParticleRegister extends RegisterBasics {
      * @param density 密度
      * @return 返回粒子是生命用于拼接
      */
-    @Nullable
-    public Extension.VariableData_2<Float, List<Particle>> run(ClientWorld world, Pos start, Pos end, GlowingFireGlowColor color, double density, @javax.annotation.Nullable ResourceLocation resourceLocation) {
-        return null;
-    }
-
-    @Nullable
-    public Extension.VariableData_2<Float, List<Particle>> run(ClientWorld world, Pos pos, GlowingFireGlowColor color, double density, @javax.annotation.Nullable ResourceLocation resourceLocation) {
-        return null;
-    }
+    public abstract void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation);
 
 
     public ParticleParsingMode getParticleParsingMode() {

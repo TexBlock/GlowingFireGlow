@@ -5,6 +5,7 @@ import com.til.glowing_fire_glow.common.config.ConfigField;
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.AllParticleRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleParsingMode;
 import com.til.glowing_fire_glow.util.Extension;
 import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
@@ -31,14 +32,16 @@ public class LineParticleRegister extends ParticleRegister {
     }
 
     @Override
-    public Extension.VariableData_2<Float, List<Particle>> run(ClientWorld world, Pos start, Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
-        List<Particle> list = new ArrayList<>();
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
+        if (end == null) {
+            return;
+        }
         Pos _start = new Pos(start);
         density = density * interval;
         int dis = (int) (start.distance(end) * density);
         Pos movePos = Pos.movePos(start, end, (start.distance(end) * density));
         for (int i = 0; i < dis; i++) {
-            list.add(new DefaultParticle(world)
+            particleContext.addParticle(new DefaultParticle(world)
                     .setPos(_start.x, _start.y, _start.z)
                     .setColor(color)
                     .setSize(size)
@@ -47,7 +50,7 @@ public class LineParticleRegister extends ParticleRegister {
                     .setTextureName(AllParticleRegister.DEFAULT));
             _start = _start.move(movePos);
         }
-        return new Extension.VariableData_2<>(life, list);
+        particleContext.setParticleTime((int) life);
     }
 
     @Override

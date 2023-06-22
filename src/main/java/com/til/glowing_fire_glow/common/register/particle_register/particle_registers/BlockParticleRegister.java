@@ -3,6 +3,7 @@ package com.til.glowing_fire_glow.common.register.particle_register.particle_reg
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleParsingMode;
 import com.til.glowing_fire_glow.util.Extension;
 import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
@@ -31,9 +32,8 @@ public class BlockParticleRegister extends ParticleRegister {
     }
 
     @Override
-    public Extension.VariableData_2<Float, List<Particle>> run(ClientWorld world, Pos pos, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
-        List<Particle> list = new ArrayList<>();
-        Pos p1 = pos.move(-0.5, -0.5, -0.5);
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
+        Pos p1 = start.move(-0.5, -0.5, -0.5);
         Pos p2 = p1.addX(1);
         Pos p3 = p1.addZ(1);
         Pos p4 = p1.move(1, 0, 1);
@@ -56,13 +56,15 @@ public class BlockParticleRegister extends ParticleRegister {
                 new Extension.VariableData_2<>(p4, p8),
         };
         for (Extension.VariableData_2 posPosData_2 : l) {
-            Extension.VariableData_2<Float, List<Particle>> data_2 = lineParticleRegister.run(world, (Pos) posPosData_2.k, (Pos) posPosData_2.v, color, density, resourceLocation);
-            if (data_2 != null) {
-                list.addAll(data_2.v);
+            ParticleContext _particleContext = new ParticleContext();
+            lineParticleRegister.run(_particleContext, world, (Pos) posPosData_2.k, (Pos) posPosData_2.v, color, density, resourceLocation);
+            for (Particle particle : _particleContext.forParticle()) {
+                particleContext.addParticle(particle);
             }
         }
-        return new Extension.VariableData_2<>(0f, list);
+        particleContext.setParticleTime(0);
     }
+
 
     @Override
     public void defaultConfig() {

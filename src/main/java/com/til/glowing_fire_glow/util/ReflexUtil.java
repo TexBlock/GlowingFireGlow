@@ -43,14 +43,14 @@ public class ReflexUtil {
         return true;
     }
 
-    public static List<Field> getAllFields(Class<?> clazz, boolean hasStatic) {
+    public static List<Field> getAllFields(Class<?> clazz, boolean isStatic) {
         List<Field> fieldList = new ArrayList<>();
         while (clazz != null) {
             for (Field declaredField : clazz.getDeclaredFields()) {
                 if (!isEffective(declaredField)) {
                     continue;
                 }
-                if (!hasStatic && Modifier.isStatic(declaredField.getModifiers())) {
+                if (Modifier.isStatic(declaredField.getModifiers()) != isStatic) {
                     continue;
                 }
                 fieldList.add(declaredField);

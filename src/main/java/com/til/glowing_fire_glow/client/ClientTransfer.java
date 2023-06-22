@@ -3,6 +3,7 @@ package com.til.glowing_fire_glow.client;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.particle_register.AllParticleRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
 import com.til.glowing_fire_glow.util.Extension;
@@ -32,15 +33,9 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = GlowingFireGlow.MOD_ID, value = Dist.CLIENT)
 public class ClientTransfer {
 
-    public static void messageConsumer(ParticleData data, Supplier<NetworkEvent.Context> supplier) {
-        ResourceLocation name = data.type;
-        ParticleRegister clientParticleRegister = GlowingFireGlow.getInstance().getReflexManage().getRegisterManage(AllParticleRegister.class).get(name);
-        if (clientParticleRegister == null) {
-            GlowingFireGlow.LOGGER.error("在客户端不存在粒子效果{}", data.type);
-            return;
-        }
-        List<Extension.VariableData_2<Float, List<Particle>>> list = new ArrayList<>();
-        switch (clientParticleRegister.getParticleParsingMode()) {
+    public static void messageConsumer(ParticleData data) {
+        List<ParticleContext> particleContextList = new ArrayList<>();
+        switch (data.particleRegister.getParticleParsingMode()) {
             case PAIR:
                 Pos s = null;
                 Pos e = null;
@@ -49,15 +44,11 @@ public class ClientTransfer {
                         s = po;
                         continue;
                     }
-                    if (e == null) {
-                        e = po;
-                    }
-                    Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
-                    if (data_2 != null) {
-                        list.add(data_2);
-                    }
+                    e = po;
+                    ParticleContext particleContext = new ParticleContext();
+                    data.particleRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                    particleContextList.add(particleContext);
                     s = null;
-                    e = null;
                 }
                 break;
 
@@ -67,10 +58,9 @@ public class ClientTransfer {
                     int i = 1;
                     do {
                         e = data.pos[i];
-                        Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
-                        if (data_2 != null) {
-                            list.add(data_2);
-                        }
+                        ParticleContext particleContext = new ParticleContext();
+                        data.particleRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                        particleContextList.add(particleContext);
                         s = e;
                         i++;
                     } while (i < data.pos.length);
@@ -79,10 +69,9 @@ public class ClientTransfer {
 
             case SINGLE:
                 for (Pos po : data.pos) {
-                    Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, po, data.color, data.density, data.resourceLocation);
-                    if (data_2 != null) {
-                        list.add(data_2);
-                    }
+                    ParticleContext particleContext = new ParticleContext();
+                    data.particleRegister.run(particleContext, Minecraft.getInstance().world, po, null, data.color, data.density, data.resourceLocation);
+                    particleContextList.add(particleContext);
                 }
                 break;
 
@@ -91,39 +80,29 @@ public class ClientTransfer {
         }
 
         float time = 0;
-        for (Extension.VariableData_2<Float, List<Particle>> data_2 : list) {
+        for (ParticleContext particleContext : particleContextList) {
             addRun(time, () -> {
-                for (Particle particle : data_2.v) {
+                for (Particle particle : particleContext.forParticle()) {
                     Minecraft.getInstance().particles.addEffect(particle);
                 }
             });
-            time += data_2.k;
+            time += particleContext.getParticleTime();
         }
     }
 
-    public static void messageConsumer(ParticleRouteData data, Supplier<NetworkEvent.Context> supplier) {
-        ResourceLocation name = data.type;
-        ParticleRegister clientParticleRegister = GlowingFireGlow.getInstance().getReflexManage().getRegisterManage(AllParticleRegister.class).get(name);
-        if (clientParticleRegister == null) {
-            GlowingFireGlow.LOGGER.error("在客户端不存在粒子效果{}", data.type);
-            return;
-        }
+    public static void messageConsumer(ParticleRouteData data) {
         float time = 0;
         for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
             float _time = 0;
+            ParticleContext particleContext = new ParticleContext();
             for (RoutePack.RouteCell<Double> routeCell : routeCells) {
-                Extension.VariableData_2<Float, List<Particle>> data_2 = clientParticleRegister.run(Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
-                if (data_2 != null) {
-                    _time = Math.max(_time, data_2.k);
-                    if (data_2.v != null) {
-                        addRun(time, () -> {
-                            for (Particle particle : data_2.v) {
-                                Minecraft.getInstance().particles.addEffect(particle);
-                            }
-                        });
-                    }
-                }
+                data.particleRegister.run(particleContext, Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
             }
+            addRun(time, () -> {
+                for (Particle particle : particleContext.forParticle()) {
+                    Minecraft.getInstance().particles.addEffect(particle);
+                }
+            });
             time += _time;
         }
     }

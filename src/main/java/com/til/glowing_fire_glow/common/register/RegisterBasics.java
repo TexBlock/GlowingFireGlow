@@ -87,5 +87,8 @@ public class RegisterBasics {
         return registerManage;
     }
 
-
+    @Override
+    public String toString() {
+        return name == null ? "null" : name.toString();
+    }
 }
