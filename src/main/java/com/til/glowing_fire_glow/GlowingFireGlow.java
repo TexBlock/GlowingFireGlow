@@ -2,7 +2,9 @@ package com.til.glowing_fire_glow;
 
 import com.til.glowing_fire_glow.common.config.ConfigManage;
 import com.til.glowing_fire_glow.common.register.ReflexManage;
+import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.save.SaveManage;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraft.block.Block;
@@ -20,6 +22,7 @@ import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.Type;
+import org.spongepowered.asm.mixin.Mixin;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.ElementType;
@@ -34,11 +37,11 @@ import java.util.stream.Collectors;
 
 @Mod(GlowingFireGlow.MOD_ID)
 @GlowingFireGlow.Manage
+@StaticVoluntarilyAssignment
 public class GlowingFireGlow {
 
     public static final String MOD_ID = "glowing_fire_glow";
     public static final String MOD_NAME = "GlowingFireGlow";
-    public static final String VERSION = "0.0.0";
 
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -56,11 +59,17 @@ public class GlowingFireGlow {
 
     protected Map<Class<?>, IWorldComponent> worldComponentMap;
     protected List<IWorldComponent> worldComponentList;
+    protected List<Class<?>> staticAssignmentList;
 
     @VoluntarilyAssignment
     protected ReflexManage reflexManage;
     @VoluntarilyAssignment
     protected ConfigManage configManage;
+
+    @VoluntarilyAssignment
+    protected SaveManage saveManage;
+
+    protected Type mixinType = Type.getType(Mixin.class);
 
     public GlowingFireGlow() {
         glowingFireGlow = this;
@@ -85,6 +94,7 @@ public class GlowingFireGlow {
         modClassMap = new HashMap<>();
         worldComponentMap = new HashMap<>();
         worldComponentList = new ArrayList<>();
+        staticAssignmentList = new ArrayList<>();
 
         ModList.get().forEachModContainer((modId, modContainer) -> {
             if (!(modContainer instanceof FMLModContainer)) {
@@ -112,12 +122,25 @@ public class GlowingFireGlow {
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
+
+            HashSet<Type> mixinTypeList = new HashSet<>();
+
+            for (ModFileScanData.AnnotationData annotation : modFileScanData.getAnnotations()) {
+                if (!annotation.getAnnotationType().equals(mixinType)) {
+                    continue;
+                }
+                mixinTypeList.add(annotation.getClassType());
+            }
+
             for (ModFileScanData.ClassData aClass : modFileScanData.getClasses()) {
                 Type type;
                 try {
                     type = (Type) classData_clazz.get(aClass);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
+                }
+                if (mixinTypeList.contains(type)) {
+                    continue;
                 }
                 Class<?> clazz;
                 try {
@@ -135,21 +158,26 @@ public class GlowingFireGlow {
             if (!ReflexUtil.isEffective(aClass)) {
                 continue;
             }
-            if (!IWorldComponent.class.isAssignableFrom(aClass)) {
-                continue;
+            if (aClass.getAnnotation(StaticVoluntarilyAssignment.class) != null) {
+                staticAssignmentList.add(aClass);
             }
-            try {
-                IWorldComponent worldComponent = (IWorldComponent) aClass.getDeclaredConstructor().newInstance();
-                worldComponentMap.put(aClass, worldComponent);
-                worldComponent.registerEvent(MinecraftForge.EVENT_BUS);
-                worldComponent.registerModEvent(modEventBus);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException(e);
+            if (IWorldComponent.class.isAssignableFrom(aClass)) {
+                try {
+                    IWorldComponent worldComponent = (IWorldComponent) aClass.getDeclaredConstructor().newInstance();
+                    worldComponentMap.put(aClass, worldComponent);
+                    worldComponent.registerEvent(MinecraftForge.EVENT_BUS);
+                    worldComponent.registerModEvent(modEventBus);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                         NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         worldComponentList = worldComponentMap.values().stream().sorted(Comparator.comparing(w -> -w.getExecutionOrderList())).collect(Collectors.toList());
         fillWorldComponent(this);
+        for (Class<?> aClass : staticAssignmentList) {
+            fillWorldComponent(aClass);
+        }
         for (IWorldComponent iWorldComponent : worldComponentList) {
             fillWorldComponent(iWorldComponent);
         }
@@ -160,9 +188,6 @@ public class GlowingFireGlow {
 
     @SubscribeEvent
     protected void setup(final FMLCommonSetupEvent event) {
-        for (IWorldComponent iWorldComponent : worldComponentList) {
-            iWorldComponent.init(IWorldComponent.InitType.FML_COMMON_SETUP_BEFOREHAND);
-        }
         for (IWorldComponent iWorldComponent : worldComponentList) {
             iWorldComponent.init(IWorldComponent.InitType.FML_COMMON_SETUP);
         }
@@ -239,6 +264,14 @@ public class GlowingFireGlow {
         return modContainer.getModId();
     }
 
+    public String getModVersion(Class<?> clazz) {
+        ModContainer modContainer = getModContainerOfClass(clazz);
+        if (modContainer == null) {
+            return "0.0.0";
+        }
+        return modContainer.getModInfo().getVersion().toString();
+    }
+
     public Iterable<Class<?>> forAllClass() {
         return allClass;
     }
@@ -252,7 +285,8 @@ public class GlowingFireGlow {
     }
 
     public void fillWorldComponent(Object obj) {
-        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), false)) {
+        boolean isClass = obj instanceof Class<?>;
+        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), isClass)) {
             if (allField.getAnnotation(VoluntarilyAssignment.class) == null) {
                 continue;
             }
@@ -261,7 +295,7 @@ public class GlowingFireGlow {
             }
             try {
                 allField.setAccessible(true);
-                allField.set(obj, getWorldComponent(Util.forcedConversion(allField.getType())));
+                allField.set(isClass ? null : obj, getWorldComponent(Util.forcedConversion(allField.getType())));
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -275,6 +309,10 @@ public class GlowingFireGlow {
 
     public ConfigManage getConfigManage() {
         return configManage;
+    }
+
+    public SaveManage getSaveManage() {
+        return saveManage;
     }
 
     /***
@@ -307,7 +345,6 @@ public class GlowingFireGlow {
 
         enum InitType {
             NEW,
-            FML_COMMON_SETUP_BEFOREHAND,
             FML_COMMON_SETUP,
             FML_DEDICATED_SERVER_SETUP,
             FML_CLIENT_SETUP,

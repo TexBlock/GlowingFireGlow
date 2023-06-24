@@ -12,10 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author til
@@ -66,6 +63,9 @@ public abstract class RegisterManage<R extends RegisterBasics> implements Glowin
         return registerMap.get(resourceLocation);
     }
 
+    public Iterable<R> forAll() {
+        return registerMap.values();
+    }
 
     @Nullable
     public Class<? extends RegisterManage<?>> getBasicsRegisterManageClass() {

@@ -51,8 +51,16 @@ public class RegisterBasics {
 
     /***
      * 统一的回调
+     * 这个是在所有注册完成后回调
      */
     protected void initBackToBack() {
+    }
+
+    /***
+     * 统一在Setup回调
+     */
+    protected void initBackToSetup() {
+
     }
 
     /***

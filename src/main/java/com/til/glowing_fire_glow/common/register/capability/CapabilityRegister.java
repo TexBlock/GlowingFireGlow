@@ -6,6 +6,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.function.Supplier;
 
 
 public abstract class CapabilityRegister<C> extends RegisterBasics {
@@ -16,7 +17,6 @@ public abstract class CapabilityRegister<C> extends RegisterBasics {
     public void beforeConfigInit() {
         super.beforeConfigInit();
         cClass = initClass();
-        capability = initCapability();
     }
 
     protected Class<C> initClass() {
@@ -32,6 +32,9 @@ public abstract class CapabilityRegister<C> extends RegisterBasics {
     protected abstract Capability<C> initCapability();
 
     public Capability<C> getCapability() {
+        if (capability == null) {
+            capability = initCapability();
+        }
         return capability;
     }
 

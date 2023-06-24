@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-MixinConnector: com.til.glowing_fire_glow.common.mixin.GlowingFireGlowCommonMixinConnector
+MixinConfigs: glowing_fire_glow.mixins.json

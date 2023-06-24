@@ -40,9 +40,6 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
         switch (initType) {
 
             case NEW:
-            case FML_CLIENT_SETUP:
-                break;
-            case FML_COMMON_SETUP:
                 GlowingFireGlow.IWorldComponent.super.init(initType);
                 for (Class<?> clazz : GlowingFireGlow.getInstance().forAllClass()) {
                     if (!ReflexUtil.isEffective(clazz)) {
@@ -85,14 +82,20 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
                     }
                     allVoluntarilyRegisterAssetMap.put(clazz, registerBasics);
                 }
-                unifyRegisterSubdivision(allVoluntarilyRegisterAssetMap.values());
-
                 for (GlowingFireGlow.IWorldComponent iWorldComponent : GlowingFireGlow.getInstance().forWorldComponent()) {
                     fillRegisterBasics(iWorldComponent);
                 }
+                unifyRegisterSubdivision(allVoluntarilyRegisterAssetMap.values());
 
                 for (RegisterBasics registerBasics : allRegisterAssetSet) {
                     registerBasics.initBackToBack();
+                }
+                break;
+            case FML_CLIENT_SETUP:
+                break;
+            case FML_COMMON_SETUP:
+                for (RegisterBasics registerBasics : allRegisterAssetSet) {
+                    registerBasics.initBackToSetup();
                 }
                 break;
             case FML_DEDICATED_SERVER_SETUP:
@@ -104,6 +107,9 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
 
 
     protected void unifyRegisterSubdivision(Collection<RegisterBasics> registerBasicList) {
+        for (RegisterBasics registerBasics : registerBasicList) {
+            GlowingFireGlow.getInstance().fillWorldComponent(registerBasics);
+        }
         Map<Integer, List<RegisterBasics>> integerListMap = new HashMap<>(8);
         for (RegisterBasics registerBasics : registerBasicList) {
             List<RegisterBasics> delayedRegisterList;
@@ -122,9 +128,6 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
     }
 
     protected void unifyRegister(Collection<RegisterBasics> registerBasicsList) {
-        for (RegisterBasics registerBasics : registerBasicsList) {
-            GlowingFireGlow.getInstance().fillWorldComponent(registerBasics);
-        }
         for (RegisterBasics registerBasic : registerBasicsList) {
             registerBasic.initSetName();
         }
@@ -155,7 +158,8 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
     }
 
     public void fillRegisterBasics(Object obj) {
-        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), false)) {
+        boolean isClass = obj instanceof Class<?>;
+        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), isClass)) {
             if (allField.getAnnotation(VoluntarilyAssignment.class) == null) {
                 continue;
             }
@@ -165,7 +169,7 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
             try {
                 allField.setAccessible(true);
                 //noinspection unchecked
-                allField.set(obj, getVoluntarilyRegisterOfClass((Class<RegisterBasics>) allField.getType()));
+                allField.set(isClass ? null : obj, getVoluntarilyRegisterOfClass((Class<RegisterBasics>) allField.getType()));
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }

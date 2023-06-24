@@ -12,5 +12,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "dusk.common.refmap.json"
+  "refmap": "glowing_fire_glow.refmap.json"
 }

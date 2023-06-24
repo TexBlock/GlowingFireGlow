@@ -2,11 +2,11 @@ package com.til.glowing_fire_glow.util;
 
 public class MathUtil {
     public static int clamp(int a, int max, int min) {
-        return a > max ? max : a < min ? max : a;
+        return Math.min(max, Math.max(a, min));
     }
 
     public static float clamp(float a, float max, float min) {
-        return a > max ? max : a < min ? max : a;
+        return Math.min(max, Math.max(a, min));
     }
 
     public static int lerp(float t, int max, int min) {

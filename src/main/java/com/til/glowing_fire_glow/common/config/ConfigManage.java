@@ -21,13 +21,16 @@ import java.util.Map;
  */
 public class ConfigManage implements GlowingFireGlow.IWorldComponent {
 
+    public static final String CONFIG_NAME = GlowingFireGlow.MOD_ID + ".config";
+
     protected List<Map.Entry<File, RegisterBasics>> needWrite = new ArrayList<>();
 
     public File mackFile(RegisterBasics registerBasics) {
         File basicsFile = FMLPaths.CONFIGDIR.get().toFile();
         ResourceLocation name = registerBasics.getName();
         ResourceLocation basicsName = registerBasics.getRegisterManage().getRegisterManageName();
-        return new File(basicsFile, String.format("%s/%s/%s/%s/%s.json", GlowingFireGlow.MOD_ID, GlowingFireGlow.VERSION, name.getNamespace(), basicsName.getPath(), name.getPath()));
+        String version = GlowingFireGlow.getInstance().getModVersion(registerBasics.getClass());
+        return new File(basicsFile, String.format("%s/%s/%s/%s/%s.json", CONFIG_NAME, basicsName.getPath(), name.getNamespace(), version, name.getPath()));
     }
 
     public void write() {
