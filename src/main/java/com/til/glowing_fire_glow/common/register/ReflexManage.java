@@ -197,7 +197,7 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
     }
 
     @SafeVarargs
-    public final <E extends RegisterBasics> List<E> getVoluntarilyRegisterOfClass(Class<? extends E>... eClass) {
+    public final <E extends RegisterBasics> List<E> getVoluntarilyRegisterOfClassList(Class<? extends E>... eClass) {
         ArrayList<E> arrayList = new ArrayList<>(eClass.length);
         for (Class<? extends E> aClass : eClass) {
             arrayList.add(getVoluntarilyRegisterOfClass(aClass));

@@ -11,10 +11,12 @@ import java.util.function.Supplier;
  */
 public class EventKey extends Event {
     public final KeyRegister keyRegister;
+    public final KeyData.KeyState keyState;
     public final Supplier<NetworkEvent.Context> contextSupplier;
 
-    public EventKey(KeyRegister keyRegister, Supplier<NetworkEvent.Context> contextSupplier) {
+    public EventKey(KeyRegister keyRegister, KeyData.KeyState keyState, Supplier<NetworkEvent.Context> contextSupplier) {
         this.keyRegister = keyRegister;
+        this.keyState = keyState;
         this.contextSupplier = contextSupplier;
     }
 }

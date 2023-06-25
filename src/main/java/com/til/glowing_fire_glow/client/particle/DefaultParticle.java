@@ -22,6 +22,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -31,6 +33,7 @@ import java.util.Map;
 /**
  * @author til
  */
+@OnlyIn(Dist.CLIENT)
 public class DefaultParticle extends Particle {
 
 

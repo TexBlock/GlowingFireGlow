@@ -8,6 +8,8 @@ import com.til.glowing_fire_glow.common.save.SaveManage;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraft.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,6 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,6 +75,8 @@ public class GlowingFireGlow {
 
     protected Type mixinType = Type.getType(Mixin.class);
 
+    protected Type onlyInType = Type.getType(OnlyIn.class);
+
     public GlowingFireGlow() {
         glowingFireGlow = this;
         modEventBus.register(this);
@@ -123,14 +129,19 @@ public class GlowingFireGlow {
                 throw new RuntimeException(e);
             }
 
-            HashSet<Type> mixinTypeList = new HashSet<>();
+            HashSet<Type> excludeTypeList = new HashSet<>();
 
             for (ModFileScanData.AnnotationData annotation : modFileScanData.getAnnotations()) {
-                if (!annotation.getAnnotationType().equals(mixinType)) {
-                    continue;
+                if (annotation.getAnnotationType().equals(mixinType)) {
+                    excludeTypeList.add(annotation.getClassType());
                 }
-                mixinTypeList.add(annotation.getClassType());
+                if (annotation.getAnnotationType().equals(onlyInType)) {
+                    if (!annotation.getAnnotationData().get("value").equals(FMLLoader.getDist())) {
+                        excludeTypeList.add(annotation.getClassType());
+                    }
+                }
             }
+
 
             for (ModFileScanData.ClassData aClass : modFileScanData.getClasses()) {
                 Type type;
@@ -139,7 +150,11 @@ public class GlowingFireGlow {
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
-                if (mixinTypeList.contains(type)) {
+                if (excludeTypeList.contains(type)) {
+                    continue;
+                }
+                String className = type.getClassName();
+                if (className.indexOf('$') != -1) {
                     continue;
                 }
                 Class<?> clazz;
