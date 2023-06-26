@@ -1,20 +1,16 @@
 package com.til.glowing_fire_glow.common.register.particle_register;
 
 
-import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.client.ClientTransfer;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
-import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleParsingMode;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
-import com.til.glowing_fire_glow.util.Extension;
 import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.util.Pos;
 import com.til.glowing_fire_glow.util.RoutePack;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -118,20 +114,5 @@ public abstract class ParticleRegister extends RegisterBasics {
         throw new RuntimeException();
     }
 
-    /***
-     * 实现粒子效果
-     * @param world 当前的世界
-     * @param start 开始点
-     * @param end 结束点
-     * @param color 颜色
-     * @param density 密度
-     * @return 返回粒子是生命用于拼接
-     */
-    public abstract void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation);
-
-
-    public ParticleParsingMode getParticleParsingMode() {
-        return particleParsingMode;
-    }
 
 }

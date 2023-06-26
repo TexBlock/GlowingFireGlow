@@ -4,10 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.command.impl.TagCommand;
 import net.minecraft.nbt.*;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
 
 import java.util.Map;
 import java.util.Set;

@@ -14,6 +14,8 @@ import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.util.Pos;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -30,6 +32,7 @@ public class ParticleMessage extends MessageRegister<ParticleData> {
     @VoluntarilyAssignment
     protected EmptyParticleRegister emptyParticleRegister;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void messageConsumer(ParticleData data, Supplier<NetworkEvent.Context> supplier) {
         ClientTransfer.messageConsumer(data);

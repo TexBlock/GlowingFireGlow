@@ -1,8 +1,7 @@
 package com.til.glowing_fire_glow.client.register.entity_render;
 
-import com.til.glowing_fire_glow.GlowingFireGlow;
-import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.entity_type.EntityTypeRegister;
+import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -10,18 +9,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class IndependenceEntityRenderRegister<E extends Entity, ET extends EntityTypeRegister<E>, ER extends EntityType<E>> extends EntityRenderRegister<E, ET> {
-
+public abstract class IndependenceEntityRenderRegister<E extends Entity, ET extends EntityTypeRegister<E>, ER extends EntityRenderer<? extends E>> extends EntityRenderRegister<E, ET> {
 
     protected Class<ER> entityRenderClass;
-    protected EntityTypeRegister<E> entityTypeRegister;
 
     @Override
     protected void initClass() {
@@ -31,17 +27,18 @@ public abstract class IndependenceEntityRenderRegister<E extends Entity, ET exte
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
         Type[] types = parameterized.getActualTypeArguments();
-        entityClass = Util.forcedConversion(types[0]);
-        entityTypeRegisterClass = Util.forcedConversion(types[1]);
-        entityRenderClass = Util.forcedConversion(types[2]);
+        entityClass = Util.forcedConversion(ReflexUtil.asClass(types[0]));
+        entityTypeRegisterClass = Util.forcedConversion(ReflexUtil.asClass(types[1]));
+        entityRenderClass = Util.forcedConversion(ReflexUtil.asClass(types[2]));
     }
 
     @Override
     protected EntityRenderer<? super E> createRenderFor(EntityRendererManager manager) {
         ER entityRender;
         try {
-            entityRender = entityRenderClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            entityRender = entityRenderClass.getConstructor(EntityRendererManager.class).newInstance(manager);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             throw new RuntimeException(e);
         }
         return Util.forcedConversion(entityRender);

@@ -1,16 +1,15 @@
 package com.til.glowing_fire_glow.common.register.entity_type;
 
-import com.sun.javafx.geom.Vec2d;
 import com.til.glowing_fire_glow.common.config.ConfigField;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -48,6 +47,8 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
         super.init();
         entityClass = initClass();
         entityType = initEntityType();
+        entityType.setRegistryName(getName());
+        ForgeRegistries.ENTITIES.register(entityType);
     }
 
     protected EntityType<E> initEntityType() {
@@ -87,8 +88,8 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
         entityClassification = EntityClassification.MISC;
         width = 0.5f;
         height = 0.5f;
-        trackingRange = 10;
-        updateInterval = 20;
-        shouldReceiveVelocityUpdates = false;
+        trackingRange = 5;
+        updateInterval = 3;
+        shouldReceiveVelocityUpdates = true;
     }
 }

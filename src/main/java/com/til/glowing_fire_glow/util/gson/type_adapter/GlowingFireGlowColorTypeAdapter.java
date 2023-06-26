@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.util.gson.type_adapter;
 
-import com.google.gson.*;
+import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;

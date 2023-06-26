@@ -5,7 +5,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.til.glowing_fire_glow.util.gson.type_adapter.ForgeRegistryItemTypeAdapter;
-import net.minecraftforge.registries.*;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryManager;
 
 /**
  * @author til

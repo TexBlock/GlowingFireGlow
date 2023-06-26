@@ -9,7 +9,6 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * @author til

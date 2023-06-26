@@ -3,11 +3,9 @@ package com.til.glowing_fire_glow.common.register;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
-import net.minecraft.world.World;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -85,6 +83,9 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
                 for (GlowingFireGlow.IWorldComponent iWorldComponent : GlowingFireGlow.getInstance().forWorldComponent()) {
                     fillRegisterBasics(iWorldComponent);
                 }
+                for (Class<?> forStaticAssignmentClass : GlowingFireGlow.getInstance().forStaticAssignmentClass()) {
+                    fillRegisterBasics(forStaticAssignmentClass);
+                }
                 unifyRegisterSubdivision(allVoluntarilyRegisterAssetMap.values());
 
                 for (RegisterBasics registerBasics : allRegisterAssetSet) {
@@ -159,7 +160,7 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
 
     public void fillRegisterBasics(Object obj) {
         boolean isClass = obj instanceof Class<?>;
-        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), isClass)) {
+        for (Field allField : ReflexUtil.getAllFields(isClass ? ((Class<?>) obj) : obj.getClass(), isClass)) {
             if (allField.getAnnotation(VoluntarilyAssignment.class) == null) {
                 continue;
             }

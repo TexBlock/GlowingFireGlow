@@ -1,7 +1,6 @@
 package com.til.glowing_fire_glow.common.register.message;
 
 
-import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.util.ReflexUtil;
@@ -9,8 +8,6 @@ import com.til.glowing_fire_glow.util.Util;
 import com.til.glowing_fire_glow.util.gson.ConfigGson;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 

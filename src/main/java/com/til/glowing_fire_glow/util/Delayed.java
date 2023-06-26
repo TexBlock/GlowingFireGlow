@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /***

@@ -20,7 +20,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author til

@@ -1,8 +1,10 @@
 package com.til.glowing_fire_glow.client;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
-import com.til.glowing_fire_glow.common.register.particle_register.AllParticleRegister;
-import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
+import com.til.glowing_fire_glow.client.register.particle_register.AllParticleClientRegister;
+import com.til.glowing_fire_glow.client.register.particle_register.ParticleClientRegister;
+import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
@@ -11,18 +13,15 @@ import com.til.glowing_fire_glow.util.Pos;
 import com.til.glowing_fire_glow.util.RoutePack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 /***
  * 客户端中转站
@@ -30,15 +29,24 @@ import java.util.function.Supplier;
  * @author til
  */
 @OnlyIn(Dist.CLIENT)
+@StaticVoluntarilyAssignment
 @Mod.EventBusSubscriber(modid = GlowingFireGlow.MOD_ID, value = Dist.CLIENT)
 public class ClientTransfer {
 
+    @VoluntarilyAssignment
+    protected static AllParticleClientRegister allParticleClientRegister;
+
     public static void messageConsumer(ParticleData data) {
+        ParticleClientRegister<?> particleClientRegister = allParticleClientRegister.relationship(data.particleRegister);
+        if (particleClientRegister == null) {
+            GlowingFireGlow.LOGGER.error("客户端不存在粒子效果的映射{}", data.particleRegister.toString());
+            return;
+        }
         List<ParticleContext> particleContextList = new ArrayList<>();
-        switch (data.particleRegister.getParticleParsingMode()) {
+        switch (particleClientRegister.getParticleParsingMode()) {
             case PAIR:
                 Pos s = null;
-                Pos e = null;
+                Pos e;
                 for (Pos po : data.pos) {
                     if (s == null) {
                         s = po;
@@ -46,7 +54,7 @@ public class ClientTransfer {
                     }
                     e = po;
                     ParticleContext particleContext = new ParticleContext();
-                    data.particleRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                    particleClientRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
                     particleContextList.add(particleContext);
                     s = null;
                 }
@@ -59,7 +67,7 @@ public class ClientTransfer {
                     do {
                         e = data.pos[i];
                         ParticleContext particleContext = new ParticleContext();
-                        data.particleRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                        particleClientRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
                         particleContextList.add(particleContext);
                         s = e;
                         i++;
@@ -70,7 +78,7 @@ public class ClientTransfer {
             case SINGLE:
                 for (Pos po : data.pos) {
                     ParticleContext particleContext = new ParticleContext();
-                    data.particleRegister.run(particleContext, Minecraft.getInstance().world, po, null, data.color, data.density, data.resourceLocation);
+                    particleClientRegister.run(particleContext, Minecraft.getInstance().world, po, null, data.color, data.density, data.resourceLocation);
                     particleContextList.add(particleContext);
                 }
                 break;
@@ -91,12 +99,17 @@ public class ClientTransfer {
     }
 
     public static void messageConsumer(ParticleRouteData data) {
+        ParticleClientRegister<?> particleClientRegister = allParticleClientRegister.relationship(data.particleRegister);
+        if (particleClientRegister == null) {
+            GlowingFireGlow.LOGGER.error("客户端不存在粒子效果的映射{}", data.particleRegister.toString());
+            return;
+        }
         float time = 0;
         for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
             float _time = 0;
             ParticleContext particleContext = new ParticleContext();
             for (RoutePack.RouteCell<Double> routeCell : routeCells) {
-                data.particleRegister.run(particleContext, Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
+                particleClientRegister.run(particleContext, Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
             }
             addRun(time, () -> {
                 for (Particle particle : particleContext.forParticle()) {

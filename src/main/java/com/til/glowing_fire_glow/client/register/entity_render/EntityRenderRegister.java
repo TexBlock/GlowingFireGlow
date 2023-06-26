@@ -3,14 +3,13 @@ package com.til.glowing_fire_glow.client.register.entity_render;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.entity_type.EntityTypeRegister;
+import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import java.lang.reflect.ParameterizedType;
@@ -42,8 +41,8 @@ public abstract class EntityRenderRegister<E extends Entity, ET extends EntityTy
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
         Type[] types = parameterized.getActualTypeArguments();
-        entityClass = Util.forcedConversion(types[0]);
-        entityTypeRegisterClass = Util.forcedConversion(types[1]);
+        entityClass = Util.forcedConversion(ReflexUtil.asClass(types[0]));
+        entityTypeRegisterClass = Util.forcedConversion(ReflexUtil.asClass(types[1]));
     }
 
     protected abstract EntityRenderer<? super E> createRenderFor(EntityRendererManager manager);

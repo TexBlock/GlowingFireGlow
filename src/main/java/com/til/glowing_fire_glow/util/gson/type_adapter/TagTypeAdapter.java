@@ -5,9 +5,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagRegistry;
-import net.minecraft.tags.TagRegistryManager;
 
 import java.io.IOException;
 

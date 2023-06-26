@@ -6,7 +6,6 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.function.Supplier;
 
 
 public abstract class CapabilityRegister<C> extends RegisterBasics {

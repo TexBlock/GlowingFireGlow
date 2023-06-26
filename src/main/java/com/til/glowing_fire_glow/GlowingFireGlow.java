@@ -7,11 +7,8 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.save.SaveManage;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
-import net.minecraft.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModContainer;
@@ -20,8 +17,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
-import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +32,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -132,11 +128,19 @@ public class GlowingFireGlow {
             HashSet<Type> excludeTypeList = new HashSet<>();
 
             for (ModFileScanData.AnnotationData annotation : modFileScanData.getAnnotations()) {
+                if (annotation.getTargetType() != ElementType.TYPE) {
+                    continue;
+                }
                 if (annotation.getAnnotationType().equals(mixinType)) {
                     excludeTypeList.add(annotation.getClassType());
                 }
                 if (annotation.getAnnotationType().equals(onlyInType)) {
-                    if (!annotation.getAnnotationData().get("value").equals(FMLLoader.getDist())) {
+                    Object v = annotation.getAnnotationData().get("value");
+                    if (!(v instanceof ModAnnotation.EnumHolder)) {
+                        continue;
+                    }
+                    ModAnnotation.EnumHolder enumHolder = ((ModAnnotation.EnumHolder) v);
+                    if (!enumHolder.getValue().equals(FMLLoader.getDist().toString())) {
                         excludeTypeList.add(annotation.getClassType());
                     }
                 }
@@ -291,6 +295,10 @@ public class GlowingFireGlow {
         return allClass;
     }
 
+    public Iterable<Class<?>> forStaticAssignmentClass() {
+        return staticAssignmentList;
+    }
+
     public Iterable<IWorldComponent> forWorldComponent() {
         return worldComponentList;
     }
@@ -301,7 +309,7 @@ public class GlowingFireGlow {
 
     public void fillWorldComponent(Object obj) {
         boolean isClass = obj instanceof Class<?>;
-        for (Field allField : ReflexUtil.getAllFields(obj.getClass(), isClass)) {
+        for (Field allField : ReflexUtil.getAllFields(isClass ? ((Class<?>) obj) :obj.getClass(), isClass)) {
             if (allField.getAnnotation(VoluntarilyAssignment.class) == null) {
                 continue;
             }

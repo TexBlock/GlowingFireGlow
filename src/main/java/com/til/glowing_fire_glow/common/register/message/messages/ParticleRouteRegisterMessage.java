@@ -14,6 +14,8 @@ import com.til.glowing_fire_glow.util.Pos;
 import com.til.glowing_fire_glow.util.RoutePack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
     @VoluntarilyAssignment
     protected EmptyParticleRegister emptyParticleRegister;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void messageConsumer(ParticleRouteData routeData, Supplier<NetworkEvent.Context> supplier) {
         ClientTransfer.messageConsumer(routeData);
