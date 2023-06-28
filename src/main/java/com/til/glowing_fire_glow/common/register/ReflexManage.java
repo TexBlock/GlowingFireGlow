@@ -1,6 +1,7 @@
 package com.til.glowing_fire_glow.common.register;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
+import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 
@@ -9,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ReflexManage implements GlowingFireGlow.IWorldComponent {
+public class ReflexManage implements IWorldComponent {
 
     /***
      * 根据RegisterManage的类型映射
@@ -38,7 +39,7 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
         switch (initType) {
 
             case NEW:
-                GlowingFireGlow.IWorldComponent.super.init(initType);
+                IWorldComponent.super.init(initType);
                 for (Class<?> clazz : GlowingFireGlow.getInstance().forAllClass()) {
                     if (!ReflexUtil.isEffective(clazz)) {
                         continue;
@@ -80,7 +81,7 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
                     }
                     allVoluntarilyRegisterAssetMap.put(clazz, registerBasics);
                 }
-                for (GlowingFireGlow.IWorldComponent iWorldComponent : GlowingFireGlow.getInstance().forWorldComponent()) {
+                for (IWorldComponent iWorldComponent : GlowingFireGlow.getInstance().forWorldComponent()) {
                     fillRegisterBasics(iWorldComponent);
                 }
                 for (Class<?> forStaticAssignmentClass : GlowingFireGlow.getInstance().forStaticAssignmentClass()) {
@@ -126,9 +127,24 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
         for (Integer integer : integerList) {
             unifyRegister(integerListMap.get(integer));
         }
+        List<RegisterBasics> laterAdd = new ArrayList<>();
+        for (List<RegisterBasics> value : integerListMap.values()) {
+            for (RegisterBasics registerBasics : value) {
+                Iterable<RegisterBasics> proactivelyAsset = registerBasics.getProactivelyAssetOnceAgain();
+                if (proactivelyAsset != null) {
+                    for (RegisterBasics basics : proactivelyAsset) {
+                        laterAdd.add(basics);
+                    }
+                }
+            }
+        }
+        if (!laterAdd.isEmpty()) {
+            unifyRegisterSubdivision(laterAdd);
+        }
     }
 
     protected void unifyRegister(Collection<RegisterBasics> registerBasicsList) {
+        List<RegisterBasics> laterAdd = new ArrayList<>();
         for (RegisterBasics registerBasic : registerBasicsList) {
             registerBasic.initSetName();
         }
@@ -150,6 +166,17 @@ public class ReflexManage implements GlowingFireGlow.IWorldComponent {
         }
         for (RegisterBasics registerBasics : registerBasicsList) {
             registerBasics.initBack();
+        }
+        for (RegisterBasics registerBasics : registerBasicsList) {
+            Iterable<RegisterBasics> proactivelyAsset = registerBasics.getProactivelyAsset();
+            if (proactivelyAsset != null) {
+                for (RegisterBasics basics : proactivelyAsset) {
+                    laterAdd.add(basics);
+                }
+            }
+        }
+        if (!laterAdd.isEmpty()) {
+            unifyRegisterSubdivision(laterAdd);
         }
     }
 

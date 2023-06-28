@@ -36,6 +36,9 @@ public class ClientTransfer {
     @VoluntarilyAssignment
     protected static AllParticleClientRegister allParticleClientRegister;
 
+    @VoluntarilyAssignment
+    protected static ClientPlanRun clientPlanRun;
+
     public static void messageConsumer(ParticleData data) {
         ParticleClientRegister<?> particleClientRegister = allParticleClientRegister.relationship(data.particleRegister);
         if (particleClientRegister == null) {
@@ -87,9 +90,9 @@ public class ClientTransfer {
                 break;
         }
 
-        float time = 0;
+        int time = 0;
         for (ParticleContext particleContext : particleContextList) {
-            addRun(time, () -> {
+            clientPlanRun.add(time, () -> {
                 for (Particle particle : particleContext.forParticle()) {
                     Minecraft.getInstance().particles.addEffect(particle);
                 }
@@ -104,14 +107,14 @@ public class ClientTransfer {
             GlowingFireGlow.LOGGER.error("客户端不存在粒子效果的映射{}", data.particleRegister.toString());
             return;
         }
-        float time = 0;
+        int time = 0;
         for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
-            float _time = 0;
+            int _time = 0;
             ParticleContext particleContext = new ParticleContext();
             for (RoutePack.RouteCell<Double> routeCell : routeCells) {
                 particleClientRegister.run(particleContext, Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
             }
-            addRun(time, () -> {
+            clientPlanRun.add(time, () -> {
                 for (Particle particle : particleContext.forParticle()) {
                     Minecraft.getInstance().particles.addEffect(particle);
                 }
@@ -120,34 +123,5 @@ public class ClientTransfer {
         }
     }
 
-    public static final List<Extension.VariableData_2<Float, Runnable>> RUN_LIST = new ArrayList<>();
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void tick(TickEvent.ClientTickEvent event) {
-        if (!event.phase.equals(TickEvent.Phase.END)) {
-            return;
-        }
-        List<Extension.VariableData_2<Float, Runnable>> rList = null;
-        for (Extension.VariableData_2<Float, Runnable> longRunnableData_2 : RUN_LIST) {
-            longRunnableData_2.k--;
-            if (longRunnableData_2.k <= 0) {
-                longRunnableData_2.v.run();
-                if (rList == null) {
-                    rList = new ArrayList<>();
-                }
-                rList.add(longRunnableData_2);
-            }
-        }
-        if (rList != null) {
-            for (Extension.VariableData_2<Float, Runnable> longRunnableData_2 : rList) {
-                RUN_LIST.remove(longRunnableData_2);
-            }
-            rList.clear();
-        }
-    }
-
-    public static void addRun(float _time, Runnable runnable) {
-        RUN_LIST.add(new Extension.VariableData_2<>(_time, runnable));
-    }
 
 }

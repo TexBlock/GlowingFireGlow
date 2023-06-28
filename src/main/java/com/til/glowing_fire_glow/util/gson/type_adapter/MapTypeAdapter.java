@@ -6,23 +6,27 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapTypeAdapter<K, V> extends TypeAdapter<Map<K, V>> {
 
     public final Gson gson;
+    public final Class<Map<K, V>> mapClass;
     public final TypeToken<K> k;
     public final TypeToken<V> v;
 
     public static final String K = "k";
     public static final String V = "v";
 
-    public MapTypeAdapter(Gson gson, TypeToken<K> k, TypeToken<V> v) {
+    public MapTypeAdapter(Gson gson, Class<Map<K, V>> mapClass, TypeToken<K> k, TypeToken<V> v) {
         this.gson = gson;
+        this.mapClass = mapClass;
         this.k = k;
         this.v = v;
     }
@@ -50,7 +54,12 @@ public class MapTypeAdapter<K, V> extends TypeAdapter<Map<K, V>> {
         if (in.peek().equals(JsonToken.NULL)) {
             return null;
         }
-        Map<K, V> map = new HashMap<>(0);
+        Map<K, V> map;
+        try {
+            map = mapClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            map = new HashMap<>();
+        }
         in.beginArray();
         while (in.hasNext()) {
             in.beginObject();

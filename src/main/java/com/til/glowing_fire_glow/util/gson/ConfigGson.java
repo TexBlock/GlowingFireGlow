@@ -67,6 +67,7 @@ public class ConfigGson {
         gsonBuilder.registerTypeAdapterFactory(new ForgeRegistryItemTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new RegisterBasicsAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new NBTTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new MapTypeAdapterFactory());
         gson = gsonBuilder.create();
     }
 

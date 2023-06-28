@@ -1,6 +1,7 @@
 package com.til.glowing_fire_glow.common.register;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
+import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.ResourceLocationUtil;
 import com.til.glowing_fire_glow.util.Util;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * @author til
  */
-public abstract class RegisterManage<R extends RegisterBasics> implements GlowingFireGlow.IWorldComponent {
+public abstract class RegisterManage<R extends RegisterBasics> implements IWorldComponent {
     protected Class<R> registerClass;
     protected ResourceLocation registerManageName;
     protected Map<ResourceLocation, R> registerMap;

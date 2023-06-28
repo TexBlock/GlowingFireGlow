@@ -18,12 +18,13 @@ public class MapTypeAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         if (Map.class.isAssignableFrom(type.getRawType()) && type.getType() instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = ((ParameterizedType) type);
+            ParameterizedType parameterizedType = ((ParameterizedType) type.getType());
             Type[] kvType = parameterizedType.getActualTypeArguments();
             if (kvType.length != 2) {
                 return null;
             }
             return Util.forcedConversion(new MapTypeAdapter<>(gson,
+                    Util.forcedConversion(type.getRawType()),
                     Util.forcedConversion(TypeToken.get(kvType[0])),
                     Util.forcedConversion(TypeToken.get(kvType[1]))));
         }

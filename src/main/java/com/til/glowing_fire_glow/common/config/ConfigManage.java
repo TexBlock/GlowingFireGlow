@@ -2,6 +2,7 @@ package com.til.glowing_fire_glow.common.config;
 
 import com.google.gson.JsonObject;
 import com.til.glowing_fire_glow.GlowingFireGlow;
+import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.util.Extension;
 import com.til.glowing_fire_glow.util.IOUtil;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  * @author til
  */
-public class ConfigManage implements GlowingFireGlow.IWorldComponent {
+public class ConfigManage implements IWorldComponent {
 
     public static final String CONFIG_NAME = GlowingFireGlow.MOD_ID + ".config";
 

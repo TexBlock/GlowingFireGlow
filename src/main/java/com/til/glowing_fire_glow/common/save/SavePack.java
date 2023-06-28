@@ -48,7 +48,7 @@ public class SavePack<E> {
                 compoundNBT.put(field.getName(), (INBT) obj);
                 continue;
             }
-            compoundNBT.put(field.getName(), NBTUtil.toTag(ConfigGson.getGson().toJsonTree(obj)));
+            compoundNBT.put(field.getName(), NBTUtil.toTag(ConfigGson.getGson().toJsonTree(obj, field.getGenericType())));
         }
     }
 
@@ -64,7 +64,7 @@ public class SavePack<E> {
                     obj = null;
                 }
             } else {
-                obj = ConfigGson.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName())), field.getType());
+                obj = ConfigGson.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName())), field.getGenericType());
             }
             field.setAccessible(true);
             try {

@@ -1,6 +1,7 @@
 package com.til.glowing_fire_glow;
 
 import com.til.glowing_fire_glow.common.config.ConfigManage;
+import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.register.ReflexManage;
 import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
@@ -345,33 +346,6 @@ public class GlowingFireGlow {
     @Target(ElementType.TYPE)
     public @interface Manage {
 
-    }
-
-    public interface IWorldComponent {
-
-        default void init(InitType initType) {
-        }
-
-        /***
-         * 获取执行顺序
-         */
-        default int getExecutionOrderList() {
-            return 0;
-        }
-
-        default void registerEvent(IEventBus eventBus) {
-            eventBus.register(this);
-        }
-
-        default void registerModEvent(IEventBus eventBus) {
-        }
-
-        enum InitType {
-            NEW,
-            FML_COMMON_SETUP,
-            FML_DEDICATED_SERVER_SETUP,
-            FML_CLIENT_SETUP,
-        }
     }
 
 
