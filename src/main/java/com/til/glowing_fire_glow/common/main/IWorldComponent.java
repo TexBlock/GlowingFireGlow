@@ -1,6 +1,5 @@
 package com.til.glowing_fire_glow.common.main;
 
-import com.til.glowing_fire_glow.GlowingFireGlow;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public interface IWorldComponent {
@@ -27,5 +26,6 @@ public interface IWorldComponent {
         FML_COMMON_SETUP,
         FML_DEDICATED_SERVER_SETUP,
         FML_CLIENT_SETUP,
+        INTER_MOD_PROCESS_EVENT,
     }
 }

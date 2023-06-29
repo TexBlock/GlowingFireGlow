@@ -6,6 +6,10 @@ import com.til.glowing_fire_glow.common.register.ReflexManage;
 import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.save.SaveManage;
+import com.til.glowing_fire_glow.common.tag.BlockTagManage;
+import com.til.glowing_fire_glow.common.tag.EntityTypeTagMange;
+import com.til.glowing_fire_glow.common.tag.FluidTagManage;
+import com.til.glowing_fire_glow.common.tag.ItemTagManage;
 import com.til.glowing_fire_glow.util.ReflexUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -69,6 +73,17 @@ public class GlowingFireGlow {
 
     @VoluntarilyAssignment
     protected SaveManage saveManage;
+
+    @VoluntarilyAssignment
+    protected BlockTagManage blockTagManage;
+    @VoluntarilyAssignment
+    protected FluidTagManage fluidManage;
+    @VoluntarilyAssignment
+    protected ItemTagManage itemTagManage;
+
+    @VoluntarilyAssignment
+    protected EntityTypeTagMange entityTypeTagMange;
+
 
     protected Type mixinType = Type.getType(Mixin.class);
 
@@ -230,13 +245,15 @@ public class GlowingFireGlow {
     }
 
     @SubscribeEvent
-    protected void enqueueIMC(final InterModEnqueueEvent event) {
+    protected void enqueueIMC(final InterModProcessEvent event) {
         // some example code to dispatch IMC to another mod
         /*InterModComms.sendTo("GlowingFireGlow", "helloworld", () -> {
             LOGGER.info("Hello world from the MDK");
             return "Hello world";
         });*/
-
+        for (IWorldComponent iWorldComponent : worldComponentList) {
+            iWorldComponent.init(IWorldComponent.InitType.INTER_MOD_PROCESS_EVENT);
+        }
     }
 
     @SubscribeEvent
@@ -310,7 +327,7 @@ public class GlowingFireGlow {
 
     public void fillWorldComponent(Object obj) {
         boolean isClass = obj instanceof Class<?>;
-        for (Field allField : ReflexUtil.getAllFields(isClass ? ((Class<?>) obj) :obj.getClass(), isClass)) {
+        for (Field allField : ReflexUtil.getAllFields(isClass ? ((Class<?>) obj) : obj.getClass(), isClass)) {
             if (allField.getAnnotation(VoluntarilyAssignment.class) == null) {
                 continue;
             }
@@ -337,6 +354,22 @@ public class GlowingFireGlow {
 
     public SaveManage getSaveManage() {
         return saveManage;
+    }
+
+    public BlockTagManage getBlockTagManage() {
+        return blockTagManage;
+    }
+
+    public FluidTagManage getFluidManage() {
+        return fluidManage;
+    }
+
+    public ItemTagManage getItemTagManage() {
+        return itemTagManage;
+    }
+
+    public EntityTypeTagMange getEntityTypeTagMange() {
+        return entityTypeTagMange;
     }
 
     /***
