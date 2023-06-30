@@ -103,6 +103,7 @@ public class ColorProxy implements IWorldComponent {
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static class ItemColorPack implements IItemColor {
         public final Item itemLike;
         public final Map<Integer, Extension.Func_1I<ItemStack, GlowingFireGlowColor>> layerColor = new HashMap<>();
@@ -126,6 +127,7 @@ public class ColorProxy implements IWorldComponent {
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static class BlockColorPack implements IBlockColor {
         public final Block block;
         public final Map<Integer, Extension.Func_3I<BlockState, IBlockDisplayReader, BlockPos, GlowingFireGlowColor>> layerColor = new HashMap<>();

@@ -11,6 +11,7 @@ import com.til.glowing_fire_glow.common.tag.EntityTypeTagMange;
 import com.til.glowing_fire_glow.common.tag.FluidTagManage;
 import com.til.glowing_fire_glow.common.tag.ItemTagManage;
 import com.til.glowing_fire_glow.util.ReflexUtil;
+import com.til.glowing_fire_glow.util.StringUtil;
 import com.til.glowing_fire_glow.util.Util;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,7 +20,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -174,12 +178,23 @@ public class GlowingFireGlow {
                     continue;
                 }
                 String className = type.getClassName();
-                if (className.indexOf('$') != -1) {
-                    continue;
+                int index = className.indexOf('$');
+                if (index != -1) {
+                    String[] strings = className.split("\\$", index);
+                    boolean isL = false;
+                    for (String string : strings) {
+                        if (StringUtil.checkStrIsNum(string)) {
+                            isL = true;
+                            break;
+                        }
+                    }
+                    if (isL) {
+                        continue;
+                    }
                 }
                 Class<?> clazz;
                 try {
-                    clazz = Class.forName(type.getClassName());
+                    clazz = Class.forName(type.getClassName(), false, getClass().getClassLoader());
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -380,6 +395,4 @@ public class GlowingFireGlow {
     public @interface Manage {
 
     }
-
-
 }
