@@ -34,77 +34,99 @@ public class ReflexManage implements IWorldComponent {
 
 
     @Override
-    public void init(InitType initType) {
-
-        switch (initType) {
-
-            case NEW:
-                IWorldComponent.super.init(initType);
-                for (Class<?> clazz : GlowingFireGlow.getInstance().forAllClass()) {
-                    if (!ReflexUtil.isEffective(clazz)) {
-                        continue;
+    public void initNew() {
+        IWorldComponent.super.initNew();
+        for (Class<?> clazz : GlowingFireGlow.getInstance().forAllClass()) {
+            if (!ReflexUtil.isEffective(clazz)) {
+                continue;
+            }
+            if (RegisterManage.class.isAssignableFrom(clazz)) {
+                RegisterManage<?> registerManage = GlowingFireGlow.getInstance().getWorldComponent(Util.forcedConversion(clazz));
+                classRegisterManageMap.put(clazz, registerManage);
+                Class<?> registerClass = registerManage.getRegisterClass();
+                if (!registerManageMap.containsKey(registerClass)) {
+                    registerManageMap.put(registerClass, registerManage);
+                    continue;
+                }
+                RegisterManage<?> oldRegisterManage = registerManageMap.get(registerClass);
+                if (oldRegisterManage.getBasicsRegisterManageClass() == null) {
+                    if (oldRegisterManage.getBasicsRegisterManageClass() == null) {
+                        throw new RuntimeException("注册管理者冲突，注册类型[" + registerClass + "]，冲突管理者[" + oldRegisterManage + "," + registerManage + "]");
                     }
-                    if (RegisterManage.class.isAssignableFrom(clazz)) {
-                        RegisterManage<?> registerManage = GlowingFireGlow.getInstance().getWorldComponent(Util.forcedConversion(clazz));
-                        classRegisterManageMap.put(clazz, registerManage);
-                        Class<?> registerClass = registerManage.getRegisterClass();
-                        if (!registerManageMap.containsKey(registerClass)) {
-                            registerManageMap.put(registerClass, registerManage);
-                            continue;
-                        }
-                        RegisterManage<?> oldRegisterManage = registerManageMap.get(registerClass);
-                        if (oldRegisterManage.getBasicsRegisterManageClass() == null) {
-                            if (oldRegisterManage.getBasicsRegisterManageClass() == null) {
-                                throw new RuntimeException("注册管理者冲突，注册类型[" + registerClass + "]，冲突管理者[" + oldRegisterManage + "," + registerManage + "]");
-                            }
-                            continue;
-                        }
-                        if (registerManage.getBasicsRegisterManageClass() == null) {
-                            registerManageMap.put(Util.forcedConversion(oldRegisterManage), registerManage);
-                        }
-                    }
-                    if (RegisterBasics.class.isAssignableFrom(clazz)) {
-                        if (!clazz.isAnnotationPresent(VoluntarilyRegister.class)) {
-                            continue;
-                        }
-                        allVoluntarilyRegisterAssetMap.put(Util.forcedConversion(clazz), null);
-                    }
+                    continue;
                 }
-
-                for (Class<?> clazz : allVoluntarilyRegisterAssetMap.keySet()) {
-                    RegisterBasics registerBasics;
-                    try {
-                        registerBasics = (RegisterBasics) clazz.getConstructor().newInstance();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                             NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                    allVoluntarilyRegisterAssetMap.put(clazz, registerBasics);
+                if (registerManage.getBasicsRegisterManageClass() == null) {
+                    registerManageMap.put(Util.forcedConversion(oldRegisterManage), registerManage);
                 }
-                for (IWorldComponent iWorldComponent : GlowingFireGlow.getInstance().forWorldComponent()) {
-                    fillRegisterBasics(iWorldComponent);
+            }
+            if (RegisterBasics.class.isAssignableFrom(clazz)) {
+                if (!clazz.isAnnotationPresent(VoluntarilyRegister.class)) {
+                    continue;
                 }
-                for (Class<?> forStaticAssignmentClass : GlowingFireGlow.getInstance().forStaticAssignmentClass()) {
-                    fillRegisterBasics(forStaticAssignmentClass);
-                }
-                unifyRegisterSubdivision(allVoluntarilyRegisterAssetMap.values());
-
-                for (RegisterBasics registerBasics : allRegisterAssetSet) {
-                    registerBasics.initBackToBack();
-                }
-                break;
-            case FML_CLIENT_SETUP:
-                break;
-            case FML_COMMON_SETUP:
-                for (RegisterBasics registerBasics : allRegisterAssetSet) {
-                    registerBasics.initBackToSetup();
-                }
-                break;
-            case FML_DEDICATED_SERVER_SETUP:
-                break;
+                allVoluntarilyRegisterAssetMap.put(Util.forcedConversion(clazz), null);
+            }
         }
 
+        for (Class<?> clazz : allVoluntarilyRegisterAssetMap.keySet()) {
+            RegisterBasics registerBasics;
+            try {
+                registerBasics = (RegisterBasics) clazz.getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+            allVoluntarilyRegisterAssetMap.put(clazz, registerBasics);
+        }
+        for (IWorldComponent iWorldComponent : GlowingFireGlow.getInstance().forWorldComponent()) {
+            fillRegisterBasics(iWorldComponent);
+        }
+        for (Class<?> forStaticAssignmentClass : GlowingFireGlow.getInstance().forStaticAssignmentClass()) {
+            fillRegisterBasics(forStaticAssignmentClass);
+        }
+        unifyRegisterSubdivision(allVoluntarilyRegisterAssetMap
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(r -> {
+                    VoluntarilyRegister voluntarilyRegister = r.getClass().getAnnotation(VoluntarilyRegister.class);
+                    return voluntarilyRegister == null ? 0 : voluntarilyRegister.priority();
+                }).reversed())
+                .collect(Collectors.toList()));
 
+        for (RegisterBasics registerBasics : allRegisterAssetSet) {
+            registerBasics.initBackToBack();
+        }
+    }
+
+    @Override
+    public void initCommonSetup() {
+        IWorldComponent.super.initCommonSetup();
+        for (RegisterBasics registerBasics : allRegisterAssetSet) {
+            registerBasics.initCommonSetup();
+        }
+    }
+
+    @Override
+    public void initDedicatedServerSetup() {
+        IWorldComponent.super.initDedicatedServerSetup();
+        for (RegisterBasics registerBasics : allRegisterAssetSet) {
+            registerBasics.initDedicatedServerSetup();
+        }
+    }
+
+    @Override
+    public void initClientSetup() {
+        IWorldComponent.super.initClientSetup();
+        for (RegisterBasics registerBasics : allRegisterAssetSet) {
+            registerBasics.initClientSetup();
+        }
+    }
+
+    @Override
+    public void initModProcessEvent() {
+        IWorldComponent.super.initModProcessEvent();
+        for (RegisterBasics registerBasics : allRegisterAssetSet) {
+            registerBasics.initModProcessEvent();
+        }
     }
 
 

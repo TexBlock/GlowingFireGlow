@@ -35,7 +35,36 @@ public class ResourceLocationUtil {
     public static String ofPath(Class<?> clazz) {
         StringBuilder stringBuilder = new StringBuilder();
         String className = clazz.getSimpleName();
-        char[] chars = className.toCharArray();
+
+        String[] cell = className.split("_");
+        for (int i = 0; i < cell.length; i++) {
+            String stringCell = cell[i];
+            if (stringCell.isEmpty()) {
+                continue;
+            }
+            if (i != 0) {
+                stringBuilder.append("_");
+            }
+
+            char[] chars = stringCell.toCharArray();
+            boolean isOldUpperCase = false;
+            for (int ii = 0; ii < chars.length; ii++) {
+                char c = chars[ii];
+                if (Character.isUpperCase(c)) {
+                    if (ii != 0 && !isOldUpperCase) {
+                        stringBuilder.append('_');
+                    }
+                    isOldUpperCase = true;
+                    stringBuilder.append(upperToLower(c));
+                    continue;
+                }
+                isOldUpperCase = false;
+                stringBuilder.append(c);
+            }
+        }
+
+
+        /*char[] chars = className.toCharArray();
         boolean isOldUpperCase = false;
         boolean isCutApart = false;
         for (int i = 0, charsLength = chars.length; i < charsLength; i++) {
@@ -49,10 +78,13 @@ public class ResourceLocationUtil {
                 stringBuilder.append(upperToLower(c));
                 continue;
             }
+            isOldUpperCase = false;
             switch (c) {
                 case '&':
+                case '$':
                 case '_':
                     if (isCutApart) {
+                        isCutApart = false;
                         continue;
                     }
                     stringBuilder.append('_');
@@ -60,11 +92,11 @@ public class ResourceLocationUtil {
                     break;
                 default:
                     stringBuilder.append(c);
-                    isOldUpperCase = false;
+                    isCutApart = false;
                     break;
 
             }
-        }
+        }*/
         return stringBuilder.toString();
     }
 

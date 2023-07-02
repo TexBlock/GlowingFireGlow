@@ -29,8 +29,8 @@ public abstract class EntityRenderRegister<E extends Entity, ET extends EntityTy
     }
 
     @Override
-    protected void initBackToSetup() {
-        super.initBackToSetup();
+    protected void initCommonSetup() {
+        super.initCommonSetup();
         RenderingRegistry.registerEntityRenderingHandler(entityTypeRegister.getEntityType(), this::createRenderFor);
     }
 

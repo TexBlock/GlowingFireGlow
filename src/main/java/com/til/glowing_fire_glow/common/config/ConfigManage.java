@@ -97,31 +97,21 @@ public class ConfigManage implements IWorldComponent {
         return jsonObject;
     }
 
-
     @Override
-    public void init(InitType initType) {
-        switch (initType) {
-            case NEW:
-                break;
-            case FML_DEDICATED_SERVER_SETUP:
-                break;
-            case FML_CLIENT_SETUP:
-                break;
-            case FML_COMMON_SETUP:
-                for (Map.Entry<File, RegisterBasics> entry : needWrite) {
-                    JsonObject jsonObject;
-                    try {
-                        jsonObject = readRegister(entry.getValue());
-                    } catch (IllegalAccessException e) {
-                        GlowingFireGlow.LOGGER.error("写人配置时出错", e);
-                        return;
-                    }
-                    IOUtil.writer(entry.getKey(), ConfigGson.getGson().toJson(jsonObject));
-                }
-                needWrite.clear();
-                needWrite = null;
-                break;
+    public void initCommonSetup() {
+        IWorldComponent.super.initCommonSetup();
+        for (Map.Entry<File, RegisterBasics> entry : needWrite) {
+            JsonObject jsonObject;
+            try {
+                jsonObject = readRegister(entry.getValue());
+            } catch (IllegalAccessException e) {
+                GlowingFireGlow.LOGGER.error("写人配置时出错", e);
+                return;
+            }
+            IOUtil.writer(entry.getKey(), ConfigGson.getGson().toJson(jsonObject));
         }
+        needWrite.clear();
+        needWrite = null;
     }
 
     @Override

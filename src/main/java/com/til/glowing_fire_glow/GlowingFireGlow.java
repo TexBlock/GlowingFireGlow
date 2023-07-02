@@ -180,7 +180,7 @@ public class GlowingFireGlow {
                 String className = type.getClassName();
                 int index = className.indexOf('$');
                 if (index != -1) {
-                    String[] strings = className.split("\\$", index);
+                    String[] strings = className.substring(index).split("\\$");
                     boolean isL = false;
                     for (String string : strings) {
                         if (StringUtil.checkStrIsNum(string)) {
@@ -205,11 +205,11 @@ public class GlowingFireGlow {
 
 
         for (Class<?> aClass : allClass) {
-            if (!ReflexUtil.isEffective(aClass)) {
-                continue;
-            }
             if (aClass.getAnnotation(StaticVoluntarilyAssignment.class) != null) {
                 staticAssignmentList.add(aClass);
+            }
+            if (!ReflexUtil.isEffective(aClass)) {
+                continue;
             }
             if (IWorldComponent.class.isAssignableFrom(aClass)) {
                 try {
@@ -232,69 +232,37 @@ public class GlowingFireGlow {
             fillWorldComponent(iWorldComponent);
         }
         for (IWorldComponent iWorldComponent : worldComponentList) {
-            iWorldComponent.init(IWorldComponent.InitType.NEW);
+            iWorldComponent.initNew();
         }
     }
 
     @SubscribeEvent
     protected void setup(final FMLCommonSetupEvent event) {
         for (IWorldComponent iWorldComponent : worldComponentList) {
-            iWorldComponent.init(IWorldComponent.InitType.FML_COMMON_SETUP);
+            iWorldComponent.initCommonSetup();
         }
     }
 
     @SubscribeEvent
     protected void doServerStuff(final FMLDedicatedServerSetupEvent event) {
         for (IWorldComponent iWorldComponent : worldComponentList) {
-            iWorldComponent.init(IWorldComponent.InitType.FML_DEDICATED_SERVER_SETUP);
+            iWorldComponent.initDedicatedServerSetup();
         }
     }
 
     @SubscribeEvent
     protected void doClientStuff(final FMLClientSetupEvent event) {
-        // do something that can only be done on the client
-        //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
         for (IWorldComponent iWorldComponent : worldComponentList) {
-            iWorldComponent.init(IWorldComponent.InitType.FML_CLIENT_SETUP);
+            iWorldComponent.initClientSetup();
         }
     }
 
     @SubscribeEvent
     protected void enqueueIMC(final InterModProcessEvent event) {
-        // some example code to dispatch IMC to another mod
-        /*InterModComms.sendTo("GlowingFireGlow", "helloworld", () -> {
-            LOGGER.info("Hello world from the MDK");
-            return "Hello world";
-        });*/
         for (IWorldComponent iWorldComponent : worldComponentList) {
-            iWorldComponent.init(IWorldComponent.InitType.INTER_MOD_PROCESS_EVENT);
+            iWorldComponent.initModProcessEvent();
         }
     }
-
-    @SubscribeEvent
-    protected void processIMC(final InterModProcessEvent event) {
-        // some example code to receive and process InterModComms from other mods
-        //LOGGER.info("Got IMC {}", event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
-
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-/*    @SubscribeEvent
-    protected void onServerStarting(FMLServerStartingEvent event) {
-        // do something when the server starts
-        LOGGER.info("HELLO from server starting");
-    }*/
-
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
-/*    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // register a new block here
-            LOGGER.info("HELLO from Register Block");
-        }
-    }*/
 
 
     /***

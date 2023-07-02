@@ -34,7 +34,7 @@ import java.util.Map;
  * @author til
  */
 @OnlyIn(Dist.CLIENT)
-public class ColorProxy implements IWorldComponent {
+public class ColorProxyManage implements IWorldComponent {
 
     protected final Map<Item, ItemColorPack> ITEM_COLOR_PACK_MAP = new HashMap<>();
     protected final Map<Block, BlockColorPack> BLOCK_COLOR_PACK_MAP = new HashMap<>();

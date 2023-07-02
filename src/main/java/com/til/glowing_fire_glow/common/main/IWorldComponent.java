@@ -4,7 +4,23 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 public interface IWorldComponent {
 
-    default void init(InitType initType) {
+    default void initNew() {
+    }
+
+    default void initCommonSetup() {
+
+    }
+
+    default void initDedicatedServerSetup() {
+
+    }
+
+    default void initClientSetup() {
+
+    }
+
+    default void initModProcessEvent() {
+
     }
 
     /***
@@ -19,13 +35,5 @@ public interface IWorldComponent {
     }
 
     default void registerModEvent(IEventBus eventBus) {
-    }
-
-    enum InitType {
-        NEW,
-        FML_COMMON_SETUP,
-        FML_DEDICATED_SERVER_SETUP,
-        FML_CLIENT_SETUP,
-        INTER_MOD_PROCESS_EVENT,
     }
 }

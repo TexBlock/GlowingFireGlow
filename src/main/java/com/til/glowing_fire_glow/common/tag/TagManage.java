@@ -35,11 +35,11 @@ public abstract class TagManage<T> implements IWorldComponent {
         return tagManager.createTag(resourceLocation.toString());
     }
 
+
     @Override
-    public void init(InitType initType) {
-        if (initType == InitType.NEW) {
-            tagManager = initTagManager();
-        }
+    public void initNew() {
+        IWorldComponent.super.initNew();
+        tagManager = initTagManager();
     }
 
     @Override

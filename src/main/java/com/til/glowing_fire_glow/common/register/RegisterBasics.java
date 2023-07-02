@@ -59,7 +59,19 @@ public class RegisterBasics {
     /***
      * 统一在Setup回调
      */
-    protected void initBackToSetup() {
+    protected void initCommonSetup() {
+
+    }
+
+    protected void initDedicatedServerSetup() {
+
+    }
+
+    protected void initClientSetup() {
+
+    }
+
+    protected void initModProcessEvent() {
 
     }
 

@@ -17,8 +17,8 @@ public abstract class OriginalCapabilityRegister<E> extends CapabilityRegister<E
     protected SaveManage saveManage;
 
     @Override
-    protected void initBackToSetup() {
-        super.initBackToSetup();
+    protected void initCommonSetup() {
+        super.initCommonSetup();
         CapabilityManager.INSTANCE.register(cClass, new Capability.IStorage<E>() {
             @Nullable
             @Override

@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.register.world.fluid;
 
-import com.til.glowing_fire_glow.client.ColorProxy;
+import com.til.glowing_fire_glow.client.ColorProxyManage;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.tag.BlockTagManage;
@@ -91,11 +91,11 @@ public abstract class FluidRegister extends RegisterBasics {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void dyeColor(ColorProxy.ItemColorPack colorPack) {
+    public void dyeColor(ColorProxyManage.ItemColorPack colorPack) {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void dyeColor(ColorProxy.BlockColorPack colorPack) {
+    public void dyeColor(ColorProxyManage.BlockColorPack colorPack) {
     }
 
     protected ForgeFlowingFluid.Properties createProperties() {
