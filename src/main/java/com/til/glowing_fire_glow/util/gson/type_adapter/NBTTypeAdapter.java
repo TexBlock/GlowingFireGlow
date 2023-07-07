@@ -21,7 +21,7 @@ public class NBTTypeAdapter extends TypeAdapter<INBT> {
             out.nullValue();
             return;
         }
-        Streams.write(NBTUtil.toJson(value), out);
+        Streams.write(NBTUtil.toJson(value, true), out);
     }
 
     @Override

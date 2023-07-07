@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.tag;
 
-import com.til.glowing_fire_glow.common.mixin.ItemTagsAccessor;
+import com.til.glowing_fire_glow.common.mixin.ItemTagsMixin;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import net.minecraft.item.Item;
 import net.minecraft.tags.TagRegistry;
@@ -18,6 +18,6 @@ public class ItemTagManage extends TagManage<Item> {
 
     @Override
     protected TagRegistry<Item> initTagManager() {
-        return ItemTagsAccessor.getREGISTRY();
+        return ItemTagsMixin.getREGISTRY();
     }
 }

@@ -14,6 +14,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,8 @@ public class ConfigManage implements IWorldComponent {
 
     public static final String CONFIG_NAME = GlowingFireGlow.MOD_ID + ".config";
 
-    protected List<Map.Entry<File, RegisterBasics>> needWrite = new ArrayList<>();
+    protected Map<RegisterBasics, File> needWrite = new HashMap<>();
+    protected Map<RegisterBasics, File> delayedWrite = new HashMap<>();
 
     public File mackFile(RegisterBasics registerBasics) {
         File basicsFile = FMLPaths.CONFIGDIR.get().toFile();
@@ -34,25 +36,10 @@ public class ConfigManage implements IWorldComponent {
         return new File(basicsFile, String.format("%s/%s/%s/%s/%s.json", CONFIG_NAME, basicsName.getPath(), name.getNamespace(), version, name.getPath()));
     }
 
-    public void write() {
-        for (Map.Entry<File, RegisterBasics> entry : needWrite) {
-            JsonObject jsonObject;
-            try {
-                jsonObject = readRegister(entry.getValue());
-            } catch (IllegalAccessException e) {
-                GlowingFireGlow.LOGGER.error("写入配置时出现问题", e);
-                continue;
-            }
-            IOUtil.writer(entry.getKey(), ConfigGson.getGson().toJson(jsonObject));
-        }
-        needWrite.clear();
-        needWrite = null;
-    }
-
     public void initRegister(RegisterBasics registerBasics) {
         File file = mackFile(registerBasics);
         if (!file.exists()) {
-            needWrite.add(new Extension.VariableData_2<>(file, registerBasics));
+            needWrite.put(registerBasics, file);
             registerBasics.defaultConfig();
             return;
         }
@@ -66,6 +53,15 @@ public class ConfigManage implements IWorldComponent {
         } catch (IllegalAccessException e) {
             GlowingFireGlow.LOGGER.error("赋值配置时出现问题", e);
         }
+    }
+
+    public void addDelayedWrite(RegisterBasics registerBasics) {
+        if (!needWrite.containsKey(registerBasics)) {
+            throw new RuntimeException("错误的延迟写入配置");
+        }
+        File file = needWrite.get(registerBasics);
+        needWrite.remove(registerBasics);
+        delayedWrite.put(registerBasics, file);
     }
 
     public void writeRegister(RegisterBasics registerBasics, JsonObject jsonObject) throws IllegalAccessException {
@@ -100,18 +96,28 @@ public class ConfigManage implements IWorldComponent {
     @Override
     public void initCommonSetup() {
         IWorldComponent.super.initCommonSetup();
-        for (Map.Entry<File, RegisterBasics> entry : needWrite) {
+        write(needWrite);
+        needWrite.clear();
+        needWrite = null;
+    }
+
+    public void writeDelayed() {
+        write(delayedWrite);
+        delayedWrite.clear();
+        delayedWrite = null;
+    }
+
+    protected void write(Map<RegisterBasics, File> registerBasicsFileMap) {
+        for (Map.Entry<RegisterBasics, File> entry : registerBasicsFileMap.entrySet()) {
             JsonObject jsonObject;
             try {
-                jsonObject = readRegister(entry.getValue());
+                jsonObject = readRegister(entry.getKey());
             } catch (IllegalAccessException e) {
                 GlowingFireGlow.LOGGER.error("写人配置时出错", e);
                 return;
             }
-            IOUtil.writer(entry.getKey(), ConfigGson.getGson().toJson(jsonObject));
+            IOUtil.writer(entry.getValue(), ConfigGson.getGson().toJson(jsonObject));
         }
-        needWrite.clear();
-        needWrite = null;
     }
 
     @Override

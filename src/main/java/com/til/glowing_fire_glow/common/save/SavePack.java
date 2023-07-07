@@ -64,7 +64,7 @@ public class SavePack<E> {
                     obj = null;
                 }
             } else {
-                obj = ConfigGson.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName())), field.getGenericType());
+                obj = ConfigGson.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName()), false), field.getGenericType());
             }
             field.setAccessible(true);
             try {

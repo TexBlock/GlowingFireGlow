@@ -4,10 +4,13 @@
   "package": "com.til.glowing_fire_glow.common.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockTagsAccessor",
-    "EntityTypeTagsAccessor",
-    "FluidTagsAccessor",
-    "ItemTagsAccessor"
+    "BlockTagsMixin",
+    "ClientModLoaderMixin",
+    "EntityTypeTagsMixin",
+    "ExcluderMixin",
+    "FluidTagsMixin",
+    "ItemTagsMixin",
+    "ServerModLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

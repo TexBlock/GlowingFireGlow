@@ -21,7 +21,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack> {
             return;
         }
         CompoundNBT compoundNBT = value.serializeNBT();
-        JsonElement jsonElement = NBTUtil.toJson(compoundNBT);
+        JsonElement jsonElement = NBTUtil.toJson(compoundNBT, true);
         Streams.write(jsonElement, out);
     }
 

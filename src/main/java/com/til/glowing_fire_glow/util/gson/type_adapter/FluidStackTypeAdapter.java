@@ -21,7 +21,7 @@ public class FluidStackTypeAdapter extends TypeAdapter<FluidStack> {
             return;
         }
         CompoundNBT compoundNBT = value.writeToNBT(new CompoundNBT());
-        JsonElement jsonElement = NBTUtil.toJson(compoundNBT);
+        JsonElement jsonElement = NBTUtil.toJson(compoundNBT, true);
         Streams.write(jsonElement, out);
     }
 

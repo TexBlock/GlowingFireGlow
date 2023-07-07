@@ -2,11 +2,14 @@ package com.til.glowing_fire_glow.util.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
-import com.til.glowing_fire_glow.common.mixin.BlockTagsAccessor;
-import com.til.glowing_fire_glow.common.mixin.EntityTypeTagsAccessor;
-import com.til.glowing_fire_glow.common.mixin.FluidTagsAccessor;
-import com.til.glowing_fire_glow.common.mixin.ItemTagsAccessor;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import com.til.glowing_fire_glow.common.mixin.BlockTagsMixin;
+import com.til.glowing_fire_glow.common.mixin.EntityTypeTagsMixin;
+import com.til.glowing_fire_glow.common.mixin.FluidTagsMixin;
+import com.til.glowing_fire_glow.common.mixin.ItemTagsMixin;
 import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.util.gson.type_adapter.*;
 import com.til.glowing_fire_glow.util.gson.type_adapter.factory.*;
@@ -16,10 +19,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -51,15 +56,16 @@ public class ConfigGson {
         gsonBuilder.registerTypeAdapter(ItemStack.class, new ItemStackTypeAdapter());
         gsonBuilder.registerTypeAdapter(FluidStack.class, new FluidStackTypeAdapter());
         gsonBuilder.registerTypeAdapter(BlockState.class, new BlockStateTypeAdapter());
+        gsonBuilder.registerTypeAdapter(Ingredient.class, new IngredientTypeAdapter());
 
         gsonBuilder.registerTypeAdapter(new TypeToken<Tag<Item>>() {
-        }.getType(), new TagTypeAdapter<>(ItemTagsAccessor.getREGISTRY()));
+        }.getType(), new TagTypeAdapter<>(ItemTagsMixin.getREGISTRY()));
         gsonBuilder.registerTypeAdapter(new TypeToken<Tag<Block>>() {
-        }.getType(), new TagTypeAdapter<>(BlockTagsAccessor.getREGISTRY()));
+        }.getType(), new TagTypeAdapter<>(BlockTagsMixin.getREGISTRY()));
         gsonBuilder.registerTypeAdapter(new TypeToken<Tag<Fluid>>() {
-        }.getType(), new TagTypeAdapter<>(FluidTagsAccessor.getREGISTRY()));
+        }.getType(), new TagTypeAdapter<>(FluidTagsMixin.getREGISTRY()));
         gsonBuilder.registerTypeAdapter(new TypeToken<Tag<EntityType<?>>>() {
-        }.getType(), new TagTypeAdapter<>(EntityTypeTagsAccessor.getREGISTRY()));
+        }.getType(), new TagTypeAdapter<>(EntityTypeTagsMixin.getREGISTRY()));
 
         gsonBuilder.registerTypeAdapterFactory(new BlockStateTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new DelayedTypeAdapterFactory());

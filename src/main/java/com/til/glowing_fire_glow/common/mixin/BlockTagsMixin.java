@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(BlockTags.class)
-public interface BlockTagsAccessor {
+public interface BlockTagsMixin {
     @Accessor
     static TagRegistry<Block> getREGISTRY() {
         throw new UnsupportedOperationException();

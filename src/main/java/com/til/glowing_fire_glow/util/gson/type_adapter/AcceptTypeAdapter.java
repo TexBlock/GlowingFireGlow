@@ -41,7 +41,7 @@ public class AcceptTypeAdapter<T> extends TypeAdapter<T> {
         if (typeToken.getRawType().equals(value.getClass())) {
             vJson = typeAdapter.toJsonTree(value);
         } else {
-            vJson = gson.getAdapter(value.getClass()).toJsonTree(Util.forcedConversion(value));
+            vJson =  gson.getAdapter(value.getClass()).toJsonTree(Util.forcedConversion(value));
         }
         if (vJson.isJsonObject()) {
             for (Map.Entry<String, JsonElement> entry : vJson.getAsJsonObject().entrySet()) {

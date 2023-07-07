@@ -1,17 +1,15 @@
 package com.til.glowing_fire_glow.common.mixin;
 
-import net.minecraft.item.Item;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagRegistry;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ItemTags.class)
-public interface ItemTagsAccessor {
+@Mixin(FluidTags.class)
+public interface FluidTagsMixin {
     @Accessor
-    @Mutable
-    static TagRegistry<Item> getREGISTRY() {
+    static TagRegistry<Fluid> getREGISTRY() {
         throw new UnsupportedOperationException();
     }
 }
