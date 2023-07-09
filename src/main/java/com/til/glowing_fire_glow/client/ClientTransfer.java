@@ -8,16 +8,12 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
-import com.til.glowing_fire_glow.util.Extension;
-import com.til.glowing_fire_glow.util.Pos;
-import com.til.glowing_fire_glow.util.RoutePack;
+import com.til.glowing_fire_glow.common.util.Pos;
+import com.til.glowing_fire_glow.common.util.RoutePack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;

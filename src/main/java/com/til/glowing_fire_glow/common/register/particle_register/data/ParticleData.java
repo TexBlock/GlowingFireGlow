@@ -1,8 +1,8 @@
 package com.til.glowing_fire_glow.common.register.particle_register.data;
 
 import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
-import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
-import com.til.glowing_fire_glow.util.Pos;
+import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
+import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;

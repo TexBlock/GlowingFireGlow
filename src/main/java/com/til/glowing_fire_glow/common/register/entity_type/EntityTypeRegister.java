@@ -2,8 +2,8 @@ package com.til.glowing_fire_glow.common.register.entity_type;
 
 import com.til.glowing_fire_glow.common.config.ConfigField;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import com.til.glowing_fire_glow.util.ReflexUtil;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

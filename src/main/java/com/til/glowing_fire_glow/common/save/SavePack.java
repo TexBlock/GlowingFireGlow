@@ -1,9 +1,11 @@
 package com.til.glowing_fire_glow.common.save;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
-import com.til.glowing_fire_glow.util.NBTUtil;
-import com.til.glowing_fire_glow.util.ReflexUtil;
-import com.til.glowing_fire_glow.util.gson.ConfigGson;
+import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.util.NBTUtil;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 
@@ -11,7 +13,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+@StaticVoluntarilyAssignment
 public class SavePack<E> {
+
+    @VoluntarilyAssignment
+    protected static GsonManage gsonManage;
+
 
     protected final List<Field> fields;
     protected final Class<E> clazz;
@@ -48,7 +55,7 @@ public class SavePack<E> {
                 compoundNBT.put(field.getName(), (INBT) obj);
                 continue;
             }
-            compoundNBT.put(field.getName(), NBTUtil.toTag(ConfigGson.getGson().toJsonTree(obj, field.getGenericType())));
+            compoundNBT.put(field.getName(), NBTUtil.toTag(gsonManage.getGson().toJsonTree(obj, field.getGenericType())));
         }
     }
 
@@ -64,7 +71,7 @@ public class SavePack<E> {
                     obj = null;
                 }
             } else {
-                obj = ConfigGson.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName()), false), field.getGenericType());
+                obj = gsonManage.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName()), false), field.getGenericType());
             }
             field.setAccessible(true);
             try {

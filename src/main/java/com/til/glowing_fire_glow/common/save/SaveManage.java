@@ -1,7 +1,7 @@
 package com.til.glowing_fire_glow.common.save;
 
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.Util;
 
 import java.util.HashMap;
 import java.util.Map;

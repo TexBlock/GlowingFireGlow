@@ -3,9 +3,9 @@ package com.til.glowing_fire_glow.common.register.message;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
-import com.til.glowing_fire_glow.util.ReflexUtil;
-import com.til.glowing_fire_glow.util.Util;
-import com.til.glowing_fire_glow.util.gson.ConfigGson;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.Util;
+import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -25,6 +25,9 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
 
     @VoluntarilyAssignment
     protected AllMessageRegister allMessageRegister;
+
+    @VoluntarilyAssignment
+    protected GsonManage gsonManage;
 
     protected int id;
     protected Class<MSG> msgClass;
@@ -57,11 +60,11 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
     }
 
     public void encoder(MSG msg, PacketBuffer friendlyByteBuf) {
-        friendlyByteBuf.writeString(ConfigGson.getGson().toJson(msg));
+        friendlyByteBuf.writeString(gsonManage.getGson().toJson(msg));
     }
 
     public MSG decoder(PacketBuffer friendlyByteBuf) {
-        return ConfigGson.getGson().fromJson(friendlyByteBuf.readString(), msgClass);
+        return gsonManage.getGson().fromJson(friendlyByteBuf.readString(), msgClass);
     }
 
     /***

@@ -4,24 +4,25 @@ import com.google.gson.JsonObject;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import com.til.glowing_fire_glow.util.Extension;
-import com.til.glowing_fire_glow.util.IOUtil;
-import com.til.glowing_fire_glow.util.ReflexUtil;
-import com.til.glowing_fire_glow.util.gson.ConfigGson;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.util.IOUtil;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author til
  */
 public class ConfigManage implements IWorldComponent {
+
+    @VoluntarilyAssignment
+    protected GsonManage gsonManage;
 
     public static final String CONFIG_NAME = GlowingFireGlow.MOD_ID + ".config";
 
@@ -47,7 +48,7 @@ public class ConfigManage implements IWorldComponent {
         if (s.isEmpty()) {
             return;
         }
-        JsonObject jsonObject = ConfigGson.getGson().fromJson(s, JsonObject.class);
+        JsonObject jsonObject = gsonManage.getGson().fromJson(s, JsonObject.class);
         try {
             writeRegister(registerBasics, jsonObject);
         } catch (IllegalAccessException e) {
@@ -73,7 +74,7 @@ public class ConfigManage implements IWorldComponent {
                 continue;
             }
             field.setAccessible(true);
-            field.set(registerBasics, ConfigGson.getGson().fromJson(jsonObject.get(field.getName()), field.getGenericType()));
+            field.set(registerBasics, gsonManage.getGson().fromJson(jsonObject.get(field.getName()), field.getGenericType()));
         }
     }
 
@@ -88,7 +89,7 @@ public class ConfigManage implements IWorldComponent {
             if (v == null) {
                 continue;
             }
-            jsonObject.add(field.getName(), ConfigGson.getGson().toJsonTree(v));
+            jsonObject.add(field.getName(), gsonManage.getGson().toJsonTree(v));
         }
         return jsonObject;
     }
@@ -116,7 +117,7 @@ public class ConfigManage implements IWorldComponent {
                 GlowingFireGlow.LOGGER.error("写人配置时出错", e);
                 return;
             }
-            IOUtil.writer(entry.getValue(), ConfigGson.getGson().toJson(jsonObject));
+            IOUtil.writer(entry.getValue(), gsonManage.getGson().toJson(jsonObject));
         }
     }
 

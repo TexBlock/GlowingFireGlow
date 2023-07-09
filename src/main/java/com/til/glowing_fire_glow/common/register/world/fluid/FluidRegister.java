@@ -6,7 +6,7 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.tag.BlockTagManage;
 import com.til.glowing_fire_glow.common.tag.FluidTagManage;
 import com.til.glowing_fire_glow.common.tag.ItemTagManage;
-import com.til.glowing_fire_glow.util.ResourceLocationUtil;
+import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;

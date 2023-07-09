@@ -1,12 +1,11 @@
 package com.til.glowing_fire_glow.client.register.entity_render;
 
 import com.til.glowing_fire_glow.common.register.entity_type.EntityTypeRegister;
-import com.til.glowing_fire_glow.util.ReflexUtil;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

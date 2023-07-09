@@ -4,8 +4,8 @@ import com.til.glowing_fire_glow.client.register.particle_register.ParticleClien
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.particle_registers.EmptyParticleRegister;
-import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
-import com.til.glowing_fire_glow.util.Pos;
+import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
+import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

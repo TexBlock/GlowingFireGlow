@@ -1,7 +1,7 @@
 package com.til.glowing_fire_glow.common.register.capability;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraftforge.common.capabilities.Capability;
 
 import java.lang.reflect.ParameterizedType;

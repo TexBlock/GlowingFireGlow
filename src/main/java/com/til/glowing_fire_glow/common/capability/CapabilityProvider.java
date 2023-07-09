@@ -1,7 +1,7 @@
 package com.til.glowing_fire_glow.common.capability;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

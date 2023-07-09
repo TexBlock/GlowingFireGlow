@@ -4,20 +4,12 @@ import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.world.item.AllItemRegister;
 import com.til.glowing_fire_glow.common.register.world.item.ItemRegister;
-import com.til.glowing_fire_glow.util.Extension;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ItemParticleData;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 

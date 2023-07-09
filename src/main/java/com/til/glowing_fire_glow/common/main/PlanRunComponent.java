@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.main;
 
-import com.til.glowing_fire_glow.util.Extension;
+import com.til.glowing_fire_glow.common.util.Extension;
 
 import java.util.ArrayList;
 import java.util.List;

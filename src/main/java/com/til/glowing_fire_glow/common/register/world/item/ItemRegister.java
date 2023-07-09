@@ -5,17 +5,12 @@ import com.til.glowing_fire_glow.client.ItemPropertyOverrideManage;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.tag.ItemTagManage;
-import com.til.glowing_fire_glow.util.ResourceLocationUtil;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.IItemPropertyGetter;
+import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
 
 public abstract class ItemRegister extends RegisterBasics {
     protected ResourceLocation itemName;

@@ -9,9 +9,9 @@ import com.til.glowing_fire_glow.common.register.particle_register.AllParticleRe
 import com.til.glowing_fire_glow.common.register.particle_register.ParticleRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
 import com.til.glowing_fire_glow.common.register.particle_register.particle_registers.EmptyParticleRegister;
-import com.til.glowing_fire_glow.util.GlowingFireGlowColor;
-import com.til.glowing_fire_glow.util.Pos;
-import com.til.glowing_fire_glow.util.RoutePack;
+import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
+import com.til.glowing_fire_glow.common.util.Pos;
+import com.til.glowing_fire_glow.common.util.RoutePack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

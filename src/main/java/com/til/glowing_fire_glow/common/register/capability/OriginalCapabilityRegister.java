@@ -2,7 +2,7 @@ package com.til.glowing_fire_glow.common.register.capability;
 
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.save.SaveManage;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

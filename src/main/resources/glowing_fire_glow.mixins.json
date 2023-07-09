@@ -7,7 +7,6 @@
     "BlockTagsMixin",
     "ClientModLoaderMixin",
     "EntityTypeTagsMixin",
-    "ExcluderMixin",
     "FluidTagsMixin",
     "ItemTagsMixin",
     "ServerModLoaderMixin"

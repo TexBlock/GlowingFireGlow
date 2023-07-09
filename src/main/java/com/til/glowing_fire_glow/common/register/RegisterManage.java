@@ -2,9 +2,9 @@ package com.til.glowing_fire_glow.common.register;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
-import com.til.glowing_fire_glow.util.ReflexUtil;
-import com.til.glowing_fire_glow.util.ResourceLocationUtil;
-import com.til.glowing_fire_glow.util.Util;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 

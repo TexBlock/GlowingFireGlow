@@ -5,7 +5,7 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.tag.BlockTagManage;
 import com.til.glowing_fire_glow.common.tag.ItemTagManage;
-import com.til.glowing_fire_glow.util.ResourceLocationUtil;
+import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.ResourceLocation;
