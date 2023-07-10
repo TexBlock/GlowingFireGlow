@@ -7,12 +7,14 @@ import com.til.glowing_fire_glow.common.register.key.KeyData;
 import com.til.glowing_fire_glow.common.register.key.KeyRegister;
 import com.til.glowing_fire_glow.common.register.message.messages.KeyMessage;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
+import com.til.glowing_fire_glow.common.util.StringUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,7 +31,14 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
     protected KeyRegister keyRegister;
 
     protected int inputId;
+
+    protected InputMappings.Type type;
+    protected KeyModifier keyModifier;
+    protected IKeyConflictContext keyConflictContext;
+    protected String category;
+
     protected KeyBinding keyMapping;
+
     protected boolean isKeyDown;
 
     @VoluntarilyAssignment
@@ -41,13 +50,18 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
         keyRegisterClass = initKeyClass();
         keyRegister = GlowingFireGlow.getInstance().getReflexManage().getVoluntarilyRegisterOfClass(keyRegisterClass);
         inputId = initInputId();
-        keyMapping = new KeyBinding(getName().toString(),
-                KeyConflictContext.IN_GAME,
-                KeyModifier.CONTROL,
-                InputMappings.Type.KEYSYM,
+        type = initType();
+        keyModifier = initKeyModifier();
+        keyConflictContext = initKeyConflictContext();
+        category = initCategory();
+        keyMapping = new KeyBinding(StringUtil.formatLang(getName()),
+                keyConflictContext,
+                keyModifier,
+                type,
                 inputId,
-                getName().getNamespace());
+                category);
     }
+
 
     protected Class<K> initKeyClass() {
         Type superclass = getClass().getGenericSuperclass();
@@ -61,6 +75,21 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
 
     protected abstract int initInputId();
 
+    protected InputMappings.Type initType() {
+        return InputMappings.Type.KEYSYM;
+    }
+
+    protected KeyModifier initKeyModifier() {
+        return KeyModifier.NONE;
+    }
+
+    protected IKeyConflictContext initKeyConflictContext() {
+        return KeyConflictContext.IN_GAME;
+    }
+
+    protected String initCategory() {
+        return getName().getNamespace();
+    }
 
     @Override
     protected void initBackToBack() {
@@ -99,5 +128,11 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
     @OnlyIn(Dist.CLIENT)
     protected abstract void release();
 
+    public boolean isKeyDown() {
+        return isKeyDown;
+    }
 
+    public KeyBinding getKeyMapping() {
+        return keyMapping;
+    }
 }
