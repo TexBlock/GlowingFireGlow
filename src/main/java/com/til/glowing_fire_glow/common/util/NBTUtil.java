@@ -1,9 +1,6 @@
 package com.til.glowing_fire_glow.common.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
@@ -139,8 +136,14 @@ public class NBTUtil {
     public static final String LIST = "$list";
 
     public static JsonElement toJson(INBT tag, boolean hasType) {
+        if (tag == null) {
+            return JsonNull.INSTANCE;
+        }
         if (tag instanceof StringNBT) {
             StringNBT stringTag = (StringNBT) tag;
+            if (stringTag.getString().equals("null")) {
+                return JsonNull.INSTANCE;
+            }
             return new JsonPrimitive(stringTag.getString());
         }
         if (tag instanceof NumberNBT) {

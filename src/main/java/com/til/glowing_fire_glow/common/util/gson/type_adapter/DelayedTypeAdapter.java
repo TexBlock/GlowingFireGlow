@@ -6,10 +6,12 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.Streams;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.til.glowing_fire_glow.common.util.Delayed;
 import com.til.glowing_fire_glow.common.util.Util;
 
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
@@ -35,12 +37,19 @@ public class DelayedTypeAdapter<E> extends TypeAdapter<Delayed<E>> {
     }
 
     @Override
-    public void write(JsonWriter out, Delayed<E> value) {
+    public void write(JsonWriter out, Delayed<E> value) throws IOException {
+        if (value == null) {
+            out.nullValue();
+            return;
+        }
         gson.toJson(value.get(), type, out);
     }
 
     @Override
-    public Delayed<E> read(JsonReader in) {
+    public Delayed<E> read(JsonReader in) throws IOException {
+        if (in.peek().equals(JsonToken.NULL)) {
+            return null;
+        }
         JsonElement value = Streams.parse(in);
         return new Delayed<E>(Util.forcedConversion((Supplier<E>) () -> gson.fromJson(value, type))) {
         };

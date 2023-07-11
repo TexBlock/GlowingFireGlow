@@ -25,7 +25,7 @@ public class ResourceLocationTypeAdapter extends TypeAdapter<ResourceLocation> {
     @Override
     public ResourceLocation read(JsonReader in) throws IOException {
         if (in.peek() == JsonToken.NULL) {
-            return new ResourceLocation("null");
+            return null;
         }
         return new ResourceLocation(in.nextString());
     }
