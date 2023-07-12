@@ -92,10 +92,9 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
     }
 
     @Override
-    protected void initBackToBack() {
+    protected void initClientSetup() {
         ClientRegistry.registerKeyBinding(keyMapping);
     }
-
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

@@ -11,11 +11,4 @@ import net.minecraftforge.items.IItemHandler;
  */
 @VoluntarilyRegister
 public class ItemHandlerCapabilityRegister extends CapabilityRegister<IItemHandler> {
-
-    @Override
-    protected Capability<IItemHandler> initCapability() {
-        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-    }
-
-
 }

@@ -12,10 +12,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 @VoluntarilyRegister
 public class FluidHandlerItemCapabilityRegister extends CapabilityRegister<IFluidHandlerItem> {
 
-    @Override
-    protected Capability<IFluidHandlerItem> initCapability() {
-        return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
-    }
 
 
 }

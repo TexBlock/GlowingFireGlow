@@ -15,13 +15,4 @@ import net.minecraftforge.energy.IEnergyStorage;
  */
 @VoluntarilyRegister
 public class TimeRunCapabilityRegister extends OriginalCapabilityRegister<ITimeRun> {
-
-
-    @CapabilityInject(ITimeRun.class)
-    public static Capability<ITimeRun> timeRunCapability;
-
-    @Override
-    protected Capability<ITimeRun> initCapability() {
-        return timeRunCapability;
-    }
 }

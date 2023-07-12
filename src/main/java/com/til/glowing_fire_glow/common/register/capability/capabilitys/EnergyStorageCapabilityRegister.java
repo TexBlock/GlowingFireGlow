@@ -12,10 +12,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 @VoluntarilyRegister
 public class EnergyStorageCapabilityRegister extends CapabilityRegister<IEnergyStorage> {
 
-    @Override
-    protected Capability<IEnergyStorage> initCapability() {
-        return CapabilityEnergy.ENERGY;
-    }
 
 
 

@@ -9,32 +9,34 @@ import java.lang.reflect.Type;
 
 
 public abstract class CapabilityRegister<C> extends RegisterBasics {
-    protected Class<C> cClass;
+    protected Class<C> capabilityClass;
     protected Capability<C> capability;
 
     @Override
     public void beforeConfigInit() {
         super.beforeConfigInit();
-        cClass = initClass();
+        capabilityClass = initCapabilityClass();
     }
 
-    protected Class<C> initClass() {
+    protected Class<C> initCapabilityClass() {
         Type superclass = getClass().getGenericSuperclass();
         if (superclass instanceof Class) {
             throw new RuntimeException("Missing type parameter.");
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
-        Type actualTypeArguments = parameterized.getActualTypeArguments()[0];
-        return Util.forcedConversion(actualTypeArguments);
+        Type parameterizedType = parameterized.getActualTypeArguments()[0];
+        return Util.forcedConversion(parameterizedType);
     }
 
-    protected abstract Capability<C> initCapability();
+    public void setCapability(Capability<C> capability) {
+        this.capability = capability;
+    }
 
     public Capability<C> getCapability() {
-        if (capability == null) {
-            capability = initCapability();
-        }
         return capability;
     }
 
+    public Class<C> getCapabilityClass() {
+        return capabilityClass;
+    }
 }
