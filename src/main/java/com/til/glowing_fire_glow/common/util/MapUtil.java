@@ -5,7 +5,7 @@ import java.util.*;
 public class MapUtil {
 
 
-    public <K, V> Map<K, V> of(K k, V v) {
+    public static  <K, V> Map<K, V> of(K k, V v) {
         HashMap<K, V> hashMap = new HashMap<>();
         hashMap.put(k, v);
         return hashMap;

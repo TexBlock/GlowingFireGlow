@@ -1,9 +1,9 @@
 package com.til.glowing_fire_glow.common.capability.time_run;
 
 public class TimerCell {
-    /// <summary>
-    /// 计时结束的回调
-    /// </summary>
+    /***
+     *  计时结束的回调
+     */
     protected Runnable run;
 
     /***

@@ -126,3 +126,4 @@ public class ConfigManage implements IWorldComponent {
         return -500;
     }
 }
+

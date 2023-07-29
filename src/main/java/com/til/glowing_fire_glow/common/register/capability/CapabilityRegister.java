@@ -1,6 +1,7 @@
 package com.til.glowing_fire_glow.common.register.capability;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
+import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -25,7 +26,7 @@ public abstract class CapabilityRegister<C> extends RegisterBasics {
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
         Type parameterizedType = parameterized.getActualTypeArguments()[0];
-        return Util.forcedConversion(parameterizedType);
+        return Util.forcedConversion(ReflexUtil.asClass(parameterizedType));
     }
 
     public void setCapability(Capability<C> capability) {
