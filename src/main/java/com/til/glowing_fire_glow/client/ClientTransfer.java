@@ -5,19 +5,27 @@ import com.til.glowing_fire_glow.client.register.particle_register.AllParticleCl
 import com.til.glowing_fire_glow.client.register.particle_register.ParticleClientRegister;
 import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.capability.synchronous.SynchronousCapabilityRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
+import com.til.glowing_fire_glow.common.synchronous.SynchronousData;
 import com.til.glowing_fire_glow.common.util.Pos;
 import com.til.glowing_fire_glow.common.util.RoutePack;
+import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /***
  * 客户端中转站
@@ -119,5 +127,21 @@ public class ClientTransfer {
         }
     }
 
+    public static void messageConsumer(SynchronousData synchronousData) {
+        World world = Minecraft.getInstance().world;
+        if (world == null) {
+            return;
+        }
+        Entity entity = world.getEntityByID(synchronousData.getEntityId());
+        if (entity == null) {
+            return;
+        }
+        for (Map.Entry<SynchronousCapabilityRegister<?, ?>, CompoundNBT> entry : synchronousData.getData().entrySet()) {
+            LazyOptional<?> lazyOptional = entity.getCapability(entry.getKey().getCapabilityRegister().getCapability());
+            lazyOptional.ifPresent(c -> {
+                entry.getKey().defaultReadNBT(Util.forcedConversion(c), entry.getValue());
+            });
+        }
+    }
 
 }

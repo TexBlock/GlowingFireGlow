@@ -23,19 +23,32 @@ public abstract class OriginalCapabilityRegister<E> extends CapabilityRegister<E
             @Nullable
             @Override
             public INBT writeNBT(Capability<E> capability, E instance, Direction side) {
-                CompoundNBT compoundNBT = new CompoundNBT();
-                saveManage.getSavePack(instance.getClass()).write(Util.forcedConversion(instance), compoundNBT);
-                return compoundNBT;
+                return defaultWriteNBT(capability, instance, side);
             }
 
             @Override
             public void readNBT(Capability<E> capability, E instance, Direction side, INBT nbt) {
-                if (!(nbt instanceof CompoundNBT)) {
-                    return;
-                }
-                saveManage.getSavePack(instance.getClass()).read(Util.forcedConversion(instance), (CompoundNBT) nbt);
+                defaultReadNBT(capability, instance, side, nbt);
             }
-        }, () -> null);
+        }, this::defaultFactory);
 
+    }
+
+    @Nullable
+    protected INBT defaultWriteNBT(Capability<E> capability, E instance, Direction side) {
+        CompoundNBT compoundNBT = new CompoundNBT();
+        saveManage.getSavePack(instance.getClass()).write(Util.forcedConversion(instance), compoundNBT);
+        return compoundNBT;
+    }
+
+    protected void defaultReadNBT(Capability<E> capability, E instance, Direction side, INBT nbt) {
+        if (!(nbt instanceof CompoundNBT)) {
+            return;
+        }
+        saveManage.getSavePack(instance.getClass()).read(Util.forcedConversion(instance), (CompoundNBT) nbt);
+    }
+
+    protected E defaultFactory() {
+        return null;
     }
 }

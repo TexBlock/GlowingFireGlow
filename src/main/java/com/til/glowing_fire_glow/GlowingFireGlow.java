@@ -292,15 +292,15 @@ public class GlowingFireGlow {
         return modContainer.getModInfo().getVersion().toString();
     }
 
-    public Iterable<Class<?>> forAllClass() {
+    public Collection<Class<?>> forAllClass() {
         return allClass;
     }
 
-    public Iterable<Class<?>> forStaticAssignmentClass() {
+    public Collection<Class<?>> forStaticAssignmentClass() {
         return staticAssignmentList;
     }
 
-    public Iterable<IWorldComponent> forWorldComponent() {
+    public Collection<IWorldComponent> forWorldComponent() {
         return worldComponentList;
     }
 

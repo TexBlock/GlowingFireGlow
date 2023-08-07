@@ -16,5 +16,8 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "glowing_fire_glow.refmap.json"
+  "refmap": "glowing_fire_glow.refmap.json",
+  "client": [
+    "EntityRendererManagerMixin"
+  ]
 }

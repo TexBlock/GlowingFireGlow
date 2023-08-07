@@ -42,6 +42,12 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
     @ConfigField
     protected boolean shouldReceiveVelocityUpdates;
 
+    @ConfigField
+    protected boolean disableSerialization;
+
+    @ConfigField
+    protected boolean immuneToFire;
+
     @Override
     public void init() {
         super.init();
@@ -52,14 +58,19 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
     }
 
     protected EntityType<E> initEntityType() {
-        return EntityType.Builder
-                .create(this::create, entityClassification)
-                .size(width, height)
-                .setTrackingRange(trackingRange)
-                .setUpdateInterval(updateInterval)
-                .setShouldReceiveVelocityUpdates(shouldReceiveVelocityUpdates)
-                .setCustomClientFactory(this::createInClient)
-                .build(getName().toString());
+        EntityType.Builder<E> builder = EntityType.Builder.create(this::create, entityClassification);
+        builder.size(width, height);
+        builder.setTrackingRange(trackingRange);
+        builder.setUpdateInterval(updateInterval);
+        builder.setShouldReceiveVelocityUpdates(shouldReceiveVelocityUpdates);
+        builder.setCustomClientFactory(this::createInClient);
+        if (disableSerialization) {
+            builder.disableSerialization();
+        }
+        if (immuneToFire) {
+            builder.immuneToFire();
+        }
+        return builder.build(getName().toString());
     }
 
     protected Class<E> initClass() {
@@ -91,5 +102,7 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
         trackingRange = 5;
         updateInterval = 3;
         shouldReceiveVelocityUpdates = true;
+        disableSerialization = false;
+        immuneToFire = false;
     }
 }

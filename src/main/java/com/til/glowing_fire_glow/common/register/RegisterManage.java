@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import javax.annotation.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public abstract class RegisterManage<R extends RegisterBasics> implements IWorld
         return registerMap.get(resourceLocation);
     }
 
-    public Iterable<R> forAll() {
+    public Collection<R> forAll() {
         return registerMap.values();
     }
 

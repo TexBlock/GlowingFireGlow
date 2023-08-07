@@ -3,11 +3,13 @@ package com.til.glowing_fire_glow.common.register.message;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -72,7 +74,7 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
      * @param msg 消息
      * @param supplier 运行序列
      */
-    public abstract void messageConsumer(MSG msg, Supplier<NetworkEvent.Context> supplier);
+    protected abstract void messageConsumer(MSG msg, Supplier<NetworkEvent.Context> supplier);
 
     public void sendToServer(MSG msg) {
         allMessageRegister.INSTANCE.sendToServer(msg);
@@ -81,6 +83,7 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
     public void sendToPlayerClient(MSG msg, ServerPlayerEntity player) {
         allMessageRegister.INSTANCE.sendTo(msg, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
+
 
 
 }
