@@ -4,9 +4,12 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 
 public abstract class CapabilityRegister<C> extends RegisterBasics {
@@ -40,4 +43,15 @@ public abstract class CapabilityRegister<C> extends RegisterBasics {
     public Class<C> getCapabilityClass() {
         return capabilityClass;
     }
+
+    public Supplier<C> supplierCapability(ICapabilityProvider capabilityProvider) {
+        AtomicReference<C> cAtomicReference = new AtomicReference<>();
+        return () -> {
+            if (cAtomicReference.get() == null) {
+                capabilityProvider.getCapability(getCapability()).ifPresent(cAtomicReference::set);
+            }
+            return cAtomicReference.get();
+        };
+    }
+
 }

@@ -4,7 +4,8 @@ import com.til.glowing_fire_glow.common.capability.synchronous.ISynchronousManag
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.capability.CapabilityRegister;
+import com.til.glowing_fire_glow.common.register.capability.OriginalCapabilityRegister;
 
 @VoluntarilyRegister
-public class SynchronousManageCapabilityRegister extends CapabilityRegister<ISynchronousManage> {
+public class SynchronousManageCapabilityRegister extends OriginalCapabilityRegister<ISynchronousManage> {
 }

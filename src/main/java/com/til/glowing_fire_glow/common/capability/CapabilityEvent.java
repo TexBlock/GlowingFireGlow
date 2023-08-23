@@ -18,6 +18,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityEvent implements IWorldComponent {
@@ -35,7 +36,7 @@ public class CapabilityEvent implements IWorldComponent {
 
 
     @SubscribeEvent
-    protected void onAttachCapabilitiesEvent_itemStack(AttachCapabilitiesEvent<Entity> event) {
+    protected void onAttachCapabilitiesEvent_event(AttachCapabilitiesEvent<Entity> event) {
         if (!(event.getObject() instanceof LivingEntity)) {
             return;
         }
@@ -59,5 +60,4 @@ public class CapabilityEvent implements IWorldComponent {
         capabilityProvider.addCapability(synchronousManageCapabilityRegister.getCapability(), iSynchronousManage);
         event.addCapability(CAPABILITY, capabilityProvider);
     }
-
 }

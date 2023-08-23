@@ -40,6 +40,9 @@ public class EntityRenderDataCache implements IWorldComponent {
             }
             cacheData.put(entityIn, map);
         }
+        if (map.isEmpty()) {
+            return;
+        }
         for (Map.Entry<CapabilityRenderRegister<?, ?>, Object> entry : map.entrySet()) {
             entry.getKey().render(entityIn, Util.forcedConversion(entry.getValue()), partialTicks, matrixStackIn, bufferIn, packedLightIn);
         }

@@ -25,7 +25,10 @@ public class RecipeManagerMixin {
     @Shadow
     private Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipes;
 
-    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resources/IResourceManager;Lnet/minecraft/profiler/IProfiler;)V", at = @At("RETURN"))
+    @Inject(
+            method = "apply(Ljava/util/Map;Lnet/minecraft/resources/IResourceManager;Lnet/minecraft/profiler/IProfiler;)V",
+            at = @At("RETURN")
+    )
     private void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn, CallbackInfo ci) {
         Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> addRecipes = new HashMap<>();
 

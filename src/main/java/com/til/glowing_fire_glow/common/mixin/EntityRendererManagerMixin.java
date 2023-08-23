@@ -21,25 +21,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(EntityRendererManager.class)
-@OnlyIn(Dist.CLIENT)
 public class EntityRendererManagerMixin {
 
-    protected static EntityRenderDataCache entityRenderDataCache;
+    protected EntityRenderDataCache entityRenderDataCache;
 
     @Inject(
             method = "renderEntityStatic",
             at = @At(
                     value = "INVOKE",
-                    shift = At.Shift.BEFORE,
-                    target = "Lcom/mojang/blaze3d/matrix/MatrixStack;pop()V",
-                    opcode = 1
+                    target = "Lcom/mojang/blaze3d/matrix/MatrixStack;translate(DDD)V",
+                    ordinal = 1
             )
     )
-    public <E extends Entity> void renderEntityStatic(E entityIn, double xIn, double yIn, double zIn, float rotationYawIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, CallbackInfo ci) {
+    private <E extends Entity> void renderEntityStatic(E entityIn, double xIn, double yIn, double zIn, float rotationYawIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, CallbackInfo ci) {
         if (entityRenderDataCache == null) {
-            GlowingFireGlow.getInstance().getWorldComponent(EntityRenderDataCache.class);
+            entityRenderDataCache = GlowingFireGlow.getInstance().getWorldComponent(EntityRenderDataCache.class);
         }
         entityRenderDataCache.render(entityIn, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        //GlowingFireGlow.getInstance().getWorldComponent(EntityRenderDataCache.class).render(entityIn, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
 }

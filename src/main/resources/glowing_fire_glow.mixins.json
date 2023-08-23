@@ -7,17 +7,16 @@
     "BlockTagsMixin",
     "CapabilityManagerMixin",
     "ClientModLoaderMixin",
+    "EntityRendererManagerMixin",
     "EntityTypeTagsMixin",
     "FluidTagsMixin",
     "ItemTagsMixin",
+    "LootTableManagerMixin",
     "RecipeManagerMixin",
     "ServerModLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "glowing_fire_glow.refmap.json",
-  "client": [
-    "EntityRendererManagerMixin"
-  ]
+  "refmap": "glowing_fire_glow.refmap.json"
 }

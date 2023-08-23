@@ -11,6 +11,7 @@ import com.til.glowing_fire_glow.common.mixin.BlockTagsMixin;
 import com.til.glowing_fire_glow.common.mixin.EntityTypeTagsMixin;
 import com.til.glowing_fire_glow.common.mixin.FluidTagsMixin;
 import com.til.glowing_fire_glow.common.mixin.ItemTagsMixin;
+import com.til.glowing_fire_glow.common.register.loot_table.LootTableRegister;
 import com.til.glowing_fire_glow.common.util.gson.type_adapter.*;
 import com.til.glowing_fire_glow.common.util.gson.type_adapter.factory.*;
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
@@ -21,6 +22,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.loot.LootTable;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -63,6 +65,7 @@ public class GsonManage implements IWorldComponent {
         gsonBuilder.registerTypeAdapter(FluidStack.class, new FluidStackTypeAdapter());
         gsonBuilder.registerTypeAdapter(BlockState.class, new BlockStateTypeAdapter());
         gsonBuilder.registerTypeAdapter(Ingredient.class, new IngredientTypeAdapter());
+        gsonBuilder.registerTypeAdapter(LootTable.class, new LootTable.Serializer());
 
         gsonBuilder.registerTypeAdapter(new TypeToken<Tag<Item>>() {
         }.getType(), new TagTypeAdapter<>(ItemTagsMixin.getREGISTRY()));
