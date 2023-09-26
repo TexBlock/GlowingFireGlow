@@ -2,12 +2,7 @@ package com.til.glowing_fire_glow.common.util;
 
 import net.minecraft.util.ResourceLocation;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class StringUtil {
 

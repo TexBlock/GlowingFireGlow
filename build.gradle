@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'glowing_fire_glow'
-version = '0.0.1'
+version = '1.0.3'
 
 java {
     archivesBaseName = 'GlowingFireGlow'
@@ -173,7 +173,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "recasting",
+                "Specification-Title"     : "glowing_fire_glow",
                 //"Specification-Vendor": "recasting authors",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
@@ -184,7 +184,7 @@ jar {
     }
 }
 
-//jar.finalizedBy('reobfJar')
+jar.finalizedBy('reobfJar')
 
 
 tasks.withType(JavaCompile).configureEach {

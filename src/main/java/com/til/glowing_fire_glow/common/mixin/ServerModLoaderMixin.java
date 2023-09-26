@@ -2,9 +2,7 @@ package com.til.glowing_fire_glow.common.mixin;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import net.minecraftforge.fml.server.ServerModLoader;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

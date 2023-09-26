@@ -3,13 +3,11 @@ package com.til.glowing_fire_glow.common.register.message;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
-import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 

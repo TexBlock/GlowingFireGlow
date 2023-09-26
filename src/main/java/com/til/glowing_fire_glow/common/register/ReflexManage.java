@@ -56,7 +56,7 @@ public class ReflexManage implements IWorldComponent {
                     continue;
                 }
                 if (registerManage.getBasicsRegisterManageClass() == null) {
-                    registerManageMap.put(Util.forcedConversion(oldRegisterManage), registerManage);
+                    registerManageMap.put(Util.forcedConversion(registerClass), registerManage);
                 }
             }
             if (RegisterBasics.class.isAssignableFrom(clazz)) {
@@ -74,6 +74,9 @@ public class ReflexManage implements IWorldComponent {
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
+            } catch (NoClassDefFoundError i) {
+                GlowingFireGlow.LOGGER.error("NoClassDefFoundError of [" + clazz + "]", i);
+                continue;
             }
             allVoluntarilyRegisterAssetMap.put(clazz, registerBasics);
         }
@@ -86,6 +89,7 @@ public class ReflexManage implements IWorldComponent {
         unifyRegisterSubdivision(allVoluntarilyRegisterAssetMap
                 .values()
                 .stream()
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(r -> {
                     VoluntarilyRegister voluntarilyRegister = r.getClass().getAnnotation(VoluntarilyRegister.class);
                     return voluntarilyRegister == null ? 0 : voluntarilyRegister.priority();

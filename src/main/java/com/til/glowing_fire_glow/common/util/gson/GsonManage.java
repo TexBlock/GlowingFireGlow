@@ -1,21 +1,17 @@
 package com.til.glowing_fire_glow.common.util.gson;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.internal.Excluder;
 import com.google.gson.reflect.TypeToken;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.mixin.BlockTagsMixin;
 import com.til.glowing_fire_glow.common.mixin.EntityTypeTagsMixin;
 import com.til.glowing_fire_glow.common.mixin.FluidTagsMixin;
 import com.til.glowing_fire_glow.common.mixin.ItemTagsMixin;
-import com.til.glowing_fire_glow.common.register.loot_table.LootTableRegister;
+import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.gson.type_adapter.*;
 import com.til.glowing_fire_glow.common.util.gson.type_adapter.factory.*;
-import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
-import jdk.nashorn.internal.ir.Block;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;

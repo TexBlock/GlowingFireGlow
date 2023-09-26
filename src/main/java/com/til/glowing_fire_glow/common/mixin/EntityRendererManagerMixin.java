@@ -2,23 +2,14 @@ package com.til.glowing_fire_glow.common.mixin;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.til.glowing_fire_glow.GlowingFireGlow;
-import com.til.glowing_fire_glow.client.register.capability.render.AllCapabilityRenderRegister;
-import com.til.glowing_fire_glow.client.register.capability.render.CapabilityRenderRegister;
 import com.til.glowing_fire_glow.client.util.EntityRenderDataCache;
-import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mixin(EntityRendererManager.class)
 public class EntityRendererManagerMixin {

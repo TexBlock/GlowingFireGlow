@@ -1,20 +1,14 @@
 package com.til.glowing_fire_glow.common.synchronous;
 
 import com.til.glowing_fire_glow.common.capability.synchronous.ISynchronousManage;
-import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
-import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
-import com.til.glowing_fire_glow.common.register.capability.CapabilityRegister;
-import com.til.glowing_fire_glow.common.register.capability.synchronous.AllSynchronousCapabilityRegister;
 import com.til.glowing_fire_glow.common.register.capability.synchronous.SynchronousCapabilityRegister;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SynchronousData {
 

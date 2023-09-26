@@ -7,8 +7,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.til.glowing_fire_glow.GlowingFireGlow;
-import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import com.til.glowing_fire_glow.common.util.Util;
+import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 
 import java.io.IOException;
 import java.util.Map;

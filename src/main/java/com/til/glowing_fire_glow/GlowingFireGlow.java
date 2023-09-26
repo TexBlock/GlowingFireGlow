@@ -166,7 +166,6 @@ public class GlowingFireGlow {
                 }
             }
 
-
             for (ModFileScanData.ClassData aClass : modFileScanData.getClasses()) {
                 Type type;
                 try {

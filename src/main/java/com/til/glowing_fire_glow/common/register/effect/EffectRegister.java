@@ -2,7 +2,6 @@ package com.til.glowing_fire_glow.common.register.effect;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import net.minecraft.potion.Effect;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class EffectRegister extends RegisterBasics {

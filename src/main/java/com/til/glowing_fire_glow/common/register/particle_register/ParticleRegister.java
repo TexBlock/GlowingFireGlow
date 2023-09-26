@@ -10,8 +10,6 @@ import com.til.glowing_fire_glow.common.register.particle_register.data.Particle
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
 import com.til.glowing_fire_glow.common.util.RoutePack;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;

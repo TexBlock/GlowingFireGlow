@@ -5,7 +5,6 @@ import com.til.glowing_fire_glow.common.register.ReflexManage;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.capability.CapabilityRegister;
-import com.til.glowing_fire_glow.common.register.capability.synchronous.SynchronousCapabilityRegister;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

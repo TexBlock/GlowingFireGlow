@@ -10,7 +10,7 @@ public class NumberPack {
         this.multiply = multiply;
     }
 
-    public double of(int level) {
+    public double of(double level) {
         return basics + level * multiply;
     }
 }

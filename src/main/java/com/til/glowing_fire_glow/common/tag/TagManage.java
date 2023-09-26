@@ -2,7 +2,6 @@ package com.til.glowing_fire_glow.common.tag;
 
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagRegistry;
 import net.minecraft.util.ResourceLocation;
 
