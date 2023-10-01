@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
@@ -101,7 +102,7 @@ public class Pos {
         return nbtTagCompound;
     }
 
-    public double getAngle(Pos vec) {
+    public double angle(Pos vec) {
         return Math.acos(normalize().dotProduct(vec.normalize()));
     }
 
@@ -129,6 +130,24 @@ public class Pos {
         return new Pos(x, y, this.z + z);
     }
 
+    public Pos add(Pos pos) {
+        return new Pos(x + pos.x, y + pos.y, z + pos.z);
+    }
+
+    public Pos add(double x, double y, double z) {
+        return new Pos(this.x + x, this.y + y, this.z + z);
+    }
+
+    public Pos subtract(Pos pos) {
+        return new Pos(x - pos.x, y - pos.y, z - pos.z);
+    }
+
+    public Pos subtract(double x, double y, double z) {
+        return new Pos(this.x - x, this.y - y, this.z - z);
+    }
+
+
+    @Deprecated
     public Pos move(Pos pos) {
         return new Pos(x + pos.x, y + pos.y, z + pos.z);
     }
@@ -259,7 +278,25 @@ public class Pos {
         return new Pos(p.x / tick, p.y / tick, p.z / tick);
     }
 
-    public Pos limtX(double d) {
+    public Pos rotate(double theta, Pos axis) {
+        if (MathHelper.epsilonEquals(theta, 0)) {
+            return this;
+        }
+
+        // Rodrigues rotation formula
+        Pos k = axis.normalize();
+        Pos v = this;
+
+        float cosTheta = MathHelper.cos((float) theta);
+        Pos firstTerm = v.multiply(cosTheta);
+        Pos secondTerm = k.crossProduct(v).multiply(MathHelper.sin((float) theta));
+        Pos thirdTerm = k.multiply(k.dotProduct(v) * (1 - cosTheta));
+        return new Pos(firstTerm.x + secondTerm.x + thirdTerm.x,
+                firstTerm.y + secondTerm.y + thirdTerm.y,
+                firstTerm.z + secondTerm.z + thirdTerm.z);
+    }
+
+    public Pos limitX(double d) {
         d = Math.abs(d);
         double xx = x;
         if (Math.abs(x) > d) {
@@ -272,7 +309,7 @@ public class Pos {
         return new Pos(xx, y, z);
     }
 
-    public Pos limtY(double d) {
+    public Pos limitY(double d) {
         d = Math.abs(d);
         double yy = y;
         if (Math.abs(y) > d) {
@@ -285,7 +322,7 @@ public class Pos {
         return new Pos(x, yy, z);
     }
 
-    public Pos limtZ(double d) {
+    public Pos limitZ(double d) {
         d = Math.abs(d);
         double zz = z;
         if (Math.abs(z) > d) {
@@ -390,6 +427,7 @@ public class Pos {
     public Pos toVector() {
         return getVector(x, y);
     }
+
 
     public JsonObject getJson() {
         JsonObject jsonObject = new JsonObject();

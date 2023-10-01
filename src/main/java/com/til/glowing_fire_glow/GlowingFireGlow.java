@@ -231,6 +231,12 @@ public class GlowingFireGlow {
             fillWorldComponent(iWorldComponent);
         }
         for (IWorldComponent iWorldComponent : worldComponentList) {
+            iWorldComponent.beforeConfigInit();
+        }
+        for (IWorldComponent iWorldComponent : worldComponentList) {
+            configManage.initRegister(iWorldComponent);
+        }
+        for (IWorldComponent iWorldComponent : worldComponentList) {
             iWorldComponent.initNew();
         }
     }

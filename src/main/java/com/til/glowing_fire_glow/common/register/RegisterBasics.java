@@ -1,6 +1,7 @@
 package com.til.glowing_fire_glow.common.register;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
+import com.til.glowing_fire_glow.common.config.ICanConfig;
 import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * @author til
  */
-public class RegisterBasics {
+public class RegisterBasics implements ICanConfig {
     /***
      * 注册项的名称
      */
@@ -78,6 +79,7 @@ public class RegisterBasics {
     /***
      * 生成默认配置
      */
+    @Override
     public void defaultConfig() {
     }
 
@@ -108,7 +110,18 @@ public class RegisterBasics {
     }
 
     @Override
+    public final ResourceLocation getConfigName() {
+        return getName();
+    }
+
+    @Override
+    public final ResourceLocation getBasicsConfigName() {
+        return getRegisterManage().getRegisterManageName();
+    }
+
+    @Override
     public String toString() {
         return name == null ? "null" : name.toString();
     }
+
 }

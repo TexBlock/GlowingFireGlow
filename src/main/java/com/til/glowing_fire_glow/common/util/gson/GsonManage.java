@@ -2,6 +2,7 @@ package com.til.glowing_fire_glow.common.util.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.bind.TypeAdapters;
 import com.google.gson.reflect.TypeToken;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.mixin.BlockTagsMixin;

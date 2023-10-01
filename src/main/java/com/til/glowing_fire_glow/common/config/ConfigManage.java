@@ -3,7 +3,6 @@ package com.til.glowing_fire_glow.common.config;
 import com.google.gson.JsonObject;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
-import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.IOUtil;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
@@ -26,18 +25,18 @@ public class ConfigManage implements IWorldComponent {
 
     public static final String CONFIG_NAME = GlowingFireGlow.MOD_ID + ".config";
 
-    protected Map<RegisterBasics, File> needWrite = new HashMap<>();
-    protected Map<RegisterBasics, File> delayedWrite = new HashMap<>();
+    protected Map<ICanConfig, File> needWrite = new HashMap<>();
+    protected Map<ICanConfig, File> delayedWrite = new HashMap<>();
 
-    public File mackFile(RegisterBasics registerBasics) {
+    public File mackFile(ICanConfig registerBasics) {
         File basicsFile = FMLPaths.CONFIGDIR.get().toFile();
-        ResourceLocation name = registerBasics.getName();
-        ResourceLocation basicsName = registerBasics.getRegisterManage().getRegisterManageName();
+        ResourceLocation name = registerBasics.getConfigName();
+        ResourceLocation basicsName = registerBasics.getBasicsConfigName();
         String version = GlowingFireGlow.getInstance().getModVersion(registerBasics.getClass());
         return new File(basicsFile, String.format("%s/%s/%s/%s/%s.json", CONFIG_NAME, basicsName.getPath(), name.getNamespace(), version, name.getPath()));
     }
 
-    public void initRegister(RegisterBasics registerBasics) {
+    public void initRegister(ICanConfig registerBasics) {
         File file = mackFile(registerBasics);
         if (!file.exists()) {
             needWrite.put(registerBasics, file);
@@ -56,7 +55,7 @@ public class ConfigManage implements IWorldComponent {
         }
     }
 
-    public void addDelayedWrite(RegisterBasics registerBasics) {
+    public void addDelayedWrite(ICanConfig registerBasics) {
         if (!needWrite.containsKey(registerBasics)) {
             throw new RuntimeException("错误的延迟写入配置");
         }
@@ -65,7 +64,7 @@ public class ConfigManage implements IWorldComponent {
         delayedWrite.put(registerBasics, file);
     }
 
-    public void writeRegister(RegisterBasics registerBasics, JsonObject jsonObject) throws IllegalAccessException {
+    public void writeRegister(ICanConfig registerBasics, JsonObject jsonObject) throws IllegalAccessException {
         for (Field field : ReflexUtil.getAllFields(registerBasics.getClass(), false)) {
             if (!field.isAnnotationPresent(ConfigField.class)) {
                 continue;
@@ -78,7 +77,7 @@ public class ConfigManage implements IWorldComponent {
         }
     }
 
-    public JsonObject readRegister(RegisterBasics registerBasics) throws IllegalAccessException {
+    public JsonObject readRegister(ICanConfig registerBasics) throws IllegalAccessException {
         JsonObject jsonObject = new JsonObject();
         for (Field field : ReflexUtil.getAllFields(registerBasics.getClass(), false)) {
             if (!field.isAnnotationPresent(ConfigField.class)) {
@@ -108,8 +107,8 @@ public class ConfigManage implements IWorldComponent {
         delayedWrite = null;
     }
 
-    protected void write(Map<RegisterBasics, File> registerBasicsFileMap) {
-        for (Map.Entry<RegisterBasics, File> entry : registerBasicsFileMap.entrySet()) {
+    protected void write(Map<ICanConfig, File> registerBasicsFileMap) {
+        for (Map.Entry<ICanConfig, File> entry : registerBasicsFileMap.entrySet()) {
             JsonObject jsonObject;
             try {
                 jsonObject = readRegister(entry.getKey());
@@ -125,5 +124,6 @@ public class ConfigManage implements IWorldComponent {
     public int getExecutionOrderList() {
         return -500;
     }
+
 }
 

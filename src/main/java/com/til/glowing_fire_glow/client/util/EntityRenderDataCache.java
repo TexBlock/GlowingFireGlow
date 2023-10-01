@@ -24,7 +24,6 @@ public class EntityRenderDataCache implements IWorldComponent {
     @VoluntarilyAssignment
     protected AllCapabilityRenderRegister allCapabilityRenderRegister;
 
-
     protected Map<Entity, Map<CapabilityRenderRegister<?, ?>, Object>> cacheData = new HashMap<>();
 
     public void render(Entity entityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
@@ -39,7 +38,7 @@ public class EntityRenderDataCache implements IWorldComponent {
             }
             cacheData.put(entityIn, map);
         }
-        if (map.isEmpty()) {
+        if (map == null || map.isEmpty()) {
             return;
         }
         for (Map.Entry<CapabilityRenderRegister<?, ?>, Object> entry : map.entrySet()) {

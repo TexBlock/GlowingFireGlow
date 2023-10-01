@@ -184,7 +184,7 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar')
+//jar.finalizedBy('reobfJar')
 
 
 tasks.withType(JavaCompile).configureEach {

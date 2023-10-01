@@ -25,7 +25,7 @@ public abstract class ParticleClientRegister<P extends ParticleRegister> extends
 
     protected ParticleRegister particleRegister;
 
-    protected ParticleParsingMode particleParsingMode = ParticleParsingMode.SPELL;
+    protected ParticleParsingMode particleParsingMode = ParticleParsingMode.SINGLE;
 
     @Override
     protected void init() {

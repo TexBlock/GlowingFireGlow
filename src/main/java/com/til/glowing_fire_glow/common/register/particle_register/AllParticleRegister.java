@@ -43,6 +43,7 @@ public class AllParticleRegister extends RegisterManage<ParticleRegister> {
                     particleMessage.sendToPlayerClient(d, player);
                 }
             }
+            entry.getValue().clear();
         }
         for (Map.Entry<ServerWorld, List<ParticleRouteData>> entry : ROUTE_DATA.entrySet()) {
             ServerWorld key = entry.getKey();
@@ -51,22 +52,22 @@ public class AllParticleRegister extends RegisterManage<ParticleRegister> {
                     particleRouteRegisterMessage.sendToPlayerClient(d, player);
                 }
             }
+            entry.getValue().clear();
         }
         for (Map.Entry<ServerPlayerEntity, List<ParticleData>> entry : PLAYER_MAP.entrySet()) {
             ServerPlayerEntity key = entry.getKey();
             for (ParticleData d : entry.getValue()) {
                 particleMessage.sendToPlayerClient(d, key);
             }
+            entry.getValue().clear();
         }
         for (Map.Entry<ServerPlayerEntity, List<ParticleRouteData>> entry : PLAYER_ROUTE_DATA.entrySet()) {
             ServerPlayerEntity k = entry.getKey();
             for (ParticleRouteData d : entry.getValue()) {
                 particleRouteRegisterMessage.sendToPlayerClient(d, k);
             }
+            entry.getValue().clear();
         }
-        MAP.clear();
-        ROUTE_DATA.clear();
-        PLAYER_MAP.clear();
     }
 
 }

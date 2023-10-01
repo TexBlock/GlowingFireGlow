@@ -46,9 +46,9 @@ public class LineParticleClientRegister extends ParticleClientRegister<LineParti
                     .setColor(color)
                     .setSize(size)
                     .setLifeTime((int) life)
-                    .setSizeChange()
+                    .setSizeChangeType(DefaultParticle.SizeChangeType.SIN)
                     .setTextureName(AllParticleRegister.DEFAULT));
-            _start = _start.move(movePos);
+            _start = _start.add(movePos);
         }
         particleContext.setParticleTime((int) life);
     }

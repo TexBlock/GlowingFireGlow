@@ -10,6 +10,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -20,8 +21,6 @@ import java.util.function.Supplier;
  */
 public abstract class MessageRegister<MSG> extends RegisterBasics {
 
-
-    protected static int idSequence;
 
     @VoluntarilyAssignment
     protected AllMessageRegister allMessageRegister;
@@ -36,7 +35,6 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
     @Override
     public void init() {
         super.init();
-        id = idSequence++;
         msgClass = initMsgType();
     }
 
@@ -48,15 +46,6 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
         ParameterizedType parameterized = (ParameterizedType) superclass;
         Type actualTypeArguments = parameterized.getActualTypeArguments()[0];
         return Util.forcedConversion(ReflexUtil.asClass(actualTypeArguments));
-    }
-
-
-    @Override
-    public void initBack() {
-        allMessageRegister.INSTANCE.registerMessage(id, msgClass, this::encoder, this::decoder, (msg, context) -> {
-            context.get().enqueueWork(() -> messageConsumer(msg, context));
-            context.get().setPacketHandled(true);
-        });
     }
 
     public void encoder(MSG msg, PacketBuffer friendlyByteBuf) {
@@ -82,6 +71,11 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
         allMessageRegister.INSTANCE.sendTo(msg, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
-
-
+    public void registerMessage(SimpleChannel simpleChannel, int id) {
+        this.id = id;
+        simpleChannel.registerMessage(id, msgClass, this::encoder, this::decoder, (msg, context) -> {
+            context.get().enqueueWork(() -> messageConsumer(msg, context));
+            context.get().setPacketHandled(true);
+        });
+    }
 }

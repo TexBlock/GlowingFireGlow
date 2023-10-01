@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
-import com.til.glowing_fire_glow.common.util.MathUtil;
 import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;
@@ -17,8 +16,12 @@ import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ReuseableStream;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -29,6 +32,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author til
@@ -56,16 +60,17 @@ public class DefaultParticle extends Particle {
     /***
      * 粒子大小
      */
-    protected float size;
+    protected float size = 1;
 
     /***
-     * 开启大小变化
+     * 粒子变化类型
      */
-    protected boolean sizeChange;
+    protected SizeChangeType sizeChangeType;
 
     /***
      * 当前粒子大小
      */
+    @Deprecated
     protected float currentSize;
 
     /***
@@ -99,9 +104,7 @@ public class DefaultParticle extends Particle {
      */
     public DefaultParticle setSize(float size) {
         this.size = size;
-        if (!sizeChange) {
-            currentSize = size;
-        }
+        this.setBoundingBox(new Pos(posX, posY, posZ).axisAlignedBB(size));
         return this;
     }
 
@@ -142,6 +145,7 @@ public class DefaultParticle extends Particle {
         posX = x;
         posY = y;
         posZ = z;
+        this.setBoundingBox(new Pos(x, y, z).axisAlignedBB(size));
         return this;
     }
 
@@ -162,9 +166,13 @@ public class DefaultParticle extends Particle {
         return this;
     }
 
-    public DefaultParticle setSizeChange() {
-        this.sizeChange = true;
-        this.currentSize = 0;
+    public DefaultParticle setSizeChangeType(SizeChangeType sizeChangeType) {
+        this.sizeChangeType = sizeChangeType;
+        return this;
+    }
+
+    public DefaultParticle setParticleCollide(boolean particleCollide) {
+        this.canCollide = particleCollide;
         return this;
     }
 
@@ -189,7 +197,28 @@ public class DefaultParticle extends Particle {
         prevPosY = posY;
         prevPosZ = posZ;
 
-        this.move(motionX, motionY, motionZ);
+        if (canCollide) {
+            Vector3d vector3d = Entity.collideBoundingBoxHeuristically(
+                    null,
+                    new Vector3d(motionX, motionY, motionZ),
+                    getBoundingBox(),
+                    this.world, ISelectionContext.dummy(),
+                    new ReuseableStream<>(Stream.empty()));
+            posX += vector3d.x;
+            posY += vector3d.y;
+            posZ += vector3d.z;
+        } else {
+            posX += motionX;
+            posY += motionY;
+            posZ += motionZ;
+        }
+
+        if (posX != prevPosX || posY != prevPosY || posZ != prevPosZ) {
+            setBoundingBox(new Pos(posX, posY, posZ).axisAlignedBB(size));
+        }
+
+        //move(motionX, motionY, motionZ);
+
 
         if (moveAttenuation != null) {
             motionX *= moveAttenuation.x;
@@ -204,53 +233,17 @@ public class DefaultParticle extends Particle {
         oldRoll = roll;
         roll += rollSeep;
 
-        if (sizeChange) {
+        /*if (sizeChange) {
             if (age < particleHalfAge) {
                 currentSize = MathUtil.lerp(age / particleHalfAge, size, 0);
             } else {
                 currentSize = size - MathUtil.lerp((age - particleHalfAge) / particleHalfAge, size, 0);
             }
-        }
+        }*/
     }
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-/*        Vector3d vec3 = renderInfo.getProjectedView();
-        Vector3f lPos = new Vector3f(
-                (float) (MathUtil.lerp(partialTicks, prevPosX, posX) - vec3.x),
-                (float) (MathUtil.lerp(partialTicks, prevPosY, posY) - vec3.y),
-                (float) (MathUtil.lerp(partialTicks, prevPosZ, posZ) - vec3.z));
-
-        Quaternion quaternion;
-        if (this.roll == 0.0F) {
-            quaternion = renderInfo.getRotation();
-        } else {
-            quaternion = new Quaternion(renderInfo.getRotation());
-            float f3 = MathUtil.lerp(partialTicks, this.oldRoll, this.roll);
-            quaternion.multiply(Vector3f.ZP.rotation(f3));
-        }
-
-        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
-
-        for (int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
-            vector3f.mul(currentScale);
-            vector3f.add(lPos);
-        }
-
-        int combined = 15 << 20 | 15 << 4;
-
-        float r = particleRed;
-        float g = particleGreen;
-        float b = particleBlue;
-        float a = particleAlpha;
-
-        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(0, 0).color(r, g, b, a).lightmap(combined).endVertex();
-        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(0, 1).color(r, g, b, a).lightmap(combined).endVertex();
-        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(1, 1).color(r, g, b, a).lightmap(combined).endVertex();
-        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(1, 0).color(r, g, b, a).lightmap(combined).endVertex();*/
-
 
         Vector3d vector3d = renderInfo.getProjectedView();
         Vector3f addPos = new Vector3f(
@@ -271,6 +264,29 @@ public class DefaultParticle extends Particle {
         vector3f1.transform(quaternion);
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
 
+        float currentSize = size;
+        if (sizeChangeType != null) {
+            float timeLife = age / particleHalfAge;
+            timeLife = timeLife > 1 ? -timeLife + 2 : timeLife;
+            switch (sizeChangeType) {
+                case SIN:
+                    currentSize = (float) (size * Math.sin(timeLife));
+                    break;
+                case SQUARE_SIN:
+                    currentSize = (float) (size * Math.sin(Math.sqrt(timeLife)));
+                    break;
+                case COS:
+                    currentSize = (float) (size * Math.cos(timeLife));
+                    break;
+                case SQUARE_COS:
+                    currentSize = (float) (size * Math.cos(Math.sqrt(timeLife)));
+                    break;
+                case SMOOTH:
+                    currentSize = size * timeLife;
+                    break;
+            }
+        }
+
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
             vector3f.transform(quaternion);
@@ -290,6 +306,14 @@ public class DefaultParticle extends Particle {
     @Override
     protected int getBrightnessForRender(float partialTick) {
         return super.getBrightnessForRender(partialTick);
+    }
+
+    public static enum SizeChangeType {
+        SIN,
+        SQUARE_SIN,
+        COS,
+        SQUARE_COS,
+        SMOOTH
     }
 
     @Override
