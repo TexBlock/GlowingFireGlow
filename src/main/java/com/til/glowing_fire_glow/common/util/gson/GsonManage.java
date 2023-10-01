@@ -38,9 +38,7 @@ public class GsonManage implements IWorldComponent {
 
     protected Gson gson;
 
-    @Override
-    public void initNew() {
-        IWorldComponent.super.initNew();
+    public GsonManage() {
         Field gsonBuilder_excluder;
         Field gson_factories;
         try {
