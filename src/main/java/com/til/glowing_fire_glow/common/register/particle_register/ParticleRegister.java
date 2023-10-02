@@ -37,7 +37,7 @@ public abstract class ParticleRegister extends RegisterBasics {
         super.init();
     }
 
-    public void add(World world, GlowingFireGlowColor color, double density, ResourceLocation resourceLocation, Pos... pos) {
+    public void add(World world, GlowingFireGlowColor[] color, double density, ResourceLocation resourceLocation, Pos... pos) {
         if (world.isRemote) {
             ClientTransfer.messageConsumer(new ParticleData(this, color, density, resourceLocation, pos));
         } else {
@@ -70,7 +70,7 @@ public abstract class ParticleRegister extends RegisterBasics {
         }
     }
 
-    public void add(PlayerEntity player, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation, Pos... pos) {
+    public void add(PlayerEntity player, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation, Pos... pos) {
         if (player.world.isRemote) {
             ClientTransfer.messageConsumer(new ParticleData(this, color, density, resourceLocation, pos));
         } else {

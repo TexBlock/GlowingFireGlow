@@ -34,7 +34,7 @@ public class BlockParticleClientRegister extends ParticleClientRegister<BlockPar
     }
 
     @Override
-    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
         Pos p1 = start.move(-0.5, -0.5, -0.5);
         Pos p2 = p1.addX(1);
         Pos p3 = p1.addZ(1);

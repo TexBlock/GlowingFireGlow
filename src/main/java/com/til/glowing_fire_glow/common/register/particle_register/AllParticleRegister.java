@@ -21,7 +21,7 @@ import java.util.Map;
  * @author til
  */
 public class AllParticleRegister extends RegisterManage<ParticleRegister> {
-    public static final ResourceLocation DEFAULT = new ResourceLocation(GlowingFireGlow.MOD_ID, "textures/particle/modparticle.png");
+    public static final ResourceLocation DEFAULT = new ResourceLocation(GlowingFireGlow.MOD_ID, "particle/default/texture.png");
 
     protected final Map<ServerWorld, List<ParticleData>> MAP = new HashMap<>();
     protected final Map<ServerWorld, List<ParticleRouteData>> ROUTE_DATA = new HashMap<>();

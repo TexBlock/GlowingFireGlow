@@ -5,6 +5,9 @@ package com.til.glowing_fire_glow.common.util;
  * @author til
  */
 public class GlowingFireGlowColor {
+
+    public static final GlowingFireGlowColor DEFAULT = new GlowingFireGlowColor(255, 255, 255, 255);
+
     public final int value;
 
     public GlowingFireGlowColor(int rgb) {

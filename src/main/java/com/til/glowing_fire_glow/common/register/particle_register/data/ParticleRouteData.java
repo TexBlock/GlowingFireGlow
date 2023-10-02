@@ -12,11 +12,11 @@ import java.util.List;
 public class ParticleRouteData {
     public List<List<RoutePack.RouteCell<Double>>> route;
     public ParticleRegister particleRegister;
-    public GlowingFireGlowColor color;
+    public GlowingFireGlowColor[] color;
     @Nullable
     public ResourceLocation resourceLocation;
 
-    public ParticleRouteData(List<List<RoutePack.RouteCell<Double>>> route, ParticleRegister particleRegister, GlowingFireGlowColor color, @Nullable ResourceLocation resourceLocation) {
+    public ParticleRouteData(List<List<RoutePack.RouteCell<Double>>> route, ParticleRegister particleRegister, GlowingFireGlowColor[] color, @Nullable ResourceLocation resourceLocation) {
         this.route = route;
         this.particleRegister = particleRegister;
         this.color = color;

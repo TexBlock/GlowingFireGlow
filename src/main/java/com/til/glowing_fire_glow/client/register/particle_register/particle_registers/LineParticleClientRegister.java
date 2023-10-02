@@ -32,7 +32,7 @@ public class LineParticleClientRegister extends ParticleClientRegister<LineParti
     }
 
     @Override
-    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
         if (end == null) {
             return;
         }
@@ -43,7 +43,7 @@ public class LineParticleClientRegister extends ParticleClientRegister<LineParti
         for (int i = 0; i < dis; i++) {
             particleContext.addParticle(new DefaultParticle(world)
                     .setPos(_start.x, _start.y, _start.z)
-                    .setColor(color)
+                    .setColor(color.length > 0 ? color[0] : GlowingFireGlowColor.DEFAULT)
                     .setSize(size)
                     .setLifeTime((int) life)
                     .setSizeChangeType(DefaultParticle.SizeChangeType.SIN)

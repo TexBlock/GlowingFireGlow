@@ -65,12 +65,14 @@ public class LightningParticle extends Particle {
         segments = res.getSecond();
     }
 
-    public void setColorOuter(int colorOuter) {
+    public LightningParticle setColorOuter(int colorOuter) {
         this.colorOuter = colorOuter;
+        return this;
     }
 
-    public void setColorInner(int colorInner) {
+    public LightningParticle setColorInner(int colorInner) {
         this.colorInner = colorInner;
+        return this;
     }
 
     @Override

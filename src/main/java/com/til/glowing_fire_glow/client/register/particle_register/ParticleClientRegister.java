@@ -54,7 +54,7 @@ public abstract class ParticleClientRegister<P extends ParticleRegister> extends
      * @param density 密度
      * @return 返回粒子是生命用于拼接
      */
-    public abstract void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation);
+    public abstract void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation);
 
 
     public ParticleParsingMode getParticleParsingMode() {

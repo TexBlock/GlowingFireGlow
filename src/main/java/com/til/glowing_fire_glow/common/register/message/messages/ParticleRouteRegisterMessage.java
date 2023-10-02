@@ -42,7 +42,10 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
     @Override
     public void encoder(ParticleRouteData data, PacketBuffer friendlyByteBuf) {
         friendlyByteBuf.writeString(data.particleRegister.toString());
-        friendlyByteBuf.writeInt(data.color.getRGB());
+        friendlyByteBuf.writeInt(data.color.length);
+        for (int i = 0; i < data.color.length; i++) {
+            friendlyByteBuf.writeInt(data.color[i].getRGB());
+        }
         friendlyByteBuf.writeInt(data.route.size());
         for (List<RoutePack.RouteCell<Double>> routeCells : data.route) {
             friendlyByteBuf.writeInt(routeCells.size());
@@ -62,7 +65,10 @@ public class ParticleRouteRegisterMessage extends MessageRegister<ParticleRouteD
     public ParticleRouteData decoder(PacketBuffer friendlyByteBuf) {
         ResourceLocation type = new ResourceLocation(friendlyByteBuf.readString());
         ParticleRegister particleRegister = allParticleRegister.get(type);
-        GlowingFireGlowColor color = new GlowingFireGlowColor(friendlyByteBuf.readInt());
+        GlowingFireGlowColor[] color = new GlowingFireGlowColor[friendlyByteBuf.readInt()];
+        for (int i = 0; i < color.length; i++) {
+            color[i] = new GlowingFireGlowColor(friendlyByteBuf.readInt());
+        }
         int l = friendlyByteBuf.readInt();
         List<List<RoutePack.RouteCell<Double>>> pack = new ArrayList<>(l);
         for (int i = 0; i < l; i++) {

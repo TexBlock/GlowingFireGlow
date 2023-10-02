@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 public class EmptyParticleClientRegister extends ParticleClientRegister<EmptyParticleRegister> {
 
     @Override
-    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation) {
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
 
     }
 

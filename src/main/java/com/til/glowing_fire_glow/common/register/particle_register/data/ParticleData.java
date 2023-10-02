@@ -10,13 +10,13 @@ import javax.annotation.Nullable;
 
 public class ParticleData {
     public ParticleRegister particleRegister;
-    public GlowingFireGlowColor color;
+    public GlowingFireGlowColor color[];
     public double density;
     @Nullable
     public ResourceLocation resourceLocation;
     public Pos[] pos;
 
-    public ParticleData(ParticleRegister particleRegister, GlowingFireGlowColor color, double density, @Nullable ResourceLocation resourceLocation, Pos[] pos) {
+    public ParticleData(ParticleRegister particleRegister, GlowingFireGlowColor color[], double density, @Nullable ResourceLocation resourceLocation, Pos[] pos) {
         this.particleRegister = particleRegister;
         this.color = color;
         this.density = density;

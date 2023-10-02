@@ -41,7 +41,10 @@ public class ParticleMessage extends MessageRegister<ParticleData> {
     @Override
     public void encoder(ParticleData data, PacketBuffer friendlyByteBuf) {
         friendlyByteBuf.writeString(data.particleRegister.toString());
-        friendlyByteBuf.writeInt(data.color.getRGB());
+        friendlyByteBuf.writeInt(data.color.length);
+        for (int i = 0; i < data.color.length; i++) {
+            friendlyByteBuf.writeInt(data.color[i].getRGB());
+        }
         friendlyByteBuf.writeDouble(data.density);
         friendlyByteBuf.writeInt(data.pos.length);
         for (Pos po : data.pos) {
@@ -57,7 +60,10 @@ public class ParticleMessage extends MessageRegister<ParticleData> {
     public ParticleData decoder(PacketBuffer friendlyByteBuf) {
         ResourceLocation type = new ResourceLocation(friendlyByteBuf.readString());
         ParticleRegister particleRegister = allParticleRegister.get(type);
-        GlowingFireGlowColor color = new GlowingFireGlowColor(friendlyByteBuf.readInt());
+        GlowingFireGlowColor[] color = new GlowingFireGlowColor[friendlyByteBuf.readInt()];
+        for (int i = 0; i < color.length; i++) {
+            color[i] = new GlowingFireGlowColor(friendlyByteBuf.readInt());
+        }
         double density = friendlyByteBuf.readDouble();
         int l = friendlyByteBuf.readInt();
         Pos[] pos = new Pos[l];
