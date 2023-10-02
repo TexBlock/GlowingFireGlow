@@ -54,7 +54,7 @@ public abstract class ParticleRegister extends RegisterBasics {
         }
     }
 
-    public void add(World world, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor color, @Nullable ResourceLocation resourceLocation) {
+    public void add(World world, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor[] color, @Nullable ResourceLocation resourceLocation) {
         if (world.isRemote) {
             ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, resourceLocation));
         } else {
@@ -86,7 +86,7 @@ public abstract class ParticleRegister extends RegisterBasics {
         }
     }
 
-    public void add(PlayerEntity player, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor color, @Nullable ResourceLocation resourceLocation) {
+    public void add(PlayerEntity player, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor[] color, @Nullable ResourceLocation resourceLocation) {
         if (player.world.isRemote) {
             ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, resourceLocation));
 
