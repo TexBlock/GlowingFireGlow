@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mixin(RecipeManager.class)
+@Mixin(value = RecipeManager.class, priority = 0)
 public class RecipeManagerMixin {
     @Shadow
     private Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipes;
@@ -30,11 +31,14 @@ public class RecipeManagerMixin {
             at = @At("RETURN")
     )
     private void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn, CallbackInfo ci) {
+        GlowingFireGlow.LOGGER.log(Level.INFO, "开始Mixin配方");
+
         Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> addRecipes = new HashMap<>();
 
         for (RecipeRegister<?, ?> recipeRegisterBasics : GlowingFireGlow.getInstance().getWorldComponent(AllRecipeRegister.class).forAll()) {
             IRecipe<?> recipe = recipeRegisterBasics.mackRecipe();
             IRecipeType<?> recipeType = recipe.getType();
+            GlowingFireGlow.LOGGER.log(Level.INFO, "Mixin配方:" + recipeRegisterBasics.getName().toString());
             Map<ResourceLocation, IRecipe<?>> map;
             if (addRecipes.containsKey(recipeType)) {
                 map = addRecipes.get(recipeType);

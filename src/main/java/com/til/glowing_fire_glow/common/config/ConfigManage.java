@@ -12,6 +12,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +51,8 @@ public class ConfigManage implements IWorldComponent {
         JsonObject jsonObject = gsonManage.getGson().fromJson(s, JsonObject.class);
         try {
             writeRegister(registerBasics, jsonObject);
-        } catch (IllegalAccessException e) {
-            GlowingFireGlow.LOGGER.error("赋值配置时出现问题", e);
+        } catch (Exception e) {
+            GlowingFireGlow.LOGGER.error(MessageFormat.format("赋值[{0}]配置时出错", registerBasics.toString()), e);
         }
     }
 
@@ -112,8 +113,8 @@ public class ConfigManage implements IWorldComponent {
             JsonObject jsonObject;
             try {
                 jsonObject = readRegister(entry.getKey());
-            } catch (IllegalAccessException e) {
-                GlowingFireGlow.LOGGER.error("写人配置时出错", e);
+            } catch (Exception e) {
+                GlowingFireGlow.LOGGER.error(MessageFormat.format("写入[{0}]配置时出错", entry.getKey().toString()), e);
                 return;
             }
             IOUtil.writer(entry.getValue(), gsonManage.getGson().toJson(jsonObject));

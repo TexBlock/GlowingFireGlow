@@ -3,8 +3,11 @@ package com.til.glowing_fire_glow.client.register.particle_register.particle_reg
 import com.til.glowing_fire_glow.client.particle.LightningParticle;
 import com.til.glowing_fire_glow.client.register.particle_register.ParticleClientRegister;
 import com.til.glowing_fire_glow.common.config.ConfigField;
+import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
+import com.til.glowing_fire_glow.common.register.overall_config.instance.LightningSeepOverallConfigRegister;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleContext;
+import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleParsingMode;
 import com.til.glowing_fire_glow.common.register.particle_register.particle_registers.LightningParticleRegister;
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
@@ -19,8 +22,14 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class LightningParticleClientRegister extends ParticleClientRegister<LightningParticleRegister> {
 
-    @ConfigField
-    protected float seep;
+    @VoluntarilyAssignment
+    protected LightningSeepOverallConfigRegister lightningSeepOverallConfigRegister;
+
+    @Override
+    protected void init() {
+        super.init();
+        particleParsingMode = ParticleParsingMode.SPELL;
+    }
 
     @Override
     public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
@@ -39,6 +48,7 @@ public class LightningParticleClientRegister extends ParticleClientRegister<Ligh
             inner = GlowingFireGlowColor.DEFAULT;
             outer = GlowingFireGlowColor.DEFAULT;
         }
-        particleContext.addParticle(new LightningParticle(world, start, end, seep).setColorInner(inner.getRGB()).setColorOuter(outer.getRGB()));
+        particleContext.addParticle(new LightningParticle(world, start, end, lightningSeepOverallConfigRegister.getSeep()).setColorInner(inner.getRGB()).setColorOuter(outer.getRGB()));
     }
+
 }

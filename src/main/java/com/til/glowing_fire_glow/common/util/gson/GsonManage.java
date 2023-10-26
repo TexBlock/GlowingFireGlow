@@ -71,6 +71,7 @@ public class GsonManage implements IWorldComponent {
         gsonBuilder.registerTypeAdapter(new TypeToken<Tag<EntityType<?>>>() {
         }.getType(), new TagTypeAdapter<>(EntityTypeTagsMixin.getREGISTRY()));
 
+        gsonBuilder.registerTypeAdapterFactory(new EnumTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new BlockStateTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new DelayedTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new AcceptTypeAdapterFactory());
