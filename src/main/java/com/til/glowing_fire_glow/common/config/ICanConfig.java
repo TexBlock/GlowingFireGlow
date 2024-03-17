@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.config;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 public interface ICanConfig {
 
@@ -9,7 +9,7 @@ public interface ICanConfig {
      */
     void defaultConfig();
 
-    ResourceLocation getConfigName();
+    Identifier getConfigName();
 
-    ResourceLocation getBasicsConfigName();
+    Identifier getBasicsConfigName();
 }

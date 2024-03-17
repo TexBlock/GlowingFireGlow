@@ -5,12 +5,12 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.recipe.Recipe;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class RecipeRegister<R extends IRecipe<?>, RS extends RecipeSerializerRegister<R>> extends RegisterBasics {
+public abstract class RecipeRegister<R extends Recipe<?>, RS extends RecipeSerializerRegister<R>> extends RegisterBasics {
 
     @VoluntarilyAssignment
     protected ReflexManage reflexManage;

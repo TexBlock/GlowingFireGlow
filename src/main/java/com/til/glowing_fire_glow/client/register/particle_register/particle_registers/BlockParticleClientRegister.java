@@ -11,7 +11,7 @@ import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,7 +34,7 @@ public class BlockParticleClientRegister extends ParticleClientRegister<BlockPar
     }
 
     @Override
-    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable Identifier Identifier) {
         Pos p1 = start.move(-0.5, -0.5, -0.5);
         Pos p2 = p1.addX(1);
         Pos p3 = p1.addZ(1);
@@ -59,7 +59,7 @@ public class BlockParticleClientRegister extends ParticleClientRegister<BlockPar
         };
         for (Extension.VariableData_2 posPosData_2 : l) {
             ParticleContext _particleContext = new ParticleContext();
-            lineParticleRegister.run(_particleContext, world, (Pos) posPosData_2.k, (Pos) posPosData_2.v, color, density, resourceLocation);
+            lineParticleRegister.run(_particleContext, world, (Pos) posPosData_2.k, (Pos) posPosData_2.v, color, density, Identifier);
             for (Particle particle : _particleContext.forParticle()) {
                 particleContext.addParticle(particle);
             }

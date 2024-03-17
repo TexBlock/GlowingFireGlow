@@ -8,7 +8,7 @@ import com.til.glowing_fire_glow.common.register.key.EventKey;
 import com.til.glowing_fire_glow.common.register.key.KeyData;
 import com.til.glowing_fire_glow.common.register.key.KeyRegister;
 import com.til.glowing_fire_glow.common.register.message.MessageRegister;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -25,8 +25,8 @@ public class KeyMessage extends MessageRegister<KeyData> {
 
     @Override
     public void messageConsumer(KeyData keyData, Supplier<NetworkEvent.Context> supplier) {
-        ResourceLocation resourceLocation = new ResourceLocation(keyData.keyName);
-        KeyRegister keyRegister = allKeyRegister.get(resourceLocation);
+        Identifier Identifier = new Identifier(keyData.keyName);
+        KeyRegister keyRegister = allKeyRegister.get(Identifier);
         if (keyRegister == null) {
             GlowingFireGlow.LOGGER.error("在服务端不存按键{}", keyData.keyName);
             return;

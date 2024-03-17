@@ -3,9 +3,9 @@ package com.til.glowing_fire_glow.common.register;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
-import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
+import com.til.glowing_fire_glow.common.util.IdentifierUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
@@ -20,12 +20,12 @@ import java.util.Map;
  */
 public abstract class RegisterManage<R extends RegisterBasics> implements IWorldComponent {
     protected Class<R> registerClass;
-    protected ResourceLocation registerManageName;
-    protected Map<ResourceLocation, R> registerMap;
+    protected Identifier registerManageName;
+    protected Map<Identifier, R> registerMap;
 
     protected RegisterManage() {
         registerClass = initType();
-        registerManageName = initResourceLocation();
+        registerManageName = initIdentifier();
         registerMap = new HashMap<>();
     }
 
@@ -39,14 +39,14 @@ public abstract class RegisterManage<R extends RegisterBasics> implements IWorld
         return Util.forcedConversion(ReflexUtil.asClass(actualTypeArguments));
     }
 
-    protected final ResourceLocation initResourceLocation() {
+    protected final Identifier initIdentifier() {
         StringBuilder path = new StringBuilder();
         if (getBasicsRegisterManageClass() != null) {
-            path.append(ResourceLocationUtil.ofPath(getBasicsRegisterManageClass()));
+            path.append(IdentifierUtil.ofPath(getBasicsRegisterManageClass()));
             path.append('/');
         }
-        path.append(ResourceLocationUtil.ofPath(getClass()));
-        return new ResourceLocation(GlowingFireGlow.getInstance().getModIdOfClass(this.getClass()), path.toString());
+        path.append(IdentifierUtil.ofPath(getClass()));
+        return new Identifier(GlowingFireGlow.getInstance().getModIdOfClass(this.getClass()), path.toString());
     }
 
     public final void put(R register, boolean fromSon) {
@@ -60,8 +60,8 @@ public abstract class RegisterManage<R extends RegisterBasics> implements IWorld
         }
     }
 
-    public R get(ResourceLocation resourceLocation) {
-        return registerMap.get(resourceLocation);
+    public R get(Identifier Identifier) {
+        return registerMap.get(Identifier);
     }
 
     public Collection<R> forAll() {
@@ -82,7 +82,7 @@ public abstract class RegisterManage<R extends RegisterBasics> implements IWorld
         return registerClass;
     }
 
-    public ResourceLocation getRegisterManageName() {
+    public Identifier getRegisterManageName() {
         return registerManageName;
     }
 

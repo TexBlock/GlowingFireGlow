@@ -4,7 +4,7 @@ import com.til.glowing_fire_glow.common.capability.synchronous.ISynchronousManag
 import com.til.glowing_fire_glow.common.register.capability.synchronous.SynchronousCapabilityRegister;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.HashMap;
@@ -14,15 +14,15 @@ public class SynchronousData {
 
     protected int entityId;
 
-    protected Map<SynchronousCapabilityRegister<?, ?>, CompoundNBT> data;
+    protected Map<SynchronousCapabilityRegister<?, ?>, NbtCompound> data;
 
-    public SynchronousData(int entityId, Map<SynchronousCapabilityRegister<?, ?>, CompoundNBT> data) {
+    public SynchronousData(int entityId, Map<SynchronousCapabilityRegister<?, ?>, NbtCompound> data) {
         this.entityId = entityId;
         this.data = data;
     }
 
     public static SynchronousData of(Entity entity, ISynchronousManage iSynchronousManage) {
-        Map<SynchronousCapabilityRegister<?, ?>, CompoundNBT> map = new HashMap<>();
+        Map<SynchronousCapabilityRegister<?, ?>, NbtCompound> map = new HashMap<>();
         for (SynchronousCapabilityRegister<?, ?> synchronousCapabilityRegister : iSynchronousManage.getSynchronousCapabilitySet()) {
             LazyOptional<?> lazyOptional = entity.getCapability(synchronousCapabilityRegister.getCapabilityRegister().getCapability());
             lazyOptional.ifPresent(c -> {
@@ -36,7 +36,7 @@ public class SynchronousData {
         return entityId;
     }
 
-    public Map<SynchronousCapabilityRegister<?, ?>, CompoundNBT> getData() {
+    public Map<SynchronousCapabilityRegister<?, ?>, NbtCompound> getData() {
         return data;
     }
 }

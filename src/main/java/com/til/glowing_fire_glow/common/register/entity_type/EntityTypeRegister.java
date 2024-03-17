@@ -5,7 +5,7 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
@@ -19,7 +19,7 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
     protected EntityType<E> entityType;
 
     @ConfigField
-    protected EntityClassification entityClassification;
+    protected SpawnGroup entityClassification;
 
     @ConfigField
     protected float width;
@@ -59,16 +59,16 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
 
     protected EntityType<E> initEntityType() {
         EntityType.Builder<E> builder = EntityType.Builder.create(this::create, entityClassification);
-        builder.size(width, height);
+        builder.setDimensions(width, height);
         builder.setTrackingRange(trackingRange);
         builder.setUpdateInterval(updateInterval);
         builder.setShouldReceiveVelocityUpdates(shouldReceiveVelocityUpdates);
         builder.setCustomClientFactory(this::createInClient);
         if (disableSerialization) {
-            builder.disableSerialization();
+            builder.disableSaving();
         }
         if (immuneToFire) {
-            builder.immuneToFire();
+            builder.makeFireImmune();
         }
         return builder.build(getName().toString());
     }
@@ -96,7 +96,7 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
     @Override
     public void defaultConfig() {
         super.defaultConfig();
-        entityClassification = EntityClassification.MISC;
+        entityClassification = SpawnGroup.MISC;
         width = 0.5f;
         height = 0.5f;
         trackingRange = 5;

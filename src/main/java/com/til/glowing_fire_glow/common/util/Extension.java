@@ -3,7 +3,7 @@ package com.til.glowing_fire_glow.common.util;
 import com.til.glowing_fire_glow.common.util.gson.AcceptTypeJson;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tags.Tag;
+import net.minecraft.tag.Tag;
 
 import java.util.Map;
 import java.util.function.Supplier;

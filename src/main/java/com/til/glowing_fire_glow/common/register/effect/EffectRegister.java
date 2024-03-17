@@ -1,12 +1,12 @@
 package com.til.glowing_fire_glow.common.register.effect;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import net.minecraft.potion.Effect;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class EffectRegister extends RegisterBasics {
 
-    protected Effect effect;
+    protected StatusEffect effect;
 
     @Override
     protected void init() {
@@ -16,10 +16,10 @@ public abstract class EffectRegister extends RegisterBasics {
         ForgeRegistries.POTIONS.register(effect);
     }
 
-    protected abstract Effect initEffect();
+    protected abstract StatusEffect initEffect();
 
 
-    public Effect getEffect() {
+    public StatusEffect getEffect() {
         return effect;
     }
 }

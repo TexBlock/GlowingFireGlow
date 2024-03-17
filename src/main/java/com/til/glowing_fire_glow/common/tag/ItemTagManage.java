@@ -3,7 +3,7 @@ package com.til.glowing_fire_glow.common.tag;
 import com.til.glowing_fire_glow.common.mixin.ItemTagsMixin;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import net.minecraft.item.Item;
-import net.minecraft.tags.TagRegistry;
+import net.minecraft.tag.RequiredTagList;
 
 /**
  * 标签反射添加
@@ -17,7 +17,7 @@ public class ItemTagManage extends TagManage<Item> {
 
 
     @Override
-    protected TagRegistry<Item> initTagManager() {
-        return ItemTagsMixin.getREGISTRY();
+    protected RequiredTagList<Item> initTagManager() {
+        return ItemTagsMixin.getREQUIRED_TAGS();
     }
 }

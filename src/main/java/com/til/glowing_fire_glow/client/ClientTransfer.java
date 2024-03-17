@@ -13,10 +13,10 @@ import com.til.glowing_fire_glow.common.synchronous.SynchronousData;
 import com.til.glowing_fire_glow.common.util.Pos;
 import com.til.glowing_fire_glow.common.util.RoutePack;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -61,7 +61,7 @@ public class ClientTransfer {
                     }
                     e = po;
                     ParticleContext particleContext = new ParticleContext();
-                    particleClientRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                    particleClientRegister.run(particleContext, MinecraftClient.getInstance().world, s, e, data.color, data.density, data.Identifier);
                     particleContextList.add(particleContext);
                     s = null;
                 }
@@ -74,7 +74,7 @@ public class ClientTransfer {
                     do {
                         e = data.pos[i];
                         ParticleContext particleContext = new ParticleContext();
-                        particleClientRegister.run(particleContext, Minecraft.getInstance().world, s, e, data.color, data.density, data.resourceLocation);
+                        particleClientRegister.run(particleContext, MinecraftClient.getInstance().world, s, e, data.color, data.density, data.Identifier);
                         particleContextList.add(particleContext);
                         s = e;
                         i++;
@@ -85,7 +85,7 @@ public class ClientTransfer {
             case SINGLE:
                 for (Pos po : data.pos) {
                     ParticleContext particleContext = new ParticleContext();
-                    particleClientRegister.run(particleContext, Minecraft.getInstance().world, po, null, data.color, data.density, data.resourceLocation);
+                    particleClientRegister.run(particleContext, MinecraftClient.getInstance().world, po, null, data.color, data.density, data.Identifier);
                     particleContextList.add(particleContext);
                 }
                 break;
@@ -98,7 +98,7 @@ public class ClientTransfer {
         for (ParticleContext particleContext : particleContextList) {
             clientPlanRun.add(time, () -> {
                 for (Particle particle : particleContext.forParticle()) {
-                    Minecraft.getInstance().particles.addEffect(particle);
+                    MinecraftClient.getInstance().particleManager.addParticle(particle);
                 }
             });
             time += particleContext.getParticleTime();
@@ -116,11 +116,11 @@ public class ClientTransfer {
             int _time = 0;
             ParticleContext particleContext = new ParticleContext();
             for (RoutePack.RouteCell<Double> routeCell : routeCells) {
-                particleClientRegister.run(particleContext, Minecraft.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.resourceLocation);
+                particleClientRegister.run(particleContext, MinecraftClient.getInstance().world, routeCell.start, routeCell.end, data.color, routeCell.data, data.Identifier);
             }
             clientPlanRun.add(time, () -> {
                 for (Particle particle : particleContext.forParticle()) {
-                    Minecraft.getInstance().particles.addEffect(particle);
+                    MinecraftClient.getInstance().particleManager.addParticle(particle);
                 }
             });
             time += _time;
@@ -128,15 +128,15 @@ public class ClientTransfer {
     }
 
     public static void messageConsumer(SynchronousData synchronousData) {
-        World world = Minecraft.getInstance().world;
+        World world = MinecraftClient.getInstance().world;
         if (world == null) {
             return;
         }
-        Entity entity = world.getEntityByID(synchronousData.getEntityId());
+        Entity entity = world.getEntityById(synchronousData.getEntityId());
         if (entity == null) {
             return;
         }
-        for (Map.Entry<SynchronousCapabilityRegister<?, ?>, CompoundNBT> entry : synchronousData.getData().entrySet()) {
+        for (Map.Entry<SynchronousCapabilityRegister<?, ?>, NbtCompound> entry : synchronousData.getData().entrySet()) {
             LazyOptional<?> lazyOptional = entity.getCapability(entry.getKey().getCapabilityRegister().getCapability());
             lazyOptional.ifPresent(c -> {
                 entry.getKey().defaultReadNBT(Util.forcedConversion(c), entry.getValue());

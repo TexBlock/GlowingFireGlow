@@ -6,17 +6,17 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.til.glowing_fire_glow.common.util.NBTUtil;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.NbtElement;
 
 import java.io.IOException;
 
 /**
  * @author til
  */
-public class NBTTypeAdapter extends TypeAdapter<INBT> {
+public class NBTTypeAdapter extends TypeAdapter<NbtElement> {
 
     @Override
-    public void write(JsonWriter out, INBT value) throws IOException {
+    public void write(JsonWriter out, NbtElement value) throws IOException {
         if (value == null) {
             out.nullValue();
             return;
@@ -25,7 +25,7 @@ public class NBTTypeAdapter extends TypeAdapter<INBT> {
     }
 
     @Override
-    public INBT read(JsonReader in) throws IOException {
+    public NbtElement read(JsonReader in) throws IOException {
         if (in.peek().equals(JsonToken.NULL)) {
             return null;
         }

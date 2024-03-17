@@ -5,22 +5,19 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Objects;
 
-public abstract class RecipeSerializerRegister<R extends IRecipe<?>> extends RegisterBasics {
+public abstract class RecipeSerializerRegister<R extends Recipe<?>> extends RegisterBasics {
 
-    protected IRecipeSerializer<R> recipeSerializer;
+    protected RecipeSerializer<R> recipeSerializer;
 
     protected Class<R> recipeSerializerClass;
 
@@ -46,10 +43,10 @@ public abstract class RecipeSerializerRegister<R extends IRecipe<?>> extends Reg
         return Util.forcedConversion(ReflexUtil.asClass(actualTypeArguments));
     }
 
-    public IRecipeSerializer<R> initRecipeSerializer() {
-        return new IRecipeSerializer<R>() {
+    public RecipeSerializer<R> initRecipeSerializer() {
+        return new RecipeSerializer<R>() {
             @Override
-            public R read(ResourceLocation recipeId, JsonObject json) {
+            public R read(Identifier recipeId, JsonObject json) {
                 Object obj = allRecipeRegister.get(recipeId);
                 if (obj == null) {
                     return null;
@@ -60,7 +57,7 @@ public abstract class RecipeSerializerRegister<R extends IRecipe<?>> extends Reg
 
             @Nullable
             @Override
-            public R read(ResourceLocation recipeId, PacketBuffer buffer) {
+            public R read(Identifier recipeId, PacketByteBuf buffer) {
                 Object obj = allRecipeRegister.get(recipeId);
                 if (obj == null) {
                     return null;
@@ -70,29 +67,29 @@ public abstract class RecipeSerializerRegister<R extends IRecipe<?>> extends Reg
             }
 
             @Override
-            public void write(PacketBuffer buffer, R recipe) {
+            public void write(PacketByteBuf buffer, R recipe) {
 
             }
 
             @Override
-            public IRecipeSerializer<?> setRegistryName(ResourceLocation name) {
+            public RecipeSerializer<?> setRegistryName(Identifier name) {
                 return this;
             }
 
             @Nullable
             @Override
-            public ResourceLocation getRegistryName() {
+            public Identifier getRegistryName() {
                 return getName();
             }
 
             @Override
-            public Class<IRecipeSerializer<?>> getRegistryType() {
+            public Class<RecipeSerializer<?>> getRegistryType() {
                 return Util.forcedConversion(recipeSerializerClass);
             }
         };
     }
 
-    public IRecipeSerializer<R> getRecipeSerializer() {
+    public RecipeSerializer<R> getRecipeSerializer() {
         return recipeSerializer;
     }
 }

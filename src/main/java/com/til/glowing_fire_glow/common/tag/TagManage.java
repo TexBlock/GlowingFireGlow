@@ -1,18 +1,18 @@
 package com.til.glowing_fire_glow.common.tag;
 
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagRegistry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tag.Tag;
+import net.minecraft.tag.RequiredTagList;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
 public abstract class TagManage<T> implements IWorldComponent {
-    protected Map<ResourceLocation, List<T>> map = new HashMap<>();
-    protected TagRegistry<T> tagManager;
+    protected Map<Identifier, List<T>> map = new HashMap<>();
+    protected RequiredTagList<T> tagManager;
 
     @SafeVarargs
-    public final void addTag(ResourceLocation tTagKey, T... t) {
+    public final void addTag(Identifier tTagKey, T... t) {
         List<T> tList;
         if (map.containsKey(tTagKey)) {
             tList = map.get(tTagKey);
@@ -23,15 +23,15 @@ public abstract class TagManage<T> implements IWorldComponent {
         tList.addAll(Arrays.asList(t));
     }
 
-    public final void addTag(T t, ResourceLocation... tTagKey) {
-        for (ResourceLocation tagKey : tTagKey) {
+    public final void addTag(T t, Identifier... tTagKey) {
+        for (Identifier tagKey : tTagKey) {
             addTag(tagKey, t);
         }
     }
 
 
-    public ITag<T> of(ResourceLocation resourceLocation) {
-        return tagManager.createTag(resourceLocation.toString());
+    public Tag<T> of(Identifier Identifier) {
+        return tagManager.add(Identifier.toString());
     }
 
 
@@ -46,10 +46,10 @@ public abstract class TagManage<T> implements IWorldComponent {
         return 100;
     }
 
-    protected abstract TagRegistry<T> initTagManager();
+    protected abstract RequiredTagList<T> initTagManager();
 
 
-    public TagRegistry<T> getTagManager() {
+    public RequiredTagList<T> getTagManager() {
         return tagManager;
     }
 

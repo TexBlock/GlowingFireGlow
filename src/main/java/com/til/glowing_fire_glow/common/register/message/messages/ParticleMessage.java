@@ -12,8 +12,8 @@ import com.til.glowing_fire_glow.common.register.particle_register.data.Particle
 import com.til.glowing_fire_glow.common.register.particle_register.particle_registers.EmptyParticleRegister;
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -39,7 +39,7 @@ public class ParticleMessage extends MessageRegister<ParticleData> {
     }
 
     @Override
-    public void encoder(ParticleData data, PacketBuffer friendlyByteBuf) {
+    public void encoder(ParticleData data, PacketByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeString(data.particleRegister.toString());
         friendlyByteBuf.writeInt(data.color.length);
         for (int i = 0; i < data.color.length; i++) {
@@ -50,15 +50,15 @@ public class ParticleMessage extends MessageRegister<ParticleData> {
         for (Pos po : data.pos) {
             po.write(friendlyByteBuf);
         }
-        friendlyByteBuf.writeBoolean(data.resourceLocation != null);
-        if (data.resourceLocation != null) {
-            friendlyByteBuf.writeString(data.resourceLocation.toString());
+        friendlyByteBuf.writeBoolean(data.Identifier != null);
+        if (data.Identifier != null) {
+            friendlyByteBuf.writeString(data.Identifier.toString());
         }
     }
 
     @Override
-    public ParticleData decoder(PacketBuffer friendlyByteBuf) {
-        ResourceLocation type = new ResourceLocation(friendlyByteBuf.readString());
+    public ParticleData decoder(PacketByteBuf friendlyByteBuf) {
+        Identifier type = new Identifier(friendlyByteBuf.readString());
         ParticleRegister particleRegister = allParticleRegister.get(type);
         GlowingFireGlowColor[] color = new GlowingFireGlowColor[friendlyByteBuf.readInt()];
         for (int i = 0; i < color.length; i++) {
@@ -70,14 +70,14 @@ public class ParticleMessage extends MessageRegister<ParticleData> {
         for (int i = 0; i < l; i++) {
             pos[i] = new Pos(friendlyByteBuf);
         }
-        ResourceLocation resourceLocation = null;
+        Identifier Identifier = null;
         if (friendlyByteBuf.readBoolean()) {
-            resourceLocation = new ResourceLocation(friendlyByteBuf.readString());
+            Identifier = new Identifier(friendlyByteBuf.readString());
         }
         if (particleRegister == null) {
             GlowingFireGlow.LOGGER.warn("错误的粒子效果{}", type);
             particleRegister = emptyParticleRegister;
         }
-        return new ParticleData(particleRegister, color, density, resourceLocation, pos);
+        return new ParticleData(particleRegister, color, density, Identifier, pos);
     }
 }

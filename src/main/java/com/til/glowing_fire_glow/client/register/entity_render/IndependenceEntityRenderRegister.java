@@ -3,8 +3,8 @@ package com.til.glowing_fire_glow.client.register.entity_render;
 import com.til.glowing_fire_glow.common.register.entity_type.EntityTypeRegister;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,10 +32,10 @@ public abstract class IndependenceEntityRenderRegister<E extends Entity, ET exte
     }
 
     @Override
-    protected EntityRenderer<? super E> createRenderFor(EntityRendererManager manager) {
+    protected EntityRenderer<? super E> createRenderFor(EntityRenderDispatcher manager) {
         ER entityRender;
         try {
-            entityRender = entityRenderClass.getConstructor(EntityRendererManager.class).newInstance(manager);
+            entityRender = entityRenderClass.getConstructor(EntityRenderDispatcher.class).newInstance(manager);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                  InvocationTargetException e) {
             throw new RuntimeException(e);

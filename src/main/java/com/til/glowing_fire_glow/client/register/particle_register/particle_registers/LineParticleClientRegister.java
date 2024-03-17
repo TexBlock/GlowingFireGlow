@@ -11,7 +11,7 @@ import com.til.glowing_fire_glow.common.register.particle_register.particle_regi
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +32,7 @@ public class LineParticleClientRegister extends ParticleClientRegister<LineParti
     }
 
     @Override
-    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable Identifier Identifier) {
         if (end == null) {
             return;
         }
@@ -42,7 +42,7 @@ public class LineParticleClientRegister extends ParticleClientRegister<LineParti
         Pos movePos = Pos.movePos(start, end, (start.distance(end) * density));
         for (int i = 0; i < dis; i++) {
             particleContext.addParticle(new DefaultParticle(world)
-                    .setPos(_start.x, _start.y, _start.z)
+                    .set(_start.x, _start.y, _start.z)
                     .setColor(color.length > 0 ? color[0] : GlowingFireGlowColor.DEFAULT)
                     .setSize(size)
                     .setLifeTime((int) life)

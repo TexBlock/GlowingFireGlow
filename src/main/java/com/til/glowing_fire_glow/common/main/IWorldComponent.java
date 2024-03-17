@@ -2,8 +2,8 @@ package com.til.glowing_fire_glow.common.main;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.config.ICanConfig;
-import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
-import net.minecraft.util.ResourceLocation;
+import com.til.glowing_fire_glow.common.util.IdentifierUtil;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public interface IWorldComponent extends ICanConfig {
@@ -50,14 +50,14 @@ public interface IWorldComponent extends ICanConfig {
 
 
     @Override
-    default ResourceLocation getConfigName() {
-        return new ResourceLocation(GlowingFireGlow.getInstance().getModIdOfClass(this.getClass()), ResourceLocationUtil.ofPath(this.getClass()));
+    default Identifier getConfigName() {
+        return new Identifier(GlowingFireGlow.getInstance().getModIdOfClass(this.getClass()), IdentifierUtil.ofPath(this.getClass()));
     }
 
     @Override
-    default ResourceLocation getBasicsConfigName() {
+    default Identifier getBasicsConfigName() {
         return BASICS_CONFIG_NAME;
     }
 
-    ResourceLocation BASICS_CONFIG_NAME = new ResourceLocation(GlowingFireGlow.MOD_ID, "world_component");
+    Identifier BASICS_CONFIG_NAME = new Identifier(GlowingFireGlow.MOD_ID, "world_component");
 }

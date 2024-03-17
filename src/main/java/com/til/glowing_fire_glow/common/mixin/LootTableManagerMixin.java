@@ -5,11 +5,11 @@ import com.google.gson.JsonElement;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.loot_table.AllLootTableRegister;
 import com.til.glowing_fire_glow.common.register.loot_table.LootTableRegister;
+import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,21 +18,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
-@Mixin(LootTableManager.class)
+@Mixin(LootManager.class)
 public class LootTableManagerMixin {
     @Shadow
-    private Map<ResourceLocation, LootTable> registeredLootTables;
+    private Map<Identifier, LootTable> tables;
 
     @Inject(
-            method = "apply(Ljava/util/Map;Lnet/minecraft/resources/IResourceManager;Lnet/minecraft/profiler/IProfiler;)V",
+            method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
             at = @At("RETURN")
     )
-    private void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn, CallbackInfo ci) {
-        ImmutableMap.Builder<ResourceLocation, LootTable> builder = ImmutableMap.builder();
-        builder.putAll(registeredLootTables);
+    private void apply(Map<Identifier, JsonElement> objectIn, ResourceManager resourceManagerIn, Profiler profilerIn, CallbackInfo ci) {
+        ImmutableMap.Builder<Identifier, LootTable> builder = ImmutableMap.builder();
+        builder.putAll(tables);
         for (LootTableRegister lootTableRegister : GlowingFireGlow.getInstance().getWorldComponent(AllLootTableRegister.class).forAll()) {
             builder.put(lootTableRegister.getName(), lootTableRegister.getLootTable());
         }
-        registeredLootTables = builder.build();
+        tables = builder.build();
     }
 }

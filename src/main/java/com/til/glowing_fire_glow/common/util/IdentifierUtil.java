@@ -1,7 +1,7 @@
 package com.til.glowing_fire_glow.common.util;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,21 +10,21 @@ import java.util.List;
 /**
  * @author til
  */
-public class ResourceLocationUtil {
+public class IdentifierUtil {
 
-    public static ResourceLocation fuseName(String namespace, String splicing, String[] strings) {
-        return new ResourceLocation(namespace, String.join(splicing, Arrays.asList(strings)));
+    public static Identifier fuseName(String namespace, String splicing, String[] strings) {
+        return new Identifier(namespace, String.join(splicing, Arrays.asList(strings)));
     }
 
-    public static ResourceLocation fuseName(String namespace, String splicing, ResourceLocation... strings) {
+    public static Identifier fuseName(String namespace, String splicing, Identifier... strings) {
         List<String> stringList = new ArrayList<>(strings.length);
-        for (ResourceLocation string : strings) {
+        for (Identifier string : strings) {
             stringList.add(string.getPath());
         }
         return fuseName(namespace, splicing, stringList.toArray(new String[0]));
     }
 
-    public static ResourceLocation fuseName(String namespace, String splicing, RegisterBasics... strings) {
+    public static Identifier fuseName(String namespace, String splicing, RegisterBasics... strings) {
         List<String> stringList = new ArrayList<>(strings.length);
         for (RegisterBasics string : strings) {
             stringList.add(string.getName().getPath());

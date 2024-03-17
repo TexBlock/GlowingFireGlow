@@ -2,9 +2,9 @@ package com.til.glowing_fire_glow.common.register;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.config.ICanConfig;
-import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
+import com.til.glowing_fire_glow.common.util.IdentifierUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +15,7 @@ public class RegisterBasics implements ICanConfig {
     /***
      * 注册项的名称
      */
-    protected ResourceLocation name;
+    protected Identifier name;
     protected RegisterManage<?> registerManage;
 
     public RegisterBasics() {
@@ -26,8 +26,8 @@ public class RegisterBasics implements ICanConfig {
         name = initName();
     }
 
-    protected ResourceLocation initName() {
-        return new ResourceLocation(GlowingFireGlow.getInstance().getModIdOfClass(this.getClass()), ResourceLocationUtil.ofPath(getClass()));
+    protected Identifier initName() {
+        return new Identifier(GlowingFireGlow.getInstance().getModIdOfClass(this.getClass()), IdentifierUtil.ofPath(getClass()));
     }
 
     /***
@@ -101,7 +101,7 @@ public class RegisterBasics implements ICanConfig {
         return null;
     }
 
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -110,12 +110,12 @@ public class RegisterBasics implements ICanConfig {
     }
 
     @Override
-    public final ResourceLocation getConfigName() {
+    public final Identifier getConfigName() {
         return getName();
     }
 
     @Override
-    public final ResourceLocation getBasicsConfigName() {
+    public final Identifier getBasicsConfigName() {
         return getRegisterManage().getRegisterManageName();
     }
 

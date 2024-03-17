@@ -20,7 +20,7 @@ public abstract class ItemRegister extends RegisterBasics {
     @Override
     protected void init() {
         super.init();
-        //itemName = ResourceLocationUtil.fuseName(this.getName().getNamespace(), "/", new String[]{"item", this.getName().getPath()});
+        //itemName = IdentifierUtil.fuseName(this.getName().getNamespace(), "/", new String[]{"item", this.getName().getPath()});
         item = initItem();
         item.setRegistryName(getName());
         itemTagManage.addTag(getName(), item);

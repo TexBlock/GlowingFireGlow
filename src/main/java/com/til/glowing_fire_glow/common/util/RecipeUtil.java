@@ -3,16 +3,17 @@ package com.til.glowing_fire_glow.common.util;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.util.collection.DefaultedList;
+
 
 import java.util.Map;
 import java.util.Set;
 
 public class RecipeUtil {
 
-    public static NonNullList<Ingredient> deserializeIngredients(String[] pattern, Map<String, Ingredient> keys, int patternWidth, int patternHeight) {
-        NonNullList<Ingredient> nonnulllist = NonNullList.withSize(patternWidth * patternHeight, Ingredient.EMPTY);
+    public static DefaultedList<Ingredient> deserializeIngredients(String[] pattern, Map<String, Ingredient> keys, int patternWidth, int patternHeight) {
+        DefaultedList<Ingredient> nonnulllist = DefaultedList.ofSize(patternWidth * patternHeight, Ingredient.EMPTY);
         Set<String> set = Sets.newHashSet(keys.keySet());
         set.remove(" ");
 

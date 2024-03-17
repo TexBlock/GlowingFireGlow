@@ -5,12 +5,12 @@ import com.google.gson.JsonElement;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.recipe.AllRecipeRegister;
 import com.til.glowing_fire_glow.common.register.recipe.RecipeRegister;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,22 +24,22 @@ import java.util.Map;
 @Mixin(value = RecipeManager.class, priority = 0)
 public class RecipeManagerMixin {
     @Shadow
-    private Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipes;
+    private Map<RecipeType<?>, Map<Identifier, Recipe<?>>> recipes;
 
     @Inject(
-            method = "apply(Ljava/util/Map;Lnet/minecraft/resources/IResourceManager;Lnet/minecraft/profiler/IProfiler;)V",
+            method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
             at = @At("RETURN")
     )
-    private void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn, CallbackInfo ci) {
+    private void apply(Map<Identifier, JsonElement> objectIn, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         GlowingFireGlow.LOGGER.log(Level.INFO, "开始Mixin配方");
 
-        Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> addRecipes = new HashMap<>();
+        Map<RecipeType<?>, Map<Identifier, Recipe<?>>> addRecipes = new HashMap<>();
 
         for (RecipeRegister<?, ?> recipeRegisterBasics : GlowingFireGlow.getInstance().getWorldComponent(AllRecipeRegister.class).forAll()) {
-            IRecipe<?> recipe = recipeRegisterBasics.mackRecipe();
-            IRecipeType<?> recipeType = recipe.getType();
+            Recipe<?> recipe = recipeRegisterBasics.mackRecipe();
+            RecipeType<?> recipeType = recipe.getType();
             GlowingFireGlow.LOGGER.log(Level.INFO, "Mixin配方:" + recipeRegisterBasics.getName().toString());
-            Map<ResourceLocation, IRecipe<?>> map;
+            Map<Identifier, Recipe<?>> map;
             if (addRecipes.containsKey(recipeType)) {
                 map = addRecipes.get(recipeType);
             } else {
@@ -49,9 +49,9 @@ public class RecipeManagerMixin {
             map.put(recipe.getId(), recipe);
         }
 
-        Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipesCopy = new HashMap<>(recipes);
-        for (Map.Entry<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> iRecipeTypeMapEntry : addRecipes.entrySet()) {
-            Map<ResourceLocation, IRecipe<?>> map;
+        Map<RecipeType<?>, Map<Identifier, Recipe<?>>> recipesCopy = new HashMap<>(recipes);
+        for (Map.Entry<RecipeType<?>, Map<Identifier, Recipe<?>>> iRecipeTypeMapEntry : addRecipes.entrySet()) {
+            Map<Identifier, Recipe<?>> map;
             if (recipesCopy.containsKey(iRecipeTypeMapEntry.getKey())) {
                 map = recipesCopy.get(iRecipeTypeMapEntry.getKey());
                 map = new HashMap<>(map);

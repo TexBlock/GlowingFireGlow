@@ -6,8 +6,8 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import com.til.glowing_fire_glow.common.util.gson.GsonManage;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -48,11 +48,11 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
         return Util.forcedConversion(ReflexUtil.asClass(actualTypeArguments));
     }
 
-    public void encoder(MSG msg, PacketBuffer friendlyByteBuf) {
+    public void encoder(MSG msg, PacketByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeString(gsonManage.getGson().toJson(msg));
     }
 
-    public MSG decoder(PacketBuffer friendlyByteBuf) {
+    public MSG decoder(PacketByteBuf friendlyByteBuf) {
         return gsonManage.getGson().fromJson(friendlyByteBuf.readString(), msgClass);
     }
 
@@ -68,7 +68,7 @@ public abstract class MessageRegister<MSG> extends RegisterBasics {
     }
 
     public void sendToPlayerClient(MSG msg, ServerPlayerEntity player) {
-        allMessageRegister.INSTANCE.sendTo(msg, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+        allMessageRegister.INSTANCE.sendTo(msg, player.networkHandler.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public void registerMessage(SimpleChannel simpleChannel, int id) {

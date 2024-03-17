@@ -14,14 +14,14 @@ import com.til.glowing_fire_glow.common.synchronous.SynchronousData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityEvent implements IWorldComponent {
 
-    public static final ResourceLocation CAPABILITY = new ResourceLocation(GlowingFireGlow.MOD_ID, "capability");
+    public static final Identifier CAPABILITY = new Identifier(GlowingFireGlow.MOD_ID, "capability");
 
     @VoluntarilyAssignment
     protected TimeRunCapabilityRegister timeRunCapabilityRegister;
@@ -41,7 +41,7 @@ public class CapabilityEvent implements IWorldComponent {
         CapabilityProvider capabilityProvider = new CapabilityProvider();
         ITimeRun iTimeRun = new ITimeRun.TimeRun();
         ISynchronousManage iSynchronousManage = new SynchronousManage();
-        if (!event.getObject().world.isRemote) {
+        if (!event.getObject().world.isClient) {
             iTimeRun.addTimerCell(new TimerCell(() -> {
                 if (!iSynchronousManage.needSynchronous()) {
                     return;

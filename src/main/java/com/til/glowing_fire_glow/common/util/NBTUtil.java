@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
  * @author til
  */
 public class NBTUtil {
-    public static void clear(CompoundNBT compoundTag) {
-        Set<String> strings = compoundTag.keySet();
+    public static void clear(NbtCompound compoundTag) {
+        Set<String> strings = compoundTag.getKeys();
         if (strings.isEmpty()) {
             return;
         }
@@ -29,14 +29,14 @@ public class NBTUtil {
         }
     }
 
-    public static void copy(CompoundNBT old, CompoundNBT compoundTag) {
+    public static void copy(NbtCompound old, NbtCompound compoundTag) {
         clear(old);
-        Set<String> strings = compoundTag.keySet();
+        Set<String> strings = compoundTag.getKeys();
         if (strings.isEmpty()) {
             return;
         }
         for (String string : strings) {
-            INBT tag = compoundTag.get(string);
+            NbtElement tag = compoundTag.get(string);
             if (tag == null) {
                 continue;
             }
@@ -44,9 +44,9 @@ public class NBTUtil {
         }
     }
 
-    public static INBT toTag(JsonElement jsonElement) {
+    public static NbtElement toTag(JsonElement jsonElement) {
         if (jsonElement.isJsonNull()) {
-            return StringNBT.valueOf("null");
+            return NbtString.of("null");
         }
         /*if (jsonElement.isJsonPrimitive()) {
             String s = jsonElement.getAsJsonPrimitive().getAsString();
@@ -67,39 +67,39 @@ public class NBTUtil {
         if (jsonElement.isJsonPrimitive()) {
             JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
             if (jsonPrimitive.isBoolean()) {
-                return jsonPrimitive.getAsBoolean() ? StringNBT.valueOf("true") : StringNBT.valueOf("false");
+                return jsonPrimitive.getAsBoolean() ? NbtString.of("true") : NbtString.of("false");
             }
             if (jsonPrimitive.isString()) {
                 String s = jsonElement.getAsJsonPrimitive().getAsString();
                 if (s.isEmpty()) {
-                    return StringNBT.valueOf("");
+                    return NbtString.of("");
                 }
                 char c = s.charAt(s.length() - 1);
                 String ns = s.substring(0, s.length() - 1);
                 if (StringUtil.checkStrIsNum(ns)) {
                     switch (c) {
                         case 'B':
-                            return ByteNBT.valueOf(Byte.parseByte(ns));
+                            return NbtByte.of(Byte.parseByte(ns));
                         case 'S':
-                            return ShortNBT.valueOf(Short.parseShort(ns));
+                            return NbtShort.of(Short.parseShort(ns));
                         case 'I':
-                            return IntNBT.valueOf(Integer.parseInt(ns));
+                            return NbtInt.of(Integer.parseInt(ns));
                         case 'L':
-                            return LongNBT.valueOf(Long.parseLong(ns));
+                            return NbtLong.of(Long.parseLong(ns));
                         case 'F':
-                            return FloatNBT.valueOf(Float.parseFloat(ns));
+                            return NbtFloat.of(Float.parseFloat(ns));
                         case 'D':
-                            return DoubleNBT.valueOf(Double.parseDouble(ns));
+                            return NbtDouble.of(Double.parseDouble(ns));
                     }
                 }
-                return StringNBT.valueOf(jsonElement.getAsString());
+                return NbtString.of(jsonElement.getAsString());
             }
             if (jsonPrimitive.isNumber()) {
-                return DoubleNBT.valueOf(jsonPrimitive.getAsDouble());
+                return NbtDouble.of(jsonPrimitive.getAsDouble());
             }
         }
         if (jsonElement.isJsonArray()) {
-            ListNBT listTag = new ListNBT();
+            NbtList listTag = new NbtList();
             for (JsonElement element : jsonElement.getAsJsonArray()) {
                 listTag.add(toTag(element));
             }
@@ -116,99 +116,99 @@ public class NBTUtil {
                 }
                 switch (tag) {
                     case "B":
-                        return new ByteArrayNBT(list.stream().map(JsonElement::getAsByte).collect(Collectors.toList()));
+                        return new NbtByteArray(list.stream().map(JsonElement::getAsByte).collect(Collectors.toList()));
                     case "I":
-                        return new IntArrayNBT(list.stream().map(JsonElement::getAsInt).collect(Collectors.toList()));
+                        return new NbtIntArray(list.stream().map(JsonElement::getAsInt).collect(Collectors.toList()));
                     case "L":
-                        return new LongArrayNBT(list.stream().map(JsonElement::getAsLong).collect(Collectors.toList()));
+                        return new NbtLongArray(list.stream().map(JsonElement::getAsLong).collect(Collectors.toList()));
                 }
             }
-            CompoundNBT compoundTag = new CompoundNBT();
+            NbtCompound compoundTag = new NbtCompound();
             for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().entrySet()) {
                 compoundTag.put(entry.getKey(), toTag(entry.getValue()));
             }
             return compoundTag;
         }
-        return new CompoundNBT();
+        return new NbtCompound();
     }
 
     public static final String LIST_TAG = "$list_tag";
     public static final String LIST = "$list";
 
-    public static JsonElement toJson(INBT tag, boolean hasType) {
+    public static JsonElement toJson(NbtElement tag, boolean hasType) {
         if (tag == null) {
             return JsonNull.INSTANCE;
         }
-        if (tag instanceof StringNBT) {
-            StringNBT stringTag = (StringNBT) tag;
-            if (stringTag.getString().equals("null")) {
+        if (tag instanceof NbtString) {
+            NbtString stringTag = (NbtString) tag;
+            if (stringTag.asString().equals("null")) {
                 return JsonNull.INSTANCE;
             }
-            return new JsonPrimitive(stringTag.getString());
+            return new JsonPrimitive(stringTag.asString());
         }
-        if (tag instanceof NumberNBT) {
+        if (tag instanceof AbstractNbtNumber) {
             if (hasType) {
-                if (tag instanceof IntNBT) {
-                    return new JsonPrimitive(((IntNBT) tag).getInt() + "I");
+                if (tag instanceof NbtInt) {
+                    return new JsonPrimitive(((NbtInt) tag).intValue() + "I");
                 }
-                if (tag instanceof ByteNBT) {
-                    return new JsonPrimitive(((ByteNBT) tag).getByte() + "B");
+                if (tag instanceof NbtByte) {
+                    return new JsonPrimitive(((NbtByte) tag).byteValue() + "B");
                 }
-                if (tag instanceof ShortNBT) {
-                    return new JsonPrimitive(((ShortNBT) tag).getShort() + "S");
+                if (tag instanceof NbtShort) {
+                    return new JsonPrimitive(((NbtShort) tag).shortValue() + "S");
                 }
-                if (tag instanceof LongNBT) {
-                    return new JsonPrimitive(((LongNBT) tag).getLong() + "L");
+                if (tag instanceof NbtLong) {
+                    return new JsonPrimitive(((NbtLong) tag).longValue() + "L");
                 }
-                if (tag instanceof FloatNBT) {
-                    return new JsonPrimitive(((FloatNBT) tag).getFloat() + "F");
+                if (tag instanceof NbtFloat) {
+                    return new JsonPrimitive(((NbtFloat) tag).floatValue() + "F");
                 }
-                if (tag instanceof DoubleNBT) {
-                    return new JsonPrimitive(((DoubleNBT) tag).getDouble() + "D");
+                if (tag instanceof NbtDouble) {
+                    return new JsonPrimitive(((NbtDouble) tag).doubleValue() + "D");
                 }
             }
-            return new JsonPrimitive(((NumberNBT) tag).getDouble());
+            return new JsonPrimitive(((AbstractNbtNumber) tag).doubleValue());
         }
-        if (tag instanceof CollectionNBT) {
-            if (tag instanceof ListNBT) {
-                ListNBT listTag = ((ListNBT) tag);
+        if (tag instanceof AbstractNbtList) {
+            if (tag instanceof NbtList) {
+                NbtList listTag = ((NbtList) tag);
                 JsonArray arrayList = new JsonArray();
-                for (INBT tag1 : listTag) {
+                for (NbtElement tag1 : listTag) {
                     arrayList.add(toJson(tag1, hasType));
                 }
                 return arrayList;
             }
             JsonObject jsonObject = new JsonObject();
-            if (tag instanceof ByteArrayNBT) {
+            if (tag instanceof NbtByteArray) {
                 jsonObject.add(LIST_TAG, new JsonPrimitive("B"));
                 JsonArray jsonArray = new JsonArray();
-                for (ByteNBT byteNBT : ((ByteArrayNBT) tag)) {
-                    jsonArray.add(new JsonPrimitive(byteNBT.getByte()));
+                for (NbtByte byteNBT : ((NbtByteArray) tag)) {
+                    jsonArray.add(new JsonPrimitive(byteNBT.byteValue()));
                 }
                 jsonObject.add(LIST, jsonArray);
             }
-            if (tag instanceof IntArrayNBT) {
+            if (tag instanceof NbtIntArray) {
                 jsonObject.add(LIST_TAG, new JsonPrimitive("I"));
                 JsonArray jsonArray = new JsonArray();
-                for (IntNBT intNBT : ((IntArrayNBT) tag)) {
-                    jsonArray.add(new JsonPrimitive(intNBT.getInt()));
+                for (NbtInt intNBT : ((NbtIntArray) tag)) {
+                    jsonArray.add(new JsonPrimitive(intNBT.intValue()));
                 }
                 jsonObject.add(LIST, jsonArray);
             }
-            if (tag instanceof LongArrayNBT) {
+            if (tag instanceof NbtLongArray) {
                 jsonObject.add(LIST_TAG, new JsonPrimitive("D"));
                 JsonArray jsonArray = new JsonArray();
-                for (LongNBT longNBT : ((LongArrayNBT) tag)) {
-                    jsonArray.add(new JsonPrimitive(longNBT.getLong()));
+                for (NbtLong longNBT : ((NbtLongArray) tag)) {
+                    jsonArray.add(new JsonPrimitive(longNBT.longValue()));
                 }
                 jsonObject.add(LIST, jsonArray);
             }
             return jsonObject;
         }
-        if (tag instanceof CompoundNBT) {
-            CompoundNBT compoundTag = (CompoundNBT) tag;
+        if (tag instanceof NbtCompound) {
+            NbtCompound compoundTag = (NbtCompound) tag;
             JsonObject jsonObject = new JsonObject();
-            for (String allKey : compoundTag.keySet()) {
+            for (String allKey : compoundTag.getKeys()) {
                 jsonObject.add(allKey, toJson(compoundTag.get(allKey), hasType));
             }
             return jsonObject;

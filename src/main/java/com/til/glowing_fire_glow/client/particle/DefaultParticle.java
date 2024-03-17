@@ -1,30 +1,25 @@
 package com.til.glowing_fire_glow.client.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ReuseableStream;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.ReusableStream;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -92,7 +87,7 @@ public class DefaultParticle extends Particle {
      * 材质名称
      */
     @Nullable
-    protected ResourceLocation textureName;
+    protected Identifier textureName;
 
     public DefaultParticle(ClientWorld clientLevel) {
         super(clientLevel, 0, 0, 0);
@@ -104,7 +99,7 @@ public class DefaultParticle extends Particle {
      */
     public DefaultParticle setSize(float size) {
         this.size = size;
-        this.setBoundingBox(new Pos(posX, posY, posZ).axisAlignedBB(size));
+        this.setBoundingBox(new Pos(x, y, z).axisAlignedBB(size));
         return this;
     }
 
@@ -121,9 +116,9 @@ public class DefaultParticle extends Particle {
      * 设置运动
      */
     public DefaultParticle setMove(double motionX, double motionY, double motionZ) {
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
+        this.velocityX = motionX;
+        this.velocityY = motionY;
+        this.velocityZ = motionZ;
         return this;
     }
 
@@ -138,14 +133,14 @@ public class DefaultParticle extends Particle {
     /***
      * 设置当前位置
      */
-    public DefaultParticle setPos(double x, double y, double z) {
+    public DefaultParticle set(double posX, double posY, double posZ) {
         prevPosX = x;
         prevPosY = y;
         prevPosZ = z;
-        posX = x;
-        posY = y;
-        posZ = z;
-        this.setBoundingBox(new Pos(x, y, z).axisAlignedBB(size));
+        x = posX;
+        y = posY;
+        z = posZ;
+        this.setBoundingBox(new Pos(posX, posY, posZ).axisAlignedBB(size));
         return this;
     }
 
@@ -154,7 +149,7 @@ public class DefaultParticle extends Particle {
      */
     public DefaultParticle setColor(GlowingFireGlowColor color) {
         setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
-        setAlphaF(color.getAlpha() / 255f);
+        setColorAlpha(color.getAlpha() / 255f);
         return this;
     }
 
@@ -172,14 +167,14 @@ public class DefaultParticle extends Particle {
     }
 
     public DefaultParticle setParticleCollide(boolean particleCollide) {
-        this.canCollide = particleCollide;
+        this.collidesWithWorld = particleCollide;
         return this;
     }
 
     /***
      * 设置材质
      */
-    public DefaultParticle setTextureName(@Nullable ResourceLocation textureName) {
+    public DefaultParticle setTextureName(@Nullable Identifier textureName) {
         this.textureName = textureName;
         return this;
     }
@@ -189,45 +184,45 @@ public class DefaultParticle extends Particle {
     public void tick() {
         age++;
         if (this.age >= this.maxAge) {
-            this.setExpired();
+            this.markDead();
             return;
         }
 
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
+        prevPosX = x;
+        prevPosY = y;
+        prevPosZ = z;
 
-        if (canCollide) {
-            Vector3d vector3d = Entity.collideBoundingBoxHeuristically(
+        if (collidesWithWorld) {
+            Vec3d vector3d = Entity.adjustMovementForCollisions(
                     null,
-                    new Vector3d(motionX, motionY, motionZ),
+                    new Vec3d(velocityX, velocityY, velocityZ),
                     getBoundingBox(),
-                    this.world, ISelectionContext.dummy(),
-                    new ReuseableStream<>(Stream.empty()));
-            posX += vector3d.x;
-            posY += vector3d.y;
-            posZ += vector3d.z;
+                    this.world, ShapeContext.absent(),
+                    new ReusableStream<>(Stream.empty()));
+            x += vector3d.x;
+            y += vector3d.y;
+            z += vector3d.z;
         } else {
-            posX += motionX;
-            posY += motionY;
-            posZ += motionZ;
+            x += velocityX;
+            y += velocityY;
+            z += velocityZ;
         }
 
-        if (posX != prevPosX || posY != prevPosY || posZ != prevPosZ) {
-            setBoundingBox(new Pos(posX, posY, posZ).axisAlignedBB(size));
+        if (x != prevPosX || y != prevPosY || z != prevPosZ) {
+            setBoundingBox(new Pos(x, y, z).axisAlignedBB(size));
         }
 
         //move(motionX, motionY, motionZ);
 
 
         if (moveAttenuation != null) {
-            motionX *= moveAttenuation.x;
-            motionY *= moveAttenuation.y;
-            motionZ *= moveAttenuation.z;
+            velocityX *= moveAttenuation.x;
+            velocityY *= moveAttenuation.y;
+            velocityZ *= moveAttenuation.z;
         }
 
         if (particleGravity != 0) {
-            this.motionY -= 0.04D * (double) this.particleGravity;
+            this.velocityY -= 0.04D * (double) this.particleGravity;
         }
 
         oldRoll = roll;
@@ -243,26 +238,26 @@ public class DefaultParticle extends Particle {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void buildGeometry(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
 
-        Vector3d vector3d = renderInfo.getProjectedView();
-        Vector3f addPos = new Vector3f(
-                (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - vector3d.getX()),
-                (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - vector3d.getY()),
-                (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - vector3d.getZ()));
+        Vec3d vector3d = renderInfo.getPos();
+        Vec3f addPos = new Vec3f(
+                (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.x) - vector3d.getX()),
+                (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.y) - vector3d.getY()),
+                (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.z) - vector3d.getZ()));
 
         Quaternion quaternion;
-        if (this.particleAngle == 0.0F) {
+        if (this.angle == 0.0F) {
             quaternion = renderInfo.getRotation();
         } else {
             quaternion = new Quaternion(renderInfo.getRotation());
             float f3 = MathHelper.lerp(partialTicks, this.oldRoll, this.roll);
-            quaternion.multiply(Vector3f.ZP.rotation(f3));
+            quaternion.hamiltonProduct(Vec3f.POSITIVE_Z.getRadialQuaternion(f3));
         }
 
-        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-        vector3f1.transform(quaternion);
-        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
+        Vec3f vector3f1 = new Vec3f(-1.0F, -1.0F, 0.0F);
+        vector3f1.rotate(quaternion);
+        Vec3f[] avector3f = new Vec3f[]{new Vec3f(-1.0F, -1.0F, 0.0F), new Vec3f(-1.0F, 1.0F, 0.0F), new Vec3f(1.0F, 1.0F, 0.0F), new Vec3f(1.0F, -1.0F, 0.0F)};
 
         float currentSize = size;
         if (sizeChangeType != null) {
@@ -288,24 +283,24 @@ public class DefaultParticle extends Particle {
         }
 
         for (int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
-            vector3f.mul(currentSize);
+            Vec3f vector3f = avector3f[i];
+            vector3f.rotate(quaternion);
+            vector3f.scale(currentSize);
             vector3f.add(addPos);
         }
 
         int combined = 15 << 20 | 15 << 4;
 
-        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(0, 0).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
-        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(0, 1).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
-        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(1, 1).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
-        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(1, 0).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(combined).endVertex();
+        buffer.vertex(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).texture(0, 0).color(this.colorRed, this.colorGreen, this.colorBlue, this.colorAlpha).light(combined).next();
+        buffer.vertex(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).texture(0, 1).color(this.colorRed, this.colorGreen, this.colorBlue, this.colorAlpha).light(combined).next();
+        buffer.vertex(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).texture(1, 1).color(this.colorRed, this.colorGreen, this.colorBlue, this.colorAlpha).light(combined).next();
+        buffer.vertex(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).texture(1, 0).color(this.colorRed, this.colorGreen, this.colorBlue, this.colorAlpha).light(combined).next();
 
     }
 
     @Override
-    protected int getBrightnessForRender(float partialTick) {
-        return super.getBrightnessForRender(partialTick);
+    protected int getBrightness(float partialTick) {
+        return super.getBrightness(partialTick);
     }
 
     public static enum SizeChangeType {
@@ -317,31 +312,31 @@ public class DefaultParticle extends Particle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleTextureSheet getType() {
         if (textureName == null) {
             return NULL_TEXTURE;
         }
         if (map.containsKey(textureName)) {
             return map.get(textureName);
         } else {
-            IParticleRenderType particleRenderType = new IParticleRenderType() {
+            ParticleTextureSheet particleRenderType = new ParticleTextureSheet() {
                 @Override
-                public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
+                public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
                     RenderSystem.depthMask(false);
                     RenderSystem.enableBlend();
                     RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                     RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
                     RenderSystem.disableLighting();
                     textureManager.bindTexture(textureName);
-                    Texture tex = textureManager.getTexture(textureName);
+                    AbstractTexture tex = textureManager.getTexture(textureName);
                     tex.setBlurMipmap(true, false);
-                    bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+                    bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
                 }
 
                 @Override
-                public void finishRender(Tessellator tesselator) {
+                public void draw(Tessellator tesselator) {
                     tesselator.draw();
-                    Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).restoreLastBlurMipmap();
+                    MinecraftClient.getInstance().textureManager.getTexture(SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE).restoreLastBlurMipmap();
                     RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
                     RenderSystem.disableBlend();
                     RenderSystem.depthMask(true);
@@ -352,21 +347,21 @@ public class DefaultParticle extends Particle {
         }
     }
 
-    public static final Map<ResourceLocation, IParticleRenderType> map = new HashMap<>();
+    public static final Map<Identifier, ParticleTextureSheet> map = new HashMap<>();
 
-    public static final IParticleRenderType NULL_TEXTURE = new IParticleRenderType() {
+    public static final ParticleTextureSheet NULL_TEXTURE = new ParticleTextureSheet() {
 
         @Override
-        public void beginRender(BufferBuilder buffer, TextureManager textureManager) {
+        public void begin(BufferBuilder buffer, TextureManager textureManager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableTexture();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
         }
 
         @Override
-        public void finishRender(Tessellator tess) {
+        public void draw(Tessellator tess) {
             tess.draw();
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();

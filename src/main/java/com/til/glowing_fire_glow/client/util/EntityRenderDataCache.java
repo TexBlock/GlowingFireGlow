@@ -1,12 +1,12 @@
 package com.til.glowing_fire_glow.client.util;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.til.glowing_fire_glow.client.register.capability.render.AllCapabilityRenderRegister;
 import com.til.glowing_fire_glow.client.register.capability.render.CapabilityRenderRegister;
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +26,7 @@ public class EntityRenderDataCache implements IWorldComponent {
 
     protected Map<Entity, Map<CapabilityRenderRegister<?, ?>, Object>> cacheData = new HashMap<>();
 
-    public void render(Entity entityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(Entity entityIn, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn) {
         Map<CapabilityRenderRegister<?, ?>, Object> map;
         if (cacheData.containsKey(entityIn)) {
             map = cacheData.get(entityIn);

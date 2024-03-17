@@ -5,7 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tag.Tag;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.function.Supplier;

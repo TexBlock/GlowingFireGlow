@@ -1,8 +1,9 @@
 package com.til.glowing_fire_glow.client.particle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.render.*;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.datafixers.util.Pair;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.config.ConfigField;
@@ -11,23 +12,18 @@ import com.til.glowing_fire_glow.common.register.StaticVoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,7 +51,7 @@ public class LightningParticle extends Particle {
     public LightningParticle(ClientWorld world, Pos sourcevec, Pos targetvec, float speed) {
         super(world, sourcevec.x, sourcevec.y, sourcevec.z);
         double length = targetvec.subtract(sourcevec).mag();
-        maxAge = lightningHandler.fadeTime + world.rand.nextInt(lightningHandler.fadeTime) - lightningHandler.fadeTime / 2;
+        maxAge = lightningHandler.fadeTime + world.random.nextInt(lightningHandler.fadeTime) - lightningHandler.fadeTime / 2;
         expandTime = (int) (length * speed);
         age = -(int) (length * speed);
 
@@ -76,7 +72,7 @@ public class LightningParticle extends Particle {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo info, float partialTicks) {
+    public void buildGeometry(VertexConsumer buffer, Camera camera, float partialTicks) {
         // todo fix this >.>
 
         // old way (bad position and too thick)
@@ -96,12 +92,12 @@ public class LightningParticle extends Particle {
 
     @Nonnull
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleTextureSheet getType() {
         return LAYER;
     }
 
-    public void renderBolt(MatrixStack ms, IVertexBuilder wr, int pass, boolean inner) {
-        Matrix4f mat = ms.getLast().getMatrix();
+    public void renderBolt(MatrixStack ms, VertexConsumer wr, int pass, boolean inner) {
+        Matrix4f mat = ms.peek().getModel();
 
         float boltAge = age < 0 ? 0 : (float) age / (float) maxAge;
         float mainAlpha;
@@ -137,64 +133,64 @@ public class LightningParticle extends Particle {
             int fullbright = 0xF000F0;
 
             vertex(endvec.subtract(diff2), mat, wr);
-            wr.color(r, g, b, a).tex(0.5F, 0).lightmap(fullbright).endVertex();
+            wr.color(r, g, b, a).texture(0.5F, 0).light(fullbright).next();
             vertex(startvec.subtract(diff1), mat, wr);
-            wr.color(r, g, b, a).tex(0.5F, 0).lightmap(fullbright).endVertex();
+            wr.color(r, g, b, a).texture(0.5F, 0).light(fullbright).next();
             vertex(startvec.add(diff1), mat, wr);
-            wr.color(r, g, b, a).tex(0.5F, 1).lightmap(fullbright).endVertex();
+            wr.color(r, g, b, a).texture(0.5F, 1).light(fullbright).next();
             vertex(endvec.add(diff2), mat, wr);
-            wr.color(r, g, b, a).tex(0.5F, 1).lightmap(fullbright).endVertex();
+            wr.color(r, g, b, a).texture(0.5F, 1).light(fullbright).next();
 
             if (rendersegment.next == null) {
                 Pos roundend = rendersegment.endPoint.point.add(rendersegment.diff.normalize().multiply(width));
 
                 vertex(roundend.subtract(diff2), mat, wr);
-                wr.color(r, g, b, a).tex(0, 0).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0, 0).light(fullbright).next();
                 vertex(endvec.subtract(diff2), mat, wr);
-                wr.color(r, g, b, a).tex(0.5F, 0).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0.5F, 0).light(fullbright).next();
                 vertex(endvec.add(diff2), mat, wr);
-                wr.color(r, g, b, a).tex(0.5F, 1).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0.5F, 1).light(fullbright).next();
                 vertex(roundend.add(diff2), mat, wr);
-                wr.color(r, g, b, a).tex(0, 1).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0, 1).light(fullbright).next();
             }
 
             if (rendersegment.prev == null) {
                 Pos roundend = rendersegment.startPoint.point.subtract(rendersegment.diff.normalize().multiply(width));
 
                 vertex(startvec.subtract(diff1), mat, wr);
-                wr.color(r, g, b, a).tex(0.5F, 0).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0.5F, 0).light(fullbright).next();
                 vertex(roundend.subtract(diff1), mat, wr);
-                wr.color(r, g, b, a).tex(0, 0).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0, 0).light(fullbright).next();
                 vertex(roundend.add(diff1), mat, wr);
-                wr.color(r, g, b, a).tex(0, 1).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0, 1).light(fullbright).next();
                 vertex(startvec.add(diff1), mat, wr);
-                wr.color(r, g, b, a).tex(0.5F, 1).lightmap(fullbright).endVertex();
+                wr.color(r, g, b, a).texture(0.5F, 1).light(fullbright).next();
             }
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void vertex(Pos pos, Matrix4f mat, IVertexBuilder buffer) {
-        buffer.pos(mat, (float) pos.x, (float) pos.y, (float) pos.z);
+    public static void vertex(Pos pos, Matrix4f mat, VertexConsumer buffer) {
+        buffer.vertex(mat, (float) pos.x, (float) pos.y, (float) pos.z);
     }
 
     private static Pos getRelativeViewVector(Pos pos) {
-        Entity renderEntity = Minecraft.getInstance().getRenderViewEntity();
-        return new Pos((float) renderEntity.getPosX() - pos.x, (float) renderEntity.getPosY() - pos.y, (float) renderEntity.getPosZ() - pos.z);
+        Entity renderEntity = MinecraftClient.getInstance().getCameraEntity();
+        return new Pos((float) renderEntity.getX() - pos.x, (float) renderEntity.getY() - pos.y, (float) renderEntity.getZ() - pos.z);
     }
 
-    private static final IParticleRenderType LAYER = new IParticleRenderType() {
+    private static final ParticleTextureSheet LAYER = new ParticleTextureSheet() {
         @Override
-        public void beginRender(BufferBuilder buffer, TextureManager textureManager) {
+        public void begin(BufferBuilder buffer, TextureManager textureManager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableTexture();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
         }
 
         @Override
-        public void finishRender(Tessellator tess) {
+        public void draw(Tessellator tess) {
             tess.draw();
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();
@@ -418,19 +414,19 @@ public class LightningParticle extends Particle {
         }
 
         private float rayTraceResistance(Pos start, Pos end, float prevresistance) {
-            World world = Minecraft.getInstance().world;
-            RayTraceContext ctx = new RayTraceContext(start.vector3d(), end.vector3d(), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, null);
-            BlockRayTraceResult ray = world.rayTraceBlocks(ctx);
+            World world = MinecraftClient.getInstance().world;
+            RaycastContext ctx = new RaycastContext(start.vector3d(), end.vector3d(), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, null);
+            BlockHitResult ray = world.raycast(ctx);
 
-            if (ray.getType() == RayTraceResult.Type.BLOCK) {
-                BlockPos pos = ray.getPos();
+            if (ray.getType() == HitResult.Type.BLOCK) {
+                BlockPos pos = ray.getBlockPos();
                 BlockState state = world.getBlockState(pos);
 
                 if (state.isAir()) {
                     return prevresistance;
                 }
 
-                return prevresistance + state.getBlock().getExplosionResistance() + 0.3F;
+                return prevresistance + state.getBlock().getBlastResistance() + 0.3F;
             } else {
                 return prevresistance;
             }
@@ -443,16 +439,16 @@ public class LightningParticle extends Particle {
         protected int batchThreshold;
         @ConfigField
         protected int fadeTime;
-        protected ResourceLocation outsideResource;
-        protected ResourceLocation insideResource;
+        protected Identifier outsideResource;
+        protected Identifier insideResource;
 
         protected final Deque<LightningParticle> queuedLightningBolts = new ArrayDeque<>();
 
         @Override
         public void initNew() {
             IWorldComponent.super.initNew();
-            outsideResource = new ResourceLocation(GlowingFireGlow.MOD_ID, String.join("/", new String[]{"particle", "lightning", "wisp_large.png"}));
-            insideResource = new ResourceLocation(GlowingFireGlow.MOD_ID, String.join("/", new String[]{"particle", "lightning", "wisp_small.png"}));
+            outsideResource = new Identifier(GlowingFireGlow.MOD_ID, String.join("/", new String[]{"particle", "lightning", "wisp_large.png"}));
+            insideResource = new Identifier(GlowingFireGlow.MOD_ID, String.join("/", new String[]{"particle", "lightning", "wisp_small.png"}));
         }
 
         @Override
@@ -465,17 +461,17 @@ public class LightningParticle extends Particle {
         @SubscribeEvent
         protected void onRenderWorldLast(RenderWorldLastEvent event) {
             MatrixStack ms = event.getMatrixStack();
-            IProfiler profiler = Minecraft.getInstance().getProfiler();
+            Profiler profiler = MinecraftClient.getInstance().getProfiler();
 
-            profiler.startSection("lightning");
+            profiler.push("lightning");
 
             float frame = event.getPartialTicks();
-            Entity entity = Minecraft.getInstance().player;
-            TextureManager render = Minecraft.getInstance().textureManager;
+            Entity entity = MinecraftClient.getInstance().player;
+            TextureManager render = MinecraftClient.getInstance().textureManager;
 
-            double interpPosX = entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * frame;
-            double interpPosY = entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * frame;
-            double interpPosZ = entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * frame;
+            double interpPosX = entity.lastRenderX + (entity.getX() - entity.lastRenderX) * frame;
+            double interpPosY = entity.lastRenderY + (entity.getY() - entity.lastRenderY) * frame;
+            double interpPosZ = entity.lastRenderZ + (entity.getZ() - entity.lastRenderZ) * frame;
 
             ms.push();
             ms.translate(-interpPosX, -interpPosY, -interpPosZ);
@@ -489,12 +485,12 @@ public class LightningParticle extends Particle {
             render.bindTexture(outsideResource);
             int counter = 0;
 
-            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+            tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
             for (LightningParticle bolt : queuedLightningBolts) {
                 bolt.renderBolt(ms, tessellator.getBuffer(), 0, false);
                 if (counter % batchThreshold == batchThreshold - 1) {
                     tessellator.draw();
-                    tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                    tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
                 }
                 counter++;
             }
@@ -503,12 +499,12 @@ public class LightningParticle extends Particle {
             render.bindTexture(insideResource);
             counter = 0;
 
-            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+            tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
             for (LightningParticle bolt : queuedLightningBolts) {
                 bolt.renderBolt(ms, tessellator.getBuffer(), 1, true);
                 if (counter % batchThreshold == batchThreshold - 1) {
                     tessellator.draw();
-                    tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                    tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
                 }
                 counter++;
             }
@@ -521,7 +517,7 @@ public class LightningParticle extends Particle {
 
             ms.pop();
 
-            profiler.endSection();
+            profiler.pop();
 
         }
     }

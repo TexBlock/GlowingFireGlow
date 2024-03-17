@@ -13,12 +13,12 @@ import com.til.glowing_fire_glow.common.util.Extension;
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.color.block.BlockColorProvider;
+import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.BlockRenderView;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -83,10 +83,10 @@ public class ColorProxyManage implements IWorldComponent {
             BLOCK_COLOR_PACK_MAP.put(blockColorPack.block, blockColorPack);
         }
         for (FluidRegister fluidRegister : allFluidRegister.forAll()) {
-            if (fluidRegister.getFlowingFluidBlock() == null) {
+            if (fluidRegister.getFluidBlock() == null) {
                 continue;
             }
-            BlockColorPack blockColorPack = new BlockColorPack(fluidRegister.getFlowingFluidBlock());
+            BlockColorPack blockColorPack = new BlockColorPack(fluidRegister.getFluidBlock());
             fluidRegister.dyeColor(blockColorPack);
             BLOCK_COLOR_PACK_MAP.put(blockColorPack.block, blockColorPack);
         }
@@ -95,7 +95,7 @@ public class ColorProxyManage implements IWorldComponent {
             event.getItemColors().register(itemItemColorPackEntry.getValue(), itemItemColorPackEntry.getKey());
         }
         for (Map.Entry<Block, BlockColorPack> blockBlockColorPackEntry : BLOCK_COLOR_PACK_MAP.entrySet()) {
-            event.getBlockColors().register(blockBlockColorPackEntry.getValue(), blockBlockColorPackEntry.getKey());
+            event.getBlockColors().registerColorProvider(blockBlockColorPackEntry.getValue(), blockBlockColorPackEntry.getKey());
         }
     }
 
@@ -104,7 +104,7 @@ public class ColorProxyManage implements IWorldComponent {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class ItemColorPack implements IItemColor {
+    public static class ItemColorPack implements ItemColorProvider {
         public final Item itemLike;
         public final Map<Integer, Extension.Func_1I<ItemStack, GlowingFireGlowColor>> layerColor = new HashMap<>();
 
@@ -128,21 +128,21 @@ public class ColorProxyManage implements IWorldComponent {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class BlockColorPack implements IBlockColor {
+    public static class BlockColorPack implements BlockColorProvider {
         public final Block block;
-        public final Map<Integer, Extension.Func_3I<BlockState, IBlockDisplayReader, BlockPos, GlowingFireGlowColor>> layerColor = new HashMap<>();
+        public final Map<Integer, Extension.Func_3I<BlockState, BlockRenderView, BlockPos, GlowingFireGlowColor>> layerColor = new HashMap<>();
 
         public BlockColorPack(Block block) {
             this.block = block;
         }
 
-        public BlockColorPack addColor(int layer, Extension.Func_3I<BlockState, IBlockDisplayReader, BlockPos, GlowingFireGlowColor> color) {
+        public BlockColorPack addColor(int layer, Extension.Func_3I<BlockState, BlockRenderView, BlockPos, GlowingFireGlowColor> color) {
             layerColor.put(layer, color);
             return this;
         }
 
         @Override
-        public int getColor(@NotNull BlockState blockState, @Nullable IBlockDisplayReader blockAndTintGetter, @Nullable BlockPos blockPos, int layer) {
+        public int getColor(@NotNull BlockState blockState, @Nullable BlockRenderView blockAndTintGetter, @Nullable BlockPos blockPos, int layer) {
             if (layerColor.containsKey(layer)) {
                 return layerColor.get(layer).func(blockState, blockAndTintGetter, blockPos).getRGB();
             }

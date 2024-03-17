@@ -4,7 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -28,12 +28,12 @@ public class ForgeRegistryItemTypeAdapter<E extends IForgeRegistryEntry<E>> exte
             out.nullValue();
             return;
         }
-        ResourceLocation resourceLocation = value.getRegistryName();
-        if (resourceLocation == null) {
+        Identifier Identifier = value.getRegistryName();
+        if (Identifier == null) {
             out.nullValue();
             return;
         }
-        out.value(resourceLocation.toString());
+        out.value(Identifier.toString());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ForgeRegistryItemTypeAdapter<E extends IForgeRegistryEntry<E>> exte
         if (in.peek() == JsonToken.NULL) {
             return null;
         }
-        ResourceLocation resourceLocation = new ResourceLocation(in.nextString());
-        return forgeRegistry.getValue(resourceLocation);
+        Identifier Identifier = new Identifier(in.nextString());
+        return forgeRegistry.getValue(Identifier);
     }
 }

@@ -6,7 +6,7 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.Ingredient;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class IngredientTypeAdapter extends TypeAdapter<Ingredient> {
             out.nullValue();
             return;
         }
-        JsonElement jsonElement = value.serialize();
+        JsonElement jsonElement = value.toJson();
         Streams.write(jsonElement, out);
     }
 
@@ -28,6 +28,6 @@ public class IngredientTypeAdapter extends TypeAdapter<Ingredient> {
         if (in.peek().equals(JsonToken.NULL)) {
             return null;
         }
-        return Ingredient.deserialize(Streams.parse(in));
+        return Ingredient.fromJson(Streams.parse(in));
     }
 }

@@ -4,9 +4,9 @@ import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.world.item.AllItemRegister;
 import com.til.glowing_fire_glow.common.register.world.item.ItemRegister;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.item.ModelPredicateProvider;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,16 +22,16 @@ public class ItemPropertyOverrideManage implements IWorldComponent {
     @Override
     public void initClientSetup() {
         IWorldComponent.super.initClientSetup();
-        Map<String, IItemPropertyGetter> map = new HashMap<>();
+        Map<String, ModelPredicateProvider> map = new HashMap<>();
         ConsumerItemPropertyGetter consumerItemPropertyGetter = map::put;
         for (ItemRegister itemRegister : allItemRegister.forAll()) {
             itemRegister.propertyOverride(consumerItemPropertyGetter);
             if (!map.isEmpty()) {
-                for (Map.Entry<String, IItemPropertyGetter> stringIItemPropertyGetterEntry : map.entrySet()) {
-                    ItemModelsProperties.registerProperty(
+                for (Map.Entry<String, ModelPredicateProvider> stringModelPredicateProviderEntry : map.entrySet()) {
+                    ModelPredicateProviderRegistry.register(
                             itemRegister.getItem(),
-                            new ResourceLocation(itemRegister.getName().getNamespace(), stringIItemPropertyGetterEntry.getKey()),
-                            stringIItemPropertyGetterEntry.getValue());
+                            new Identifier(itemRegister.getName().getNamespace(), stringModelPredicateProviderEntry.getKey()),
+                            stringModelPredicateProviderEntry.getValue());
                 }
             }
             map.clear();
@@ -41,7 +41,7 @@ public class ItemPropertyOverrideManage implements IWorldComponent {
 
     @OnlyIn(Dist.CLIENT)
     public interface ConsumerItemPropertyGetter {
-        void accept(String name, IItemPropertyGetter iItemPropertyGetter);
+        void accept(String name, ModelPredicateProvider iItemPropertyGetter);
     }
 
 

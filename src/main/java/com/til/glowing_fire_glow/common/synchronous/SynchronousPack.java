@@ -6,8 +6,8 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.NBTUtil;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.gson.GsonManage;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class SynchronousPack<E> {
         this.clazz = clazz;
     }
 
-    public void write(E e, CompoundNBT compoundNBT) {
+    public void write(E e, NbtCompound NbtCompound) {
         for (Field field : fields) {
             field.setAccessible(true);
             Object obj;
@@ -51,27 +51,27 @@ public class SynchronousPack<E> {
                 GlowingFireGlow.LOGGER.error(ex);
                 continue;
             }
-            if (obj instanceof INBT) {
-                compoundNBT.put(field.getName(), (INBT) obj);
+            if (obj instanceof NbtElement) {
+                NbtCompound.put(field.getName(), (NbtElement) obj);
                 continue;
             }
-            compoundNBT.put(field.getName(), NBTUtil.toTag(gsonManage.getGson().toJsonTree(obj, field.getGenericType())));
+            NbtCompound.put(field.getName(), NBTUtil.toTag(gsonManage.getGson().toJsonTree(obj, field.getGenericType())));
         }
     }
 
-    public void read(E e, CompoundNBT compoundNBT) {
+    public void read(E e, NbtCompound NbtCompound) {
         for (Field field : fields) {
-            if (!compoundNBT.contains(field.getName())) {
+            if (!NbtCompound.contains(field.getName())) {
                 continue;
             }
             Object obj;
-            if (INBT.class.isAssignableFrom(field.getType())) {
-                obj = compoundNBT.get(field.getName());
+            if (NbtElement.class.isAssignableFrom(field.getType())) {
+                obj = NbtCompound.get(field.getName());
                 if (!field.getType().isInstance(obj)) {
                     obj = null;
                 }
             } else {
-                obj = gsonManage.getGson().fromJson(NBTUtil.toJson(compoundNBT.get(field.getName()), false), field.getGenericType());
+                obj = gsonManage.getGson().fromJson(NBTUtil.toJson(NbtCompound.get(field.getName()), false), field.getGenericType());
             }
             field.setAccessible(true);
             try {

@@ -1,13 +1,13 @@
 package com.til.glowing_fire_glow.client.register.capability.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack;
 import com.til.glowing_fire_glow.common.register.ReflexManage;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.capability.CapabilityRegister;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,7 +45,7 @@ public abstract class CapabilityRenderRegister<C, CE extends CapabilityRegister<
         capabilityRegisterClass = Util.forcedConversion(ReflexUtil.asClass(types[1]));
     }
 
-    public abstract void render(Entity entity, C c, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn);
+    public abstract void render(Entity entity, C c, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn);
 
     public Class<C> getCapabilityClass() {
         return capabilityClass;

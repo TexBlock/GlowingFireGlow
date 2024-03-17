@@ -1,12 +1,12 @@
 package com.til.glowing_fire_glow.common.register.attribute;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AttributeRegister extends RegisterBasics {
 
-    protected Attribute attribute;
+    protected EntityAttribute attribute;
 
     @Override
     protected void init() {
@@ -16,9 +16,9 @@ public abstract class AttributeRegister extends RegisterBasics {
         ForgeRegistries.ATTRIBUTES.register(attribute);
     }
 
-    protected abstract Attribute initAttribute();
+    protected abstract EntityAttribute initAttribute();
 
-    public Attribute getAttribute() {
+    public EntityAttribute getAttribute() {
         return attribute;
     }
 }

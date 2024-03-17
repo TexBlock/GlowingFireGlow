@@ -5,16 +5,16 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.tag.BlockTagManage;
 import com.til.glowing_fire_glow.common.tag.ItemTagManage;
-import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
+import com.til.glowing_fire_glow.common.util.IdentifierUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class BlockRegister extends RegisterBasics {
-    protected ResourceLocation blockName;
+    protected Identifier blockName;
     protected Block block;
     protected BlockItem blockItem;
 
@@ -28,7 +28,7 @@ public abstract class BlockRegister extends RegisterBasics {
     @Override
     public void init() {
         super.init();
-        blockName = ResourceLocationUtil.fuseName(this.getName().getNamespace(), "/", new String[]{"block", this.getName().getPath()});
+        blockName = IdentifierUtil.fuseName(this.getName().getNamespace(), "/", new String[]{"block", this.getName().getPath()});
         block = createBlock();
         block.setRegistryName(blockName);
         ForgeRegistries.BLOCKS.register(block);
@@ -53,7 +53,7 @@ public abstract class BlockRegister extends RegisterBasics {
     }
 
 
-    public ResourceLocation getBlockName() {
+    public Identifier getBlockName() {
         return blockName;
     }
 

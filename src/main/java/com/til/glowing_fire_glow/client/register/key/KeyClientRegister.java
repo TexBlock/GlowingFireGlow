@@ -9,8 +9,8 @@ import com.til.glowing_fire_glow.common.register.message.messages.KeyMessage;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.StringUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -32,7 +32,7 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
 
     protected int inputId;
 
-    protected InputMappings.Type type;
+    protected InputUtil.Type type;
     protected KeyModifier keyModifier;
     protected IKeyConflictContext keyConflictContext;
     protected String category;
@@ -75,8 +75,8 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
 
     protected abstract int initInputId();
 
-    protected InputMappings.Type initType() {
-        return InputMappings.Type.KEYSYM;
+    protected InputUtil.Type initType() {
+        return InputUtil.Type.KEYSYM;
     }
 
     protected KeyModifier initKeyModifier() {
@@ -99,7 +99,7 @@ public abstract class KeyClientRegister<K extends KeyRegister> extends RegisterB
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     protected void onClientTickEvent(InputEvent.KeyInputEvent event) {
-        if (keyMapping.isKeyDown()) {
+        if (keyMapping.isPressed()) {
             if (!isKeyDown) {
                 isKeyDown = true;
                 pressed();

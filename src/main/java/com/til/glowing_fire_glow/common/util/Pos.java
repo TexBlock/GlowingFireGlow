@@ -3,15 +3,10 @@ package com.til.glowing_fire_glow.common.util;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.*;
 
 import java.util.Random;
 
@@ -29,15 +24,15 @@ public class Pos {
         this.z = 0;
     }
 
-    public Pos(Vector3d vec3i) {
+    public Pos(Vec3d vec3i) {
         this(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
 
-    public Pos(Vector3f vec3i) {
+    public Pos(Vec3f vec3i) {
         this(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
 
-    public Pos(Vector3i vec3i) {
+    public Pos(Vec3i vec3i) {
         this(vec3i.getX() + 0.5, vec3i.getY() + 0.5, vec3i.getZ() + 0.5);
     }
 
@@ -48,17 +43,17 @@ public class Pos {
     }
 
     public Pos(Entity entity) {
-        this.x = entity.getPosX();
-        this.y = entity.getPosY() + entity.getEyeHeight();
-        this.z = entity.getPosZ();
+        this.x = entity.getX();
+        this.y = entity.getY() + entity.getStandingEyeHeight();
+        this.z = entity.getZ();
     }
 
     public Pos(Pos pos) {
         this(pos.x, pos.y, pos.z);
     }
 
-    public Pos(TileEntity tileEntity) {
-        this(tileEntity.getPos());
+    public Pos(BlockEntity blockEntity) {
+        this(blockEntity.getPos());
     }
 
     public Pos(double rotationYaw, double rotationPitch) {
@@ -69,7 +64,7 @@ public class Pos {
         z = Math.cos(fYawDtoR) * Math.cos(fPitDtoR);
     }
 
-    public Pos(CompoundNBT nbtTagCompound) {
+    public Pos(NbtCompound nbtTagCompound) {
         x = nbtTagCompound.getDouble("x");
         y = nbtTagCompound.getDouble("y");
         z = nbtTagCompound.getDouble("z");
@@ -81,8 +76,8 @@ public class Pos {
         z = friendlyByteBuf.readDouble();
     }
 
-    public static AxisAlignedBB asAABB(Pos posMax, Pos posMin) {
-        return new AxisAlignedBB(posMax.vector3d(), posMin.vector3d());
+    public static Box asAABB(Pos posMax, Pos posMin) {
+        return new Box(posMax.vector3d(), posMin.vector3d());
     }
 
     public void write(ByteBuf friendlyByteBuf) {
@@ -91,11 +86,11 @@ public class Pos {
         friendlyByteBuf.writeDouble(z);
     }
 
-    public CompoundNBT getNBT() {
-        return writeNBT(new CompoundNBT());
+    public NbtCompound getNBT() {
+        return writeNBT(new NbtCompound());
     }
 
-    public CompoundNBT writeNBT(CompoundNBT nbtTagCompound) {
+    public NbtCompound writeNBT(NbtCompound nbtTagCompound) {
         nbtTagCompound.putDouble("x", x);
         nbtTagCompound.putDouble("y", y);
         nbtTagCompound.putDouble("z", z);
@@ -156,8 +151,8 @@ public class Pos {
         return new Pos(this.x + x, this.y + y, this.z + z);
     }
 
-    public AxisAlignedBB axisAlignedBB(double dAmbit) {
-        return new AxisAlignedBB(x - dAmbit, y - dAmbit, z - dAmbit, x + dAmbit,
+    public Box axisAlignedBB(double dAmbit) {
+        return new Box(x - dAmbit, y - dAmbit, z - dAmbit, x + dAmbit,
                 y + dAmbit, z + dAmbit);
     }
 
@@ -211,9 +206,9 @@ public class Pos {
     }
 
     public float distance(Entity entity) {
-        double f = this.x - entity.getPosX();
-        double f1 = this.y - entity.getPosY() + entity.getEyeHeight();
-        double f2 = this.z - entity.getPosZ();
+        double f = this.x - entity.getX();
+        double f1 = this.y - entity.getY() + entity.getStandingEyeHeight();
+        double f2 = this.z - entity.getZ();
         return (float) Math.sqrt(f * f + f1 * f1 + f2 * f2);
     }
 
@@ -221,16 +216,16 @@ public class Pos {
         return new BlockPos(x, y, z);
     }
 
-    public Vector3f vector3f() {
-        return new Vector3f((float) x, (float) y, (float) z);
+    public Vec3f vector3f() {
+        return new Vec3f((float) x, (float) y, (float) z);
     }
 
-    public Vector3d vector3d() {
-        return new Vector3d(x, y, z);
+    public Vec3d vector3d() {
+        return new Vec3d(x, y, z);
     }
 
-    public Vector3i vector3i() {
-        return new Vector3i(x, y, z);
+    public Vec3i Vec3i() {
+        return new Vec3i(x, y, z);
     }
 
     public static final Random rand = new Random();
@@ -279,7 +274,7 @@ public class Pos {
     }
 
     public Pos rotate(double theta, Pos axis) {
-        if (MathHelper.epsilonEquals(theta, 0)) {
+        if (MathHelper.approximatelyEquals(theta, 0)) {
             return this;
         }
 
@@ -455,7 +450,7 @@ public class Pos {
         }
     }
 
-    public boolean isIn(AxisAlignedBB aabb) {
+    public boolean isIn(Box aabb) {
         return aabb.maxX > x && aabb.minX < x &&
                aabb.maxY > y && aabb.minY < y &&
                aabb.maxZ > z && aabb.minZ < z;

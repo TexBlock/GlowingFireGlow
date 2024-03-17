@@ -14,8 +14,8 @@ import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.state.Property;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.state.property.Property;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.IOException;
@@ -34,8 +34,8 @@ public class BlockStateTypeAdapter extends TypeAdapter<BlockState> {
             jsonWriter.nullValue();
             return;
         }
-        ImmutableMap<Property<?>, Comparable<?>> immutableMap = blockState.getValues();
-        ResourceLocation blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+        ImmutableMap<Property<?>, Comparable<?>> immutableMap = blockState.getEntries();
+        Identifier blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
         if (blockName == null) {
             jsonWriter.nullValue();
             return;
@@ -48,7 +48,7 @@ public class BlockStateTypeAdapter extends TypeAdapter<BlockState> {
         jsonObject.add(NAME, new JsonPrimitive(blockName.toString()));
         JsonObject state = new JsonObject();
         for (Map.Entry<Property<?>, Comparable<?>> entry : immutableMap.entrySet()) {
-            state.add(entry.getKey().getName(), new JsonPrimitive(entry.getKey().getName(Util.forcedConversion(entry.getValue()))));
+            state.add(entry.getKey().getName(), new JsonPrimitive(entry.getKey().name(Util.forcedConversion(entry.getValue()))));
         }
         jsonObject.add(STATE, state);
         Streams.write(jsonObject, jsonWriter);
@@ -64,14 +64,14 @@ public class BlockStateTypeAdapter extends TypeAdapter<BlockState> {
             return Blocks.AIR.getDefaultState();
         }
         if (jsonElement.isJsonPrimitive()) {
-            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(jsonElement.getAsString()));
+            Block block = ForgeRegistries.BLOCKS.getValue(new Identifier(jsonElement.getAsString()));
             if (block == null) {
                 block = Blocks.AIR;
             }
             return block.getDefaultState();
         }
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(jsonObject.get(NAME).getAsString()));
+        Block block = ForgeRegistries.BLOCKS.getValue(new Identifier(jsonObject.get(NAME).getAsString()));
         if (block == null) {
             return Blocks.AIR.getDefaultState();
         }

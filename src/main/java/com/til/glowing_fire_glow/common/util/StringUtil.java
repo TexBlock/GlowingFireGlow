@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.util;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.regex.Pattern;
 
@@ -30,8 +30,8 @@ public class StringUtil {
         return true;
     }
 
-    public static String formatLang(ResourceLocation resourceLocation) {
-        return formatLang(resourceLocation.getNamespace(), resourceLocation.getPath());
+    public static String formatLang(Identifier identifier) {
+        return formatLang(identifier.getNamespace(), identifier.getPath());
     }
 
     public static String formatLang(String... namespace) {

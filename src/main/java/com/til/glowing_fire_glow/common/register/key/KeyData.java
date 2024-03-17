@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.register.key;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 public class KeyData {
     public String keyName = "";
@@ -18,8 +18,8 @@ public class KeyData {
         this.keyState = keyState;
     }
 
-    public KeyData(ResourceLocation resourceLocation, KeyState keyState) {
-        this(resourceLocation.toString(), keyState);
+    public KeyData(Identifier Identifier, KeyState keyState) {
+        this(Identifier.toString(), keyState);
     }
 
     public enum KeyState {

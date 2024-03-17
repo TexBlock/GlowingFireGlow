@@ -7,7 +7,7 @@ import com.til.glowing_fire_glow.common.register.capability.CapabilityRegister;
 import com.til.glowing_fire_glow.common.synchronous.SynchronousManage;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NbtCompound;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -54,13 +54,13 @@ public abstract class SynchronousCapabilityRegister<C  , CR extends CapabilityRe
         return capabilityRegister;
     }
 
-    public CompoundNBT defaultWriteNBT(C instance) {
-        CompoundNBT compoundNBT = new CompoundNBT();
-        synchronousManage.getPack(instance.getClass()).write(Util.forcedConversion(instance), compoundNBT);
-        return compoundNBT;
+    public NbtCompound defaultWriteNBT(C instance) {
+        NbtCompound NbtCompound = new NbtCompound();
+        synchronousManage.getPack(instance.getClass()).write(Util.forcedConversion(instance), NbtCompound);
+        return NbtCompound;
     }
 
-    public void defaultReadNBT(C instance, CompoundNBT nbt) {
+    public void defaultReadNBT(C instance, NbtCompound nbt) {
         synchronousManage.getPack(instance.getClass()).read(Util.forcedConversion(instance), nbt);
     }
 }

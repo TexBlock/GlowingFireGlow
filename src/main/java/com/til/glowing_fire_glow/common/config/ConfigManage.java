@@ -7,7 +7,7 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.IOUtil;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.gson.GsonManage;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -31,8 +31,8 @@ public class ConfigManage implements IWorldComponent {
 
     public File mackFile(ICanConfig registerBasics) {
         File basicsFile = FMLPaths.CONFIGDIR.get().toFile();
-        ResourceLocation name = registerBasics.getConfigName();
-        ResourceLocation basicsName = registerBasics.getBasicsConfigName();
+        Identifier name = registerBasics.getConfigName();
+        Identifier basicsName = registerBasics.getBasicsConfigName();
         String version = GlowingFireGlow.getInstance().getModVersion(registerBasics.getClass());
         return new File(basicsFile, String.format("%s/%s/%s/%s/%s.json", CONFIG_NAME, basicsName.getPath(), name.getNamespace(), version, name.getPath()));
     }

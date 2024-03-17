@@ -2,9 +2,9 @@ package com.til.glowing_fire_glow.common.capability;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -18,7 +18,7 @@ import java.util.Map;
 /***
  * 能力包装
  */
-public class CapabilityProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class CapabilityProvider implements ICapabilityProvider, INBTSerializable<NbtCompound> {
 
     public final Map<Capability<?>, LazyOptional<?>> capabilityLazyOptionalMap = new HashMap<>();
 
@@ -41,13 +41,13 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public NbtCompound serializeNBT() {
+        NbtCompound NbtCompound = new NbtCompound();
         for (Map.Entry<Capability<?>, LazyOptional<?>> capabilityLazyOptionalEntry : capabilityLazyOptionalMap.entrySet()) {
             if (!capabilityLazyOptionalEntry.getValue().isPresent()) {
                 continue;
             }
-            INBT inbt;
+            NbtElement inbt;
             Object obj = capabilityLazyOptionalEntry.getValue().orElse(null);
             if (obj instanceof INBTSerializable) {
                 INBTSerializable<?> inbtSerializable = ((INBTSerializable<?>) obj);
@@ -55,13 +55,13 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
             } else {
                 inbt = capabilityLazyOptionalEntry.getKey().writeNBT(Util.forcedConversion(obj), null);
             }
-            compoundNBT.put(capabilityLazyOptionalEntry.getKey().getName(), inbt);
+            NbtCompound.put(capabilityLazyOptionalEntry.getKey().getName(), inbt);
         }
-        return compoundNBT;
+        return NbtCompound;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(NbtCompound nbt) {
         for (Map.Entry<Capability<?>, LazyOptional<?>> capabilityLazyOptionalEntry : capabilityLazyOptionalMap.entrySet()) {
             if (!capabilityLazyOptionalEntry.getValue().isPresent()) {
                 continue;
@@ -70,7 +70,7 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
                 continue;
             }
             Object obj = capabilityLazyOptionalEntry.getValue().orElse(null);
-            INBT inbt = nbt.get(capabilityLazyOptionalEntry.getKey().getName());
+            NbtElement inbt = nbt.get(capabilityLazyOptionalEntry.getKey().getName());
             if (obj instanceof INBTSerializable) {
                 INBTSerializable<?> inbtSerializable = ((INBTSerializable<?>) obj);
                 inbtSerializable.deserializeNBT(Util.forcedConversion(inbt));

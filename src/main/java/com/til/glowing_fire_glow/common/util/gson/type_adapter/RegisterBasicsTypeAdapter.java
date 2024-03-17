@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonWriter;
 import com.til.glowing_fire_glow.GlowingFireGlow;
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 
@@ -36,7 +36,7 @@ public class RegisterBasicsTypeAdapter<T extends RegisterBasics> extends TypeAda
         if (in.peek() == JsonToken.NULL) {
             return null;
         }
-        ResourceLocation name = new ResourceLocation(in.nextString());
+        Identifier name = new Identifier(in.nextString());
         return GlowingFireGlow.getInstance().getReflexManage().getRegisterManageOfType(Util.forcedConversion(registerBasicsClass)).get(name);
     }
 }

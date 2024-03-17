@@ -1,6 +1,6 @@
 package com.til.glowing_fire_glow.common.util.math;
 
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec3d;
 
 public class Quaternion {
     public final float w;
@@ -36,11 +36,11 @@ public class Quaternion {
     }
 
     //向量旋转
-    public Vector3d vectorRotation(Vector3d vector3d) {
+    public Vec3d vectorRotation(Vec3d vector3d) {
         Quaternion qv = new Quaternion(0, (float) vector3d.getX(), (float) vector3d.getY(), (float) vector3d.getZ());
         qv = this.multiplication(qv);
         qv = qv.multiplication(this.inverse());
-        return new Vector3d(qv.x, qv.y, qv.z);
+        return new Vec3d(qv.x, qv.y, qv.z);
     }
 
 

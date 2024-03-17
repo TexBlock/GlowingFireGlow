@@ -10,7 +10,7 @@ import com.til.glowing_fire_glow.common.util.Pos;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -54,7 +54,7 @@ public abstract class ParticleClientRegister<P extends ParticleRegister> extends
      * @param density 密度
      * @return 返回粒子是生命用于拼接
      */
-    public abstract void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation);
+    public abstract void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable Identifier Identifier);
 
 
     public ParticleParsingMode getParticleParsingMode() {

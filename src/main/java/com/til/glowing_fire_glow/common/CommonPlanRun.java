@@ -6,11 +6,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlanRun extends PlanRunComponent {
-
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onServerTickEvent(TickEvent.ServerTickEvent event) {
         tick();
     }
-
-
 }

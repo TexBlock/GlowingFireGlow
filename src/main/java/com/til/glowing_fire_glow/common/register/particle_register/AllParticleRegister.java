@@ -7,9 +7,9 @@ import com.til.glowing_fire_glow.common.register.message.messages.ParticleMessag
 import com.til.glowing_fire_glow.common.register.message.messages.ParticleRouteRegisterMessage;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleData;
 import com.til.glowing_fire_glow.common.register.particle_register.data.ParticleRouteData;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author til
  */
 public class AllParticleRegister extends RegisterManage<ParticleRegister> {
-    public static final ResourceLocation DEFAULT = new ResourceLocation(GlowingFireGlow.MOD_ID, "particle/default/texture.png");
+    public static final Identifier DEFAULT = new Identifier(GlowingFireGlow.MOD_ID, "particle/default/texture.png");
 
     protected final Map<ServerWorld, List<ParticleData>> MAP = new HashMap<>();
     protected final Map<ServerWorld, List<ParticleRouteData>> ROUTE_DATA = new HashMap<>();

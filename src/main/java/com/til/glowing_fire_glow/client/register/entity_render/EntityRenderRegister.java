@@ -5,8 +5,8 @@ import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.entity_type.EntityTypeRegister;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
 import com.til.glowing_fire_glow.common.util.Util;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,5 +45,5 @@ public abstract class EntityRenderRegister<E extends Entity, ET extends EntityTy
         entityTypeRegisterClass = Util.forcedConversion(ReflexUtil.asClass(types[1]));
     }
 
-    protected abstract EntityRenderer<? super E> createRenderFor(EntityRendererManager manager);
+    protected abstract EntityRenderer<? super E> createRenderFor(EntityRenderDispatcher manager);
 }

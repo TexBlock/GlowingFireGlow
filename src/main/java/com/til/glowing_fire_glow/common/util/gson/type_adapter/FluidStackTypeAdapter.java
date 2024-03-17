@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.til.glowing_fire_glow.common.util.NBTUtil;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.io.IOException;
@@ -20,8 +20,8 @@ public class FluidStackTypeAdapter extends TypeAdapter<FluidStack> {
             out.nullValue();
             return;
         }
-        CompoundNBT compoundNBT = value.writeToNBT(new CompoundNBT());
-        JsonElement jsonElement = NBTUtil.toJson(compoundNBT, true);
+        NbtCompound NbtCompound = value.writeToNBT(new NbtCompound());
+        JsonElement jsonElement = NBTUtil.toJson(NbtCompound, true);
         Streams.write(jsonElement, out);
     }
 
@@ -32,6 +32,6 @@ public class FluidStackTypeAdapter extends TypeAdapter<FluidStack> {
             return null;
         }
         JsonElement jsonElement = Streams.parse(in);
-        return FluidStack.loadFluidStackFromNBT((CompoundNBT) NBTUtil.toTag(jsonElement));
+        return FluidStack.loadFluidStackFromNBT((NbtCompound) NBTUtil.toTag(jsonElement));
     }
 }

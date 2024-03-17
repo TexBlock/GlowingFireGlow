@@ -11,10 +11,10 @@ import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
 import com.til.glowing_fire_glow.common.util.RoutePack;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ public abstract class ParticleRegister extends RegisterBasics {
         super.init();
     }
 
-    public void add(World world, GlowingFireGlowColor[] color, double density, ResourceLocation resourceLocation, Pos... pos) {
-        if (world.isRemote) {
-            ClientTransfer.messageConsumer(new ParticleData(this, color, density, resourceLocation, pos));
+    public void add(World world, GlowingFireGlowColor[] color, double density, Identifier Identifier, Pos... pos) {
+        if (world.isClient) {
+            ClientTransfer.messageConsumer(new ParticleData(this, color, density, Identifier, pos));
         } else {
             ServerWorld serverLevel = (ServerWorld) world;
             List<ParticleData> list;
@@ -49,14 +49,14 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.MAP.put(serverLevel, list);
             }
-            list.add(new ParticleData(this, color, density, resourceLocation, pos));
+            list.add(new ParticleData(this, color, density, Identifier, pos));
 
         }
     }
 
-    public void add(World world, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor[] color, @Nullable ResourceLocation resourceLocation) {
-        if (world.isRemote) {
-            ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, resourceLocation));
+    public void add(World world, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor[] color, @Nullable Identifier Identifier) {
+        if (world.isClient) {
+            ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, Identifier));
         } else {
             ServerWorld serverLevel = (ServerWorld) world;
             List<ParticleRouteData> list;
@@ -66,13 +66,13 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.ROUTE_DATA.put(serverLevel, list);
             }
-            list.add(new ParticleRouteData(route, this, color, resourceLocation));
+            list.add(new ParticleRouteData(route, this, color, Identifier));
         }
     }
 
-    public void add(PlayerEntity player, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation, Pos... pos) {
-        if (player.world.isRemote) {
-            ClientTransfer.messageConsumer(new ParticleData(this, color, density, resourceLocation, pos));
+    public void add(PlayerEntity player, GlowingFireGlowColor[] color, double density, @Nullable Identifier Identifier, Pos... pos) {
+        if (player.world.isClient) {
+            ClientTransfer.messageConsumer(new ParticleData(this, color, density, Identifier, pos));
         } else {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             List<ParticleData> list;
@@ -82,13 +82,13 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.PLAYER_MAP.put(serverPlayer, list);
             }
-            list.add(new ParticleData(this, color, density, resourceLocation, pos));
+            list.add(new ParticleData(this, color, density, Identifier, pos));
         }
     }
 
-    public void add(PlayerEntity player, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor[] color, @Nullable ResourceLocation resourceLocation) {
-        if (player.world.isRemote) {
-            ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, resourceLocation));
+    public void add(PlayerEntity player, List<List<RoutePack.RouteCell<Double>>> route, GlowingFireGlowColor[] color, @Nullable Identifier Identifier) {
+        if (player.world.isClient) {
+            ClientTransfer.messageConsumer(new ParticleRouteData(route, this, color, Identifier));
 
         } else {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
@@ -99,7 +99,7 @@ public abstract class ParticleRegister extends RegisterBasics {
                 list = new ArrayList<>();
                 allParticleRegister.PLAYER_ROUTE_DATA.put(serverPlayer, list);
             }
-            list.add(new ParticleRouteData(route, this, color, resourceLocation));
+            list.add(new ParticleRouteData(route, this, color, Identifier));
         }
     }
 

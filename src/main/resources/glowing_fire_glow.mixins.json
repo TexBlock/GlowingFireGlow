@@ -7,7 +7,7 @@
     "BlockTagsMixin",
     "CapabilityManagerMixin",
     "ClientModLoaderMixin",
-    "EntityRendererManagerMixin",
+    "EntityRenderDispatcherMixin",
     "EntityTypeTagsMixin",
     "FluidTagsMixin",
     "ItemTagsMixin",

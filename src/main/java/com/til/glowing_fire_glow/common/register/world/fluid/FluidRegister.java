@@ -6,11 +6,11 @@ import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.tag.BlockTagManage;
 import com.til.glowing_fire_glow.common.tag.FluidTagManage;
 import com.til.glowing_fire_glow.common.tag.ItemTagManage;
-import com.til.glowing_fire_glow.common.util.ResourceLocationUtil;
-import net.minecraft.block.FlowingFluidBlock;
+import com.til.glowing_fire_glow.common.util.IdentifierUtil;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -21,9 +21,9 @@ import javax.annotation.Nullable;
 
 public abstract class FluidRegister extends RegisterBasics {
 
-    protected ResourceLocation fluidName;
-    protected ResourceLocation fluidStillBlockName;
-    protected ResourceLocation fluidFlowingBlockName;
+    protected Identifier fluidName;
+    protected Identifier fluidStillBlockName;
+    protected Identifier fluidFlowingBlockName;
 
 
     protected ForgeFlowingFluid.Properties properties;
@@ -42,7 +42,7 @@ public abstract class FluidRegister extends RegisterBasics {
     protected Item bucketItem;
 
     @Nullable
-    protected FlowingFluidBlock flowingFluidBlock;
+    protected FluidBlock flowingFluidBlock;
 
     @VoluntarilyAssignment
     protected ItemTagManage itemTagManage;
@@ -56,9 +56,9 @@ public abstract class FluidRegister extends RegisterBasics {
     @Override
     protected void init() {
         super.init();
-        fluidName = ResourceLocationUtil.fuseName(name.getNamespace(), "/", new String[]{"fluid", name.getPath()});
-        fluidStillBlockName = ResourceLocationUtil.fuseName(name.getNamespace(), "/", new String[]{"fluid", "still", name.getPath()});
-        fluidFlowingBlockName = ResourceLocationUtil.fuseName(name.getNamespace(), "/", new String[]{"fluid", "flowing", name.getPath()});
+        fluidName = IdentifierUtil.fuseName(name.getNamespace(), "/", new String[]{"fluid", name.getPath()});
+        fluidStillBlockName = IdentifierUtil.fuseName(name.getNamespace(), "/", new String[]{"fluid", "still", name.getPath()});
+        fluidFlowingBlockName = IdentifierUtil.fuseName(name.getNamespace(), "/", new String[]{"fluid", "flowing", name.getPath()});
 
 
         properties = createProperties();
@@ -73,7 +73,7 @@ public abstract class FluidRegister extends RegisterBasics {
         ForgeRegistries.FLUIDS.register(still);
         ForgeRegistries.FLUIDS.register(flowing);
 
-        flowingFluidBlock = createFlowingFluidBlock();
+        flowingFluidBlock = createFluidBlock();
         if (flowingFluidBlock != null) {
             flowingFluidBlock.setRegistryName(fluidName);
             properties.block(() -> flowingFluidBlock);
@@ -114,7 +114,7 @@ public abstract class FluidRegister extends RegisterBasics {
 
 
     @Nullable
-    public FlowingFluidBlock createFlowingFluidBlock() {
+    public FluidBlock createFluidBlock() {
         return null;
     }
 
@@ -139,7 +139,7 @@ public abstract class FluidRegister extends RegisterBasics {
     }
 
     @Nullable
-    public FlowingFluidBlock getFlowingFluidBlock() {
+    public FluidBlock getFluidBlock() {
         return flowingFluidBlock;
     }
 }

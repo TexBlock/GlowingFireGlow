@@ -2,7 +2,6 @@ package com.til.glowing_fire_glow.client.register.particle_register.particle_reg
 
 import com.til.glowing_fire_glow.client.particle.LightningParticle;
 import com.til.glowing_fire_glow.client.register.particle_register.ParticleClientRegister;
-import com.til.glowing_fire_glow.common.config.ConfigField;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.register.VoluntarilyRegister;
 import com.til.glowing_fire_glow.common.register.overall_config.instance.LightningSeepOverallConfigRegister;
@@ -12,7 +11,7 @@ import com.til.glowing_fire_glow.common.register.particle_register.particle_regi
 import com.til.glowing_fire_glow.common.util.GlowingFireGlowColor;
 import com.til.glowing_fire_glow.common.util.Pos;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +31,7 @@ public class LightningParticleClientRegister extends ParticleClientRegister<Ligh
     }
 
     @Override
-    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable ResourceLocation resourceLocation) {
+    public void run(ParticleContext particleContext, ClientWorld world, Pos start, @Nullable Pos end, GlowingFireGlowColor[] color, double density, @Nullable Identifier Identifier) {
         if (end == null) {
             return;
         }
