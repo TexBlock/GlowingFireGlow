@@ -27,7 +27,7 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -97,7 +97,7 @@ public class LightningParticle extends Particle {
     }
 
     public void renderBolt(MatrixStack ms, VertexConsumer wr, int pass, boolean inner) {
-        Matrix4f mat = ms.peek().getModel();
+        Matrix4f mat = ms.peek().getPositionMatrix();
 
         float boltAge = age < 0 ? 0 : (float) age / (float) maxAge;
         float mainAlpha;
@@ -186,7 +186,7 @@ public class LightningParticle extends Particle {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableTexture();
-            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
         }
 
         @Override
@@ -459,13 +459,13 @@ public class LightningParticle extends Particle {
         }
 
         @SubscribeEvent
-        protected void onRenderWorldLast(RenderWorldLastEvent event) {
-            MatrixStack ms = event.getMatrixStack();
+        protected void onRenderWorldLast(RenderLevelStageEvent event) {
+            MatrixStack ms = event.getPoseStack();
             Profiler profiler = MinecraftClient.getInstance().getProfiler();
 
             profiler.push("lightning");
 
-            float frame = event.getPartialTicks();
+            float frame = event.getPartialTick();
             Entity entity = MinecraftClient.getInstance().player;
             TextureManager render = MinecraftClient.getInstance().textureManager;
 
@@ -485,12 +485,12 @@ public class LightningParticle extends Particle {
             render.bindTexture(outsideResource);
             int counter = 0;
 
-            tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            tessellator.getBuffer().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
             for (LightningParticle bolt : queuedLightningBolts) {
                 bolt.renderBolt(ms, tessellator.getBuffer(), 0, false);
                 if (counter % batchThreshold == batchThreshold - 1) {
                     tessellator.draw();
-                    tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+                    tessellator.getBuffer().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
                 }
                 counter++;
             }
@@ -499,12 +499,12 @@ public class LightningParticle extends Particle {
             render.bindTexture(insideResource);
             counter = 0;
 
-            tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            tessellator.getBuffer().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
             for (LightningParticle bolt : queuedLightningBolts) {
                 bolt.renderBolt(ms, tessellator.getBuffer(), 1, true);
                 if (counter % batchThreshold == batchThreshold - 1) {
                     tessellator.draw();
-                    tessellator.getBuffer().begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+                    tessellator.getBuffer().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
                 }
                 counter++;
             }

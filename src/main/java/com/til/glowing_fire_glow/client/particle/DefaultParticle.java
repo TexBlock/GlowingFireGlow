@@ -149,7 +149,7 @@ public class DefaultParticle extends Particle {
      */
     public DefaultParticle setColor(GlowingFireGlowColor color) {
         setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
-        setColorAlpha(color.getAlpha() / 255f);
+        setAlpha(color.getAlpha() / 255f);
         return this;
     }
 
@@ -325,19 +325,19 @@ public class DefaultParticle extends Particle {
                     RenderSystem.depthMask(false);
                     RenderSystem.enableBlend();
                     RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-                    RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
-                    RenderSystem.disableLighting();
+                    //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
+                    //RenderSystem.disableLighting();
                     textureManager.bindTexture(textureName);
                     AbstractTexture tex = textureManager.getTexture(textureName);
                     tex.setBlurMipmap(true, false);
-                    bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
+                    bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
                 }
 
                 @Override
                 public void draw(Tessellator tesselator) {
                     tesselator.draw();
                     MinecraftClient.getInstance().textureManager.getTexture(SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE).restoreLastBlurMipmap();
-                    RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
                     RenderSystem.disableBlend();
                     RenderSystem.depthMask(true);
                 }

@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.ParameterizedType;
@@ -85,7 +85,7 @@ public abstract class EntityTypeRegister<E extends Entity> extends RegisterBasic
 
     protected abstract E create(EntityType<E> eEntityType, World world);
 
-    protected E createInClient(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+    protected E createInClient(PlayMessages.SpawnEntity spawnEntity, World world) {
         return create(getEntityType(), world);
     }
 

@@ -13,7 +13,7 @@ public abstract class PotionRegister extends RegisterBasics {
         super.init();
         potion = initPotion();
         potion.setRegistryName(getName());
-        ForgeRegistries.POTION_TYPES.register(potion);
+        ForgeRegistries.POTIONS.register(potion);
     }
 
     protected abstract Potion initPotion();

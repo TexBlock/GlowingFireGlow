@@ -1,7 +1,7 @@
 package com.til.glowing_fire_glow.common.register.key;
 
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 /**
  * @author til

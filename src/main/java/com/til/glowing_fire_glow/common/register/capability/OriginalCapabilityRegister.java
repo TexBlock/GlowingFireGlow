@@ -19,7 +19,7 @@ public abstract class OriginalCapabilityRegister<E> extends CapabilityRegister<E
     @Override
     protected void initCommonSetup() {
         super.initCommonSetup();
-        CapabilityManager.INSTANCE.register(getCapabilityClass(), new Capability.IStorage<E>() {
+        CapabilityManager.INSTANCE.injectCapabilities(getCapabilityClass(), new Capability.IStorage<E>() {
             @Nullable
             @Override
             public NbtElement writeNBT(Capability<E> capability, E instance, Direction side) {

@@ -1,6 +1,5 @@
 package com.til.glowing_fire_glow.common.register.message;
 
-
 import com.til.glowing_fire_glow.common.register.RegisterBasics;
 import com.til.glowing_fire_glow.common.register.VoluntarilyAssignment;
 import com.til.glowing_fire_glow.common.util.ReflexUtil;
@@ -8,9 +7,9 @@ import com.til.glowing_fire_glow.common.util.Util;
 import com.til.glowing_fire_glow.common.util.gson.GsonManage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

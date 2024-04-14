@@ -6,7 +6,7 @@ import com.til.glowing_fire_glow.common.register.message.MessageRegister;
 import com.til.glowing_fire_glow.common.synchronous.SynchronousData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

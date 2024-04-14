@@ -10,7 +10,7 @@ import com.til.glowing_fire_glow.common.register.key.KeyRegister;
 import com.til.glowing_fire_glow.common.register.message.MessageRegister;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

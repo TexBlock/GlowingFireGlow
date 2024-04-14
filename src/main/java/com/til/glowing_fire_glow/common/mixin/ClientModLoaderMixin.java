@@ -1,7 +1,7 @@
 package com.til.glowing_fire_glow.common.mixin;
 
 import com.til.glowing_fire_glow.GlowingFireGlow;
-import net.minecraftforge.fml.client.ClientModLoader;
+import net.minecraftforge.client.loading.ClientModLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

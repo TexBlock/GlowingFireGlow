@@ -2,14 +2,14 @@ package com.til.glowing_fire_glow.common.tag;
 
 import com.til.glowing_fire_glow.common.main.IWorldComponent;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.RequiredTagList;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
 
 public abstract class TagManage<T> implements IWorldComponent {
     protected Map<Identifier, List<T>> map = new HashMap<>();
-    protected RequiredTagList<T> tagManager;
+    protected TagKey<T> tagManager;
 
     @SafeVarargs
     public final void addTag(Identifier tTagKey, T... t) {
@@ -30,8 +30,8 @@ public abstract class TagManage<T> implements IWorldComponent {
     }
 
 
-    public Tag<T> of(Identifier Identifier) {
-        return tagManager.add(Identifier.toString());
+    public Tag<T> of(Identifier identifier) {
+        return tagManager.add(identifier.toString());
     }
 
 
@@ -46,10 +46,10 @@ public abstract class TagManage<T> implements IWorldComponent {
         return 100;
     }
 
-    protected abstract RequiredTagList<T> initTagManager();
+    protected abstract TagKey<T> initTagManager();
 
 
-    public RequiredTagList<T> getTagManager() {
+    public TagKey<T> getTagManager() {
         return tagManager;
     }
 

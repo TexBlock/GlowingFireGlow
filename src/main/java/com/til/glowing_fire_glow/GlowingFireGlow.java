@@ -148,20 +148,20 @@ public class GlowingFireGlow {
             HashSet<Type> excludeTypeList = new HashSet<>();
 
             for (ModFileScanData.AnnotationData annotation : modFileScanData.getAnnotations()) {
-                if (annotation.getTargetType() != ElementType.TYPE) {
+                if (annotation.targetType() != ElementType.TYPE) {
                     continue;
                 }
-                if (annotation.getAnnotationType().equals(mixinType)) {
-                    excludeTypeList.add(annotation.getClassType());
+                if (annotation.annotationType().equals(mixinType)) {
+                    excludeTypeList.add(annotation.clazz());
                 }
-                if (annotation.getAnnotationType().equals(onlyInType)) {
-                    Object v = annotation.getAnnotationData().get("value");
+                if (annotation.annotationType().equals(onlyInType)) {
+                    Object v = annotation.annotationData().get("value");
                     if (!(v instanceof ModAnnotation.EnumHolder)) {
                         continue;
                     }
                     ModAnnotation.EnumHolder enumHolder = ((ModAnnotation.EnumHolder) v);
                     if (!enumHolder.getValue().equals(FMLLoader.getDist().toString())) {
-                        excludeTypeList.add(annotation.getClassType());
+                        excludeTypeList.add(annotation.clazz());
                     }
                 }
             }

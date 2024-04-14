@@ -29,7 +29,7 @@ public class SynchronousData {
                 map.put(synchronousCapabilityRegister, synchronousCapabilityRegister.defaultWriteNBT(Util.forcedConversion(c)));
             });
         }
-        return new SynchronousData(entity.getEntityId(), map);
+        return new SynchronousData(entity.getId(), map);
     }
 
     public int getEntityId() {
